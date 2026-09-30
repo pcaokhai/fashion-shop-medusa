@@ -1,0 +1,13 @@
+{
+  "createOrderLookup": { "fixture": "order-lookup-session.json", "status": 200 },
+  "getKpiReport": { "fixture": "kpi-report.json", "status": 200 },
+  "getOrderLookupSession": { "fixture": "order-lookup-paid-pending.json", "status": 200 },
+  "quoteShipping": { "fixture": "shipping-quote.json", "status": 200 },
+  "requestGuestCancelOtp": { "fixture": "order-lookup-cancel-otp.json", "key": "challenge", "status": 202 },
+  "searchProducts": { "fixture": "search-result.json", "status": 200 },
+  "verifyVnpayReturn": { "fixture": "vnpay-return-pending.json", "status": 200 },
+  "unmapped_fixtures": [
+    { "file": "bank-transaction-in.json", "reason": "request payload of receiveBankTransferWebhook (provider contract tests), not a response body" },
+    { "file": "ghn-webhook-delivered.json", "reason": "request payload of receiveGhnWebhook (provider contract tests), not a response body" }
+  ]
+}

@@ -6,6 +6,10 @@
     "lint": "eslint .",
     "typecheck": "tsc -p . --noEmit",
     "test": "echo \"no tests yet\"",
-    "build": "tsc -p . --noEmit"
+    "build": "tsc -p . --noEmit",
+    "gen:api": "pnpm --filter @vck/contracts-tools run gen"
+  },
+  "devDependencies": {
+    "msw": "^3.0.0"
   }
 }
