@@ -70,3 +70,48 @@ jobs:
         shell: bash
         run: |
           echo "integration duration: $(( $(date +%s) - JOB_START ))s" >> "$GITHUB_STEP_SUMMARY"
+
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 20
+          cache: pnpm
+      # gitleaks v8.30.1, official release binary; checksum from gitleaks_8.30.1_checksums.txt, pinned here
+      # https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+      - name: Install gitleaks (checksum-verified)
+        shell: bash
+        run: |
+          curl -sSfL -O "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz"
+          echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  gitleaks_8.30.1_linux_x64.tar.gz" > gitleaks.sha256
+          sha256sum -c gitleaks.sha256
+          tar -xzf gitleaks_8.30.1_linux_x64.tar.gz gitleaks
+      - name: Secret scan (PR range)
+        run: ./gitleaks detect --redact --no-banner --log-opts="origin/main..HEAD"
+      - name: Dependency audit (prod, critical)
+        run: pnpm audit --prod --audit-level critical
+      - run: pnpm install --frozen-lockfile
+      - name: Licence gate
+        shell: bash
+        run: |
+          out=$(pnpm licenses list --prod --json 2>&1) || [ "$out" = "No licenses in packages found" ]
+          printf '%s' "$out" | node scripts/check-licenses.mjs
+
+  pins:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 20
+      - name: Verify action pins match upstream tags
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/check-action-pins.mjs

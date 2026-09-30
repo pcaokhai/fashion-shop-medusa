@@ -4,15 +4,16 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { parse } from 'yaml';
 
 const dir = new URL('../.github/workflows/', import.meta.url);
-const files = readdirSync(dir).filter((f) => f.endsWith('.yml'));
+const files = readdirSync(dir).filter((f) => /\.ya?ml$/.test(f));
 const raw = (f) => readFileSync(new URL(f, dir), 'utf8');
 const load = (f) => parse(raw(f));
 const steps = (wf) => Object.values(wf.jobs).flatMap((j) => j.steps ?? []);
 const runs = (wf) => steps(wf).map((s) => s.run ?? '');
 const uses = (wf) => steps(wf).filter((s) => s.uses);
 
-test('[VCK-003-AC1] at least ci.yml exists', () => {
-  assert.ok(files.includes('ci.yml'));
+test('[VCK-003-AC1] ci.yml and pr-title.yml exist (glob covers yml and yaml)', () => {
+  assert.ok(files.length >= 2, `found ${files}`);
+  assert.ok(files.includes('ci.yml') && files.includes('pr-title.yml'));
 });
 
 test('[VCK-003-AC1] ci.yml triggers on pull_request without edited (would cancel real runs)', () => {
@@ -87,3 +88,65 @@ for (const f of files) {
     }
   });
 }
+
+const jobRuns = (j) => (j.steps ?? []).map((s) => s.run ?? '').join('\n');
+
+test('[VCK-003-AC2] security job: gitleaks pinned, sha256sum -c against a workflow-pinned checksum', () => {
+  const j = load('ci.yml').jobs.security;
+  assert.ok(j, 'security job missing');
+  assert.equal(j.steps.find((s) => s.uses?.startsWith('actions/checkout@')).with['fetch-depth'], 0);
+  const r = jobRuns(j);
+  assert.match(r, /releases\/download\/v\d+\.\d+\.\d+\/gitleaks_\d+\.\d+\.\d+_linux_x64\.tar\.gz/);
+  assert.match(r, /[0-9a-f]{64}\s+gitleaks_\S+\.tar\.gz/);
+  assert.match(r, /sha256sum -c/);
+  assert.ok(r.indexOf('sha256sum -c') < r.indexOf('tar '), 'verify before extract');
+});
+
+test('[VCK-003-AC2] security job: gitleaks detect --redact over the PR range', () => {
+  const r = jobRuns(load('ci.yml').jobs.security);
+  assert.match(r, /gitleaks detect .*--redact/);
+  assert.match(r, /--log-opts="origin\/main\.\.HEAD"/);
+});
+
+test('[VCK-003-AC2] security job: pnpm audit --prod --audit-level critical', () => {
+  assert.match(jobRuns(load('ci.yml').jobs.security), /pnpm audit --prod --audit-level critical/);
+});
+
+test('[VCK-003-AC2] security job: licence gate with exact shape, bash, no || true', () => {
+  const j = load('ci.yml').jobs.security;
+  const s = j.steps.find((x) => (x.run ?? '').includes('check-licenses.mjs'));
+  assert.ok(s, 'licence step missing');
+  assert.equal(s.shell, 'bash');
+  assert.ok(s.run.includes('out=$(pnpm licenses list --prod --json 2>&1) || [ "$out" = "No licenses in packages found" ]'));
+  assert.ok(s.run.includes("printf '%s' \"$out\" | node scripts/check-licenses.mjs"));
+  assert.ok(!s.run.includes('|| true'));
+  const i = j.steps.indexOf(s);
+  assert.ok(j.steps.slice(0, i).some((x) => (x.run ?? '').includes('pnpm install --frozen-lockfile')));
+});
+
+test('[VCK-003-AC2] pins job runs check-action-pins with GH_TOKEN via env', () => {
+  const j = load('ci.yml').jobs.pins;
+  assert.ok(j, 'pins job missing');
+  const s = j.steps.find((x) => (x.run ?? '').includes('node scripts/check-action-pins.mjs'));
+  assert.ok(s);
+  assert.equal(s.env.GH_TOKEN, '${{ github.token }}');
+});
+
+test('[VCK-003-AC3] pr-title.yml: triggers incl. edited, title via env only, runs checker', () => {
+  const wf = load('pr-title.yml');
+  const t = wf.on.pull_request.types;
+  for (const e of ['opened', 'edited', 'synchronize', 'reopened', 'ready_for_review']) assert.ok(t.includes(e), e);
+  assert.equal(Object.keys(wf.jobs).length, 1);
+  const s = steps(wf).find((x) => (x.run ?? '').includes('check-pr-title.mjs'));
+  assert.ok(s);
+  assert.equal(s.run.trim(), 'node scripts/check-pr-title.mjs "$PR_TITLE"');
+  assert.equal(s.env.PR_TITLE, '${{ github.event.pull_request.title }}');
+  for (const r of runs(wf)) assert.ok(!r.includes('${{'), 'no expression interpolation in run');
+});
+
+test('[VCK-003-AC3] ci.yml has no pr-title job and no edited trigger', () => {
+  const wf = load('ci.yml');
+  assert.ok(!Object.keys(wf.jobs).some((n) => /title/.test(n)));
+  assert.ok(!runs(wf).some((r) => r.includes('check-pr-title')));
+  assert.ok(!wf.on.pull_request.types.includes('edited'));
+});
