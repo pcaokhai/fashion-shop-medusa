@@ -5,10 +5,10 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 - Sprint: 0 — Repo, infra, CI, contracts, skeletons (docs/07 §3)
 - Goal: `make up && make dev` shows empty storefront and admin; contracts pipeline green
 - In progress: —
-- Next: VCK-003 ∥ VCK-004 ∥ VCK-008 ∥ VCK-009 (design system), then VCK-005
+- Next: VCK-004 ∥ VCK-008 ∥ VCK-009, then VCK-005
 - Blocked: VNPay sandbox registration pending (R-02)
-- Open rulings: Node 20 LTS is EOL (2026-04-30) — decide ADR to move to Node 22 (would re-allow pnpm 11)
-- Review queue: PR feat/VCK-002-local-infrastructure → main
+- Open rulings: Node 20 LTS is EOL (2026-04-30) — decide ADR to move to Node 22 (would re-allow pnpm 11); CI checks are advisory: no branch protection on private free plan (R-003-16)
+- Review queue: PR #2 (VCK-003)
 
 ## Checkpoints
 | Slice | Date | Result | Evidence |
@@ -16,6 +16,11 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 
 ## Log
 <!-- newest first; one entry per merged story (docs/12 §2) -->
+### 2026-09-30 · VCK-003 CI pipeline · PLAT · PR #2 open (feat/VCK-003-ci-pipeline)
+- AC: 1–3 proven by scripts/ci.test.mjs, check-scripts.test.mjs, check-pins.test.mjs + real GitHub run of PR #2 (checks 46 s, integration 1m5s, security 22 s, pins 20 s, pr-title 7–11 s; title mutation `wip:` failed as expected); AC4 open
+- Decisions: plan docs/plans/VCK-003.md; R-003-1..16 (two workflow files, pinned gitleaks + narrow allowlist, pins verification, ubuntu-24.04, advisory checks)
+- Bugs: none
+- Follow-ups: (a) AC4: after PR #11 record max/median CI wall clock via `gh run list -w ci -L 10 --json databaseId,createdAt,updatedAt` (job summaries miss queueing), close AC4; (b) branch protection unavailable on private free plan (user: Pro or public); CODEOWNERS for .github/, scripts/check-*, .gitleaks.toml, scripts/licence-exceptions.json once it exists; (c) OSV + Renovate story (PLAT); (d) gitleaks `detect` → `git` at next bump; (e) VCK-004 workflow must: permissions exactly contents: read, timeouts, per-PR concurrency with a DISTINCT group prefix, SHA+version-comment pins, fetch-depth 0 for origin/main, no `paths:` filter if required, unique job ids, tools as devDependencies (licence gate), oasdiff as pinned binary + sha256; (f) skip `make up` at step level when `test:integration` resolves to 0 tasks if minutes get tight; (g) repo setting `sha_pinning_required`
 ### 2026-09-30 · VCK-002 Local infrastructure · PLAT · PR open (feat/VCK-002-local-infrastructure)
 - AC: 1–4 proven by scripts/infra.test.mjs, infra-env.test.mjs (36 tests); live `make up` 8/8 healthy ≈ 12 s warm, `make down [v=1]` verified on Docker 29.4 / arm64
 - Decisions: plan docs/plans/VCK-002.md; R-002-1 MinIO 9002/9003, Mailpit 1025/8025; MinIO = community fork pgsty/minio (tag+digest, dev only; minio/minio gone from Hub); minio-init long-running because `up --wait` fails on exited one-shot; root `.env` read via `--env-file`
