@@ -1,7 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { copyFileSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 const root = new URL("../", import.meta.url);
 const hasDocker = spawnSync("docker", ["compose", "version"]).status === 0;
@@ -71,7 +73,7 @@ test("[VCK-002-AC4] credential vars default to the previous literals", { skip },
     [c.postgres.environment.POSTGRES_USER, c.postgres.environment.POSTGRES_PASSWORD, c.postgres.environment.POSTGRES_DB],
     ["vck", "vck", "vck"],
   );
-  assert.equal(c.postgres.healthcheck.test[1], "pg_isready -U vck -d vck");
+  assert.equal(c.postgres.healthcheck.test[1], "pg_isready -h 127.0.0.1 -U vck -d vck");
   assert.equal(c.meilisearch.environment.MEILI_MASTER_KEY, "dev-only-meili-key");
 });
 
@@ -108,15 +110,40 @@ test("[VCK-002-AC2] every service has a healthcheck", { skip }, () => {
   for (const [name, svc] of Object.entries(c.services)) {
     assert.ok(svc.healthcheck?.test, `${name} lacks healthcheck`);
     assert.doesNotMatch(svc.image ?? "", /:latest$|^[^:]+$/, `${name} image must be pinned`);
+    if (name === "postgres") assert.match(svc.image, /:\d+\.\d+-alpine\d+\.\d+$/, "postgres needs patch+alpine tag");
+    if (name === "redis") assert.match(svc.image, /:\d+\.\d+\.\d+-alpine\d+\.\d+$/, "redis needs patch+alpine tag");
   }
 });
+
+// make -n from a temp dir holding a copy of the Makefile, with or without a root .env.
+const dry = (target, { dotenv = false, v } = {}) => {
+  const dir = mkdtempSync(join(tmpdir(), "vck-make-"));
+  try {
+    copyFileSync(new URL("Makefile", root), join(dir, "Makefile"));
+    if (dotenv) writeFileSync(join(dir, ".env"), "POSTGRES_PORT=55432\n");
+    const args = ["-n", target, ...(v === undefined ? [] : [`v=${v}`])];
+    return spawnSync("make", args, { cwd: dir, encoding: "utf8", env: cleanEnv }).stdout;
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+};
 
 test("[VCK-002-AC3] Makefile has up, down and v=1 handling", () => {
   const mk = readFileSync(new URL("Makefile", root), "utf8");
   assert.match(mk, /^\.PHONY:.*\bup\b.*\bdown\b/m);
-  assert.match(mk, /^up:\n\tdocker compose -f infra\/docker-compose\.yml up -d --wait --wait-timeout 90$/m);
-  assert.match(mk, /^down:\n\tdocker compose -f infra\/docker-compose\.yml down \$\(if \$\(filter 1,\$\(v\)\),-v\)$/m);
-  const dry = (v) => spawnSync("make", ["-n", "down", ...(v === undefined ? [] : [`v=${v}`])], { cwd: root, encoding: "utf8", env: cleanEnv }).stdout;
-  assert.match(dry(1), / -v$/m);
-  for (const v of [0, "", undefined]) assert.doesNotMatch(dry(v), / -v\b/, `v=${v} must keep volumes`);
+  assert.match(mk, /^up:\n\t\$\(COMPOSE\) up -d --wait --wait-timeout 90$/m);
+  assert.match(mk, /^down:\n\t\$\(COMPOSE\) down \$\(if \$\(filter 1,\$\(v\)\),-v\)$/m);
+  assert.match(mk, /^COMPOSE := docker compose -f infra\/docker-compose\.yml \$\(if \$\(wildcard \.env\),--env-file \.env\)$/m);
+  assert.match(dry("up"), /^docker compose -f infra\/docker-compose\.yml\s+up -d --wait --wait-timeout 90$/m);
+  for (const dotenv of [false, true]) {
+    assert.match(dry("down", { dotenv, v: 1 }), / -v$/m);
+    for (const v of [0, "", undefined]) assert.doesNotMatch(dry("down", { dotenv, v }), / -v\b/, `v=${v} must keep volumes`);
+  }
+});
+
+test("[VCK-002-AC4] make passes --env-file .env only when a root .env exists", () => {
+  for (const target of ["up", "down"]) {
+    assert.match(dry(target, { dotenv: true }), /docker-compose\.yml --env-file \.env /, `${target} with .env`);
+    assert.doesNotMatch(dry(target), /--env-file/, `${target} without .env`);
+  }
 });

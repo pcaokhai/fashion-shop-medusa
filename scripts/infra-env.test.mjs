@@ -2,21 +2,15 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
+import { isPlaceholder, parseEnv } from "./env-check.mjs";
 
 const root = new URL("../", import.meta.url);
 const composeSrc = readFileSync(new URL("infra/docker-compose.yml", root), "utf8");
-const exampleLines = readFileSync(new URL(".env.example", root), "utf8").split("\n");
+const example = parseEnv(readFileSync(new URL(".env.example", root), "utf8"));
 
 // { VAR: default } for every ${VAR} / ${VAR:-default} in compose.
 const composeVars = new Map();
 for (const [, name, def] of composeSrc.matchAll(/\$\{([A-Z_][A-Z0-9_]*)(?::-([^}]*))?\}/g)) composeVars.set(name, def ?? "");
-
-// { VAR: { value, commented } } for KEY=VALUE lines; commented = line directly above starts with "#".
-const example = new Map();
-exampleLines.forEach((l, i) => {
-  const m = l.match(/^([A-Z_][A-Z0-9_]*)=(.*)$/);
-  if (m) example.set(m[1], { value: m[2], commented: /^#/.test(exampleLines[i - 1] ?? "") });
-});
 
 test("[VCK-002-AC4] every ${VAR} used in compose is listed in .env.example with a # comment above", () => {
   assert.ok(composeVars.size >= 11);
@@ -34,11 +28,30 @@ test("[VCK-002-AC4] app-facing variables are documented with a comment", () => {
 });
 
 test("[VCK-002-AC4] .env.example holds no real secrets", () => {
-  const ok = /^(|\d+|true|false|localhost|vck(-[a-z0-9-]+)?|dev-only-[a-z0-9-]+|[a-z]+:\/\/[^\s]*)$/;
-  for (const [k, { value }] of example) {
-    assert.match(value, ok, `${k} has a non-placeholder value`);
-    assert.doesNotMatch(value, /[A-Za-z0-9+/_]{20,}|sk_|AKIA|ghp_/, `${k} looks like a real secret`);
-  }
+  for (const [k, { value }] of example) assert.ok(isPlaceholder(value), `${k} has a non-placeholder value`);
+});
+
+test("[VCK-002-AC4] placeholder checker rejects real-looking values", () => {
+  for (const bad of [
+    "postgres://admin:hunter2@prod.example.com/x",
+    "postgres://vck:vck@prod.example.com:5432/vck",
+    "http://localhost.evil.com:9002",
+    "hunter2",
+    "vck-prod",
+    "sk_live_abcdef",
+    "AKIAIOSFODNN7EXAMPLE",
+    "ghp_abcdef",
+    "dGhpcyBpcyBhIHJlYWxseSBsb25nIHNlY3JldA",
+  ]) assert.equal(isPlaceholder(bad), false, bad);
+  for (const good of ["", "5432", "vck", "vck-dev-only", "dev-only-meili-key", "postgres://vck:vck@localhost:5432/vck"])
+    assert.equal(isPlaceholder(good), true, good);
+});
+
+test("[VCK-002-AC4] a section header above a var does not count as its comment", () => {
+  const e = parseEnv("# ---- Redis ----\nA=1\n# real comment\nB=2\nC=3\n");
+  assert.equal(e.get("A").commented, false);
+  assert.equal(e.get("B").commented, true);
+  assert.equal(e.get("C").commented, false);
 });
 
 test("[VCK-002-AC4] .env.example values equal the compose defaults (no drift)", () => {

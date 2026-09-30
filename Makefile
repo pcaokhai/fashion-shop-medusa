@@ -1,7 +1,10 @@
 .PHONY: up down
 
+# A root .env is passed explicitly: compose's project dir is infra/, so it would otherwise be ignored.
+COMPOSE := docker compose -f infra/docker-compose.yml $(if $(wildcard .env),--env-file .env)
+
 up:
-	docker compose -f infra/docker-compose.yml up -d --wait --wait-timeout 90
+	$(COMPOSE) up -d --wait --wait-timeout 90
 
 down:
-	docker compose -f infra/docker-compose.yml down $(if $(filter 1,$(v)),-v)
+	$(COMPOSE) down $(if $(filter 1,$(v)),-v)
