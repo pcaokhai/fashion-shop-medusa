@@ -2,7 +2,7 @@ name: ci
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, edited]
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
@@ -45,7 +45,7 @@ jobs:
 
   integration:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - name: Record start time
         shell: bash
@@ -58,11 +58,6 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: .turbo
-          key: turbo-int-${{ runner.os }}-${{ github.sha }}
-          restore-keys: turbo-int-${{ runner.os }}-
       - run: pnpm install --frozen-lockfile
       - run: make up
       - name: Integration tests (affected only)

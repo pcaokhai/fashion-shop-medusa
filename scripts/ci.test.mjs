@@ -15,8 +15,10 @@ test('[VCK-003-AC1] at least ci.yml exists', () => {
   assert.ok(files.includes('ci.yml'));
 });
 
-test('[VCK-003-AC1] ci.yml triggers on pull_request with expected types', () => {
-  assert.deepEqual(load('ci.yml').on.pull_request.types, ['opened', 'synchronize', 'reopened', 'edited']);
+test('[VCK-003-AC1] ci.yml triggers on pull_request without edited (would cancel real runs)', () => {
+  const types = load('ci.yml').on.pull_request.types;
+  assert.deepEqual(types, ['opened', 'synchronize', 'reopened']);
+  assert.ok(!types.includes('edited'));
 });
 
 test('[VCK-003-AC1] a job runs turbo affected lint typecheck test with fetch-depth 0', () => {
@@ -25,8 +27,15 @@ test('[VCK-003-AC1] a job runs turbo affected lint typecheck test with fetch-dep
     j.steps.some((s) => /pnpm turbo run lint typecheck test\b/.test(s.run ?? '') && /--filter='?\.\.\.\[origin\/main\]/.test(s.run)),
   );
   assert.ok(job, 'affected turbo step missing');
-  const co = job.steps.find((s) => s.uses?.startsWith('actions/checkout@'));
-  assert.equal(co.with['fetch-depth'], 0);
+});
+
+test('[VCK-003-AC1] every job that references origin/main checks out with fetch-depth 0', () => {
+  const jobs = Object.entries(load('ci.yml').jobs).filter(([, j]) => j.steps.some((s) => (s.run ?? '').includes('origin/main')));
+  assert.ok(jobs.length >= 2, 'expected checks and integration');
+  for (const [name, j] of jobs) {
+    const co = j.steps.find((s) => s.uses?.startsWith('actions/checkout@'));
+    assert.equal(co.with['fetch-depth'], 0, `${name} needs fetch-depth: 0`);
+  }
 });
 
 test('[VCK-003-AC1] a step runs the scripts tests', () => {
