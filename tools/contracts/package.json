@@ -1,0 +1,29 @@
+{
+  "name": "@vck/contracts-tools",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc -p . --noEmit",
+    "test": "node --test test/*.test.mjs",
+    "lint:spec": "node lint.mjs",
+    "compile": "node compile-schemas.mjs",
+    "vectors": "node vectors.mjs",
+    "check-generated": "node check-generated.mjs",
+    "contracts": "pnpm run lint:spec && pnpm run compile && pnpm run vectors && pnpm run gen",
+    "contracts-check": "pnpm run contracts && pnpm run check-generated",
+    "gen": "node gen-types.mjs && node gen-zod.mjs && node gen-msw.mjs",
+    "gen:storefront": "node gen-types.mjs && node gen-msw.mjs",
+    "gen:backend": "node gen-zod.mjs"
+  },
+  "devDependencies": {
+    "@stoplight/spectral-cli": "^6.16.3",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "openapi-typescript": "^7.13.0",
+    "orval": "7.13.2",
+    "typescript": "6.0.3",
+    "yaml": "^2.9.1"
+  }
+}

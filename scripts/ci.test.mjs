@@ -1,6 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readdirSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { parse } from 'yaml';
 
 const dir = new URL('../.github/workflows/', import.meta.url);
@@ -105,6 +108,7 @@ test('[VCK-003-AC2] security job: gitleaks pinned, sha256sum -c against a workfl
 test('[VCK-003-AC2] security job: gitleaks detect --redact over the PR range', () => {
   const r = jobRuns(load('ci.yml').jobs.security);
   assert.match(r, /gitleaks detect .*--redact/);
+  assert.match(r, /gitleaks detect .*--verbose/);
   assert.match(r, /--log-opts="origin\/main\.\.HEAD"/);
 });
 
@@ -176,6 +180,115 @@ test('[VCK-003-AC2] every checkout sets persist-credentials: false', () => {
   for (const f of files) {
     for (const s of steps(load(f)).filter((x) => x.uses?.startsWith('actions/checkout@'))) {
       assert.equal(s.with?.['persist-credentials'], false, `${f}: checkout keeps credentials`);
+    }
+  }
+});
+
+test('[VCK-004-AC2] contract-breaking.yml: triggers, distinct group prefix, job id breaking', () => {
+  assert.ok(files.includes('contract-breaking.yml'));
+  const wf = load('contract-breaking.yml');
+  assert.deepEqual(wf.on.pull_request.types, ['opened', 'synchronize', 'reopened', 'labeled', 'unlabeled', 'edited']);
+  assert.ok(wf.concurrency.group.startsWith('contract-breaking-${{ github.event.pull_request.number }}'));
+  assert.deepEqual(Object.keys(wf.jobs), ['breaking']);
+  for (const f of ['ci.yml', 'pr-title.yml']) assert.notEqual(load(f).concurrency.group.split('${{')[0], 'contract-breaking-');
+});
+
+test('[VCK-004-AC2] contract-breaking.yml: oasdiff checksum literal verified before tar; PR text only via env', () => {
+  const wf = load('contract-breaking.yml');
+  const install = wf.jobs.breaking.steps.find((s) => /oasdiff/.test(s.name ?? '') && s.run);
+  assert.ok(install, 'install step missing');
+  assert.match(install.run, /echo "[0-9a-f]{64} {2}oasdiff_[\d.]+_linux_amd64\.tar\.gz"/);
+  const i = install.run.indexOf('sha256sum -c');
+  assert.ok(i >= 0 && i < install.run.indexOf('tar '), 'sha256sum -c must precede tar');
+  const gate = wf.jobs.breaking.steps.find((s) => /breaking\.mjs/.test(s.run ?? ''));
+  assert.match(gate.env.PR_BODY, /github\.event\.pull_request\.body/);
+  assert.match(gate.env.PR_LABELS, /toJson\(github\.event\.pull_request\.labels\.\*\.name\)/);
+  for (const f of files) for (const r of runs(load(f))) assert.ok(!r.includes('${{'), `${f}: expression inside run`);
+});
+
+// Runs the gate step's script in a temp git repo. `setup` builds the repo; a stub breaking.mjs proves the gate was reached.
+const runGate = (setup) => {
+  const gate = load('contract-breaking.yml').jobs.breaking.steps.find((s) => /breaking\.mjs/.test(s.run ?? ''));
+  const d = mkdtempSync(join(tmpdir(), 'vck-ci-'));
+  try {
+    const sh = (c, a = ['-ec']) => spawnSync('bash', [...a, c], { cwd: d, encoding: 'utf8', env: { ...process.env, RUNNER_TEMP: d } });
+    const git = 'git -c user.name=t -c user.email=t@t';
+    const w = sh(`git init -q && mkdir -p contracts tools/contracts && echo "console.log('gate ran')" > tools/contracts/breaking.mjs && ${setup(git)}`);
+    assert.equal(w.status, 0, w.stderr);
+    return sh(gate.run, ['-eo', 'pipefail', '-c']);
+  } finally {
+    rmSync(d, { recursive: true, force: true });
+  }
+};
+
+test('[VCK-004-AC2] gate step fails closed when origin/main does not resolve', () => {
+  const r = runGate((git) => `${git} commit -q --allow-empty -m x`);
+  assert.notEqual(r.status, 0, r.stdout);
+  assert.match(r.stdout + r.stderr, /origin\/main/);
+  assert.doesNotMatch(r.stdout, /no baseline/);
+});
+
+test('[VCK-004-AC2] gate step skips (exit 0) only when origin/main resolves and lacks the spec', () => {
+  const r = runGate((git) => `${git} commit -q --allow-empty -m x && git update-ref refs/remotes/origin/main HEAD`);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /no baseline/);
+  assert.doesNotMatch(r.stdout, /gate ran/);
+});
+
+test('[VCK-004-AC2] gate step proceeds to the gate when the spec exists on origin/main', () => {
+  const r = runGate((git) => `echo x > contracts/openapi.yaml && git add -A && ${git} commit -q -m x && git update-ref refs/remotes/origin/main HEAD`);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /gate ran/);
+});
+
+test('[VCK-004-AC4] contracts.yml: jobs spec+generated, triggers, no paths filter, distinct group prefix, drift gate step', () => {
+  assert.ok(files.includes('contracts.yml'));
+  const wf = load('contracts.yml');
+  assert.deepEqual(Object.keys(wf.jobs).sort(), ['generated', 'spec']);
+  assert.deepEqual(wf.on.pull_request.types, ['opened', 'synchronize', 'reopened']);
+  assert.equal(wf.on.pull_request.paths, undefined);
+  assert.equal(wf.on.pull_request['paths-ignore'], undefined);
+  assert.ok(wf.concurrency.group.startsWith('contracts-${{ github.event.pull_request.number }}'));
+  for (const f of files.filter((x) => x !== 'contracts.yml')) assert.notEqual(load(f).concurrency.group.split('${{')[0], 'contracts-');
+  assert.ok(jobRuns(wf.jobs.generated).includes('node tools/contracts/check-generated.mjs'));
+  for (const r of runs(wf)) assert.ok(!r.includes('${{'), 'no expression inside run');
+});
+
+test('[VCK-004-AC4] contracts.yml: generated runs generators before the drift check; spec asserts python3', () => {
+  const wf = load('contracts.yml');
+  const g = jobRuns(wf.jobs.generated);
+  assert.ok(g.indexOf('run gen') >= 0 && g.indexOf('run gen') < g.indexOf('check-generated.mjs'));
+  assert.match(g, /pnpm --filter @vck\/contracts-tools run gen\b/);
+  assert.match(g, /node tools\/contracts\/check-generated\.mjs/);
+  const s = jobRuns(wf.jobs.spec);
+  assert.match(s, /python3 --version/);
+  for (const k of ['lint:spec', 'compile', 'vectors']) assert.match(s, new RegExp(`contracts-tools run ${k}\\b`));
+});
+
+test('[VCK-004-AC2] gate step fails closed when origin/main resolves but git ls-tree fails', () => {
+  // ref resolves to a commit whose root tree object is deleted, so `rev-parse --verify` passes and `ls-tree` errors
+  const r = runGate(
+    (git) =>
+      `echo x > contracts/openapi.yaml && git add -A && ${git} commit -q -m x && git update-ref refs/remotes/origin/main HEAD && ` +
+      `t=$(git rev-parse HEAD^{tree}) && rm -f ".git/objects/\${t:0:2}/\${t:2}"`,
+  );
+  assert.notEqual(r.status, 0, r.stdout + r.stderr);
+  assert.doesNotMatch(r.stdout, /no baseline|gate ran/);
+});
+
+test('[VCK-004-AC4] .gitleaks.toml: every allowlist is AND, has regexes, and only anchored exact-file paths', () => {
+  const toml = readFileSync(new URL('../.gitleaks.toml', import.meta.url), 'utf8');
+  const entries = toml.split('[[allowlists]]').slice(1);
+  assert.ok(entries.length >= 1);
+  for (const e of entries) {
+    assert.match(e, /^condition = "AND"$/m);
+    const regexes = [...(e.match(/^regexes = \[(.*)\]$/m)?.[1] ?? '').matchAll(/\'\'\'(.*?)\'\'\'/g)].map((m) => m[1]);
+    assert.ok(regexes.length && regexes.every((r) => r.startsWith('^') && r.endsWith('$')), 'regexes must be anchored');
+    const paths = [...(e.match(/^paths = \[(.*)\]$/m)?.[1] ?? '').matchAll(/\'\'\'(.*?)\'\'\'/g)].map((m) => m[1]);
+    assert.ok(paths.length, 'paths required');
+    for (const p of paths) {
+      assert.ok(p.startsWith('^') && p.endsWith('$'), `unanchored path ${p}`);
+      assert.doesNotMatch(p, /(?<!\\)[*+?|(\[]|\.\*/, `path must be one exact file: ${p}`);
     }
   }
 });
