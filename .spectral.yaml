@@ -1,0 +1,26 @@
+# Lint ruleset for contracts/openapi.yaml. Base: spectral:oas; extras mirror docs/04 conventions only.
+extends: [spectral:oas]
+rules:
+  # docs/04: every operation is addressable (generators + fixture map key on operationId) -> hard errors.
+  operation-operationId: error
+  operation-operationId-unique: error
+  # Tags must be declared in the top-level `tags` list.
+  operation-tag-defined: error
+  # docs/04 §Conventions: errors are RFC 9457 `application/problem+json`.
+  vck-problem-json-errors:
+    description: 4xx/5xx responses must offer application/problem+json (RFC 9457).
+    severity: error
+    given: "$.paths[*][*].responses[?(@property >= 400 && @property < 600)]"
+    then:
+      field: content.application/problem+json
+      function: truthy
+  # docs/04: money is integer VND, "no decimals, no floats". docs/04 states no naming convention, so only the
+  # unambiguous money names are checked (a blanket ban on `number` would flag rating_avg / conversion_rate).
+  vck-money-not-float:
+    description: Money-named properties (amount, *_amount, *_vnd, price_*) must not be type number.
+    severity: error
+    given: "$.components.schemas..properties[?(@property.match(/(^amount$|_amount$|_vnd$|^price_)/))]"
+    then:
+      field: type
+      function: pattern
+      functionOptions: { notMatch: "^number$" }
