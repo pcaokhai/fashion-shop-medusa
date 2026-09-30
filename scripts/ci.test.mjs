@@ -108,6 +108,7 @@ test('[VCK-003-AC2] security job: gitleaks pinned, sha256sum -c against a workfl
 test('[VCK-003-AC2] security job: gitleaks detect --redact over the PR range', () => {
   const r = jobRuns(load('ci.yml').jobs.security);
   assert.match(r, /gitleaks detect .*--redact/);
+  assert.match(r, /gitleaks detect .*--verbose/);
   assert.match(r, /--log-opts="origin\/main\.\.HEAD"/);
 });
 
@@ -273,4 +274,21 @@ test('[VCK-004-AC2] gate step fails closed when origin/main resolves but git ls-
   );
   assert.notEqual(r.status, 0, r.stdout + r.stderr);
   assert.doesNotMatch(r.stdout, /no baseline|gate ran/);
+});
+
+test('[VCK-004-AC4] .gitleaks.toml: every allowlist is AND, has regexes, and only anchored exact-file paths', () => {
+  const toml = readFileSync(new URL('../.gitleaks.toml', import.meta.url), 'utf8');
+  const entries = toml.split('[[allowlists]]').slice(1);
+  assert.ok(entries.length >= 1);
+  for (const e of entries) {
+    assert.match(e, /^condition = "AND"$/m);
+    const regexes = [...(e.match(/^regexes = \[(.*)\]$/m)?.[1] ?? '').matchAll(/\'\'\'(.*?)\'\'\'/g)].map((m) => m[1]);
+    assert.ok(regexes.length && regexes.every((r) => r.startsWith('^') && r.endsWith('$')), 'regexes must be anchored');
+    const paths = [...(e.match(/^paths = \[(.*)\]$/m)?.[1] ?? '').matchAll(/\'\'\'(.*?)\'\'\'/g)].map((m) => m[1]);
+    assert.ok(paths.length, 'paths required');
+    for (const p of paths) {
+      assert.ok(p.startsWith('^') && p.endsWith('$'), `unanchored path ${p}`);
+      assert.doesNotMatch(p, /(?<!\\)[*+?|(\[]|\.\*/, `path must be one exact file: ${p}`);
+    }
+  }
 });
