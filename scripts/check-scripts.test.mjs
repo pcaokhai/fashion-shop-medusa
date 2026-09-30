@@ -1,5 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import { existsSync, mkdtempSync, symlinkSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { checkPrTitle } from "./check-pr-title.mjs";
 import { checkLicences } from "./check-licenses.mjs";
 
@@ -49,4 +54,57 @@ test("[VCK-003-AC2] SPDX OR passes if any alternative is allowed; AND needs all"
   assert.equal(run("(MIT AND Apache-2.0)").ok, true);
   assert.equal(run("(MIT AND GPL-3.0)").ok, false);
   assert.equal(run("MIT OR (GPL-3.0 AND ISC)").ok, true);
+});
+
+test("[VCK-003-AC2] exceptions match package AND licence; invalid entries fail", () => {
+  const ex = { package: "g", licence: "GPL-3.0", reason: "dev tool only" };
+  assert.equal(run("AGPL-3.0", "g", [ex]).ok, false);
+  assert.equal(run("GPL-3.0", "other", [ex]).ok, false);
+  for (const bad of [{ licence: "GPL-3.0", reason: "r" }, { package: "g", reason: "r" }, { package: "g", licence: "GPL-3.0" }]) {
+    assert.equal(run("MIT", "g", [bad]).ok, false);
+  }
+});
+
+test("[VCK-003-AC2] malformed or unsupported SPDX expressions fail closed", () => {
+  for (const l of ["MIT OR", "MIT OR )", "(MIT", "MIT)", "MIT WITH x", "MIT+", "UNLICENSED", "SEE LICENSE IN x", "mit", "MIT or GPL-3.0"]) {
+    assert.equal(run(l).ok, false, l);
+  }
+  assert.equal(run("(MIT OR Apache-2.0)").ok, true);
+  assert.equal(run("GPL-3.0 AND MIT OR ISC").ok, true); // (GPL AND MIT) OR ISC
+  assert.equal(run("GPL-3.0 AND MIT OR AGPL-3.0").ok, false);
+  assert.equal(run("MIT OR GPL-3.0 AND AGPL-3.0").ok, true);
+});
+
+test("[VCK-003-AC2] checkLicences throws on null/undefined input", () => {
+  assert.throws(() => checkLicences(null, allow, []));
+  assert.throws(() => checkLicences(undefined, allow, []));
+});
+
+test("[VCK-003-AC3] rejects trailing newline and multi-line titles", () => {
+  assert.equal(checkPrTitle("feat: x (VCK-003)\n").ok, false);
+  assert.equal(checkPrTitle("bad\nfeat: x (VCK-003)").ok, false);
+});
+
+const dir = mkdtempSync(join(tmpdir(), "vck-cli-"));
+const cli = (file, args, input) => {
+  const link = join(dir, `link-${file}`);
+  if (!existsSync(link)) symlinkSync(fileURLToPath(new URL(file, import.meta.url)), link);
+  return [file, link].map((f) => spawnSync("node", [f === file ? fileURLToPath(new URL(file, import.meta.url)) : f, ...args], { input, encoding: "utf8" }));
+};
+const statuses = (file, args, input) => cli(file, args, input).map((r) => r.status);
+
+test("[VCK-003-AC3] title CLI exit codes, also via symlink", () => {
+  assert.deepEqual(statuses("check-pr-title.mjs", ["feat: x (VCK-003)"]), [0, 0]);
+  assert.deepEqual(statuses("check-pr-title.mjs", ["bad title"]), [1, 1]);
+  assert.deepEqual(statuses("check-pr-title.mjs", []), [1, 1]);
+});
+
+test("[VCK-003-AC2] licence CLI fails closed, also via symlink", () => {
+  const f = "check-licenses.mjs";
+  assert.deepEqual(statuses(f, [], '{"MIT":[{"name":"a","versions":["1"]}]}'), [0, 0]);
+  assert.deepEqual(statuses(f, [], '{"GPL-3.0":[{"name":"a","versions":["1"]}]}'), [1, 1]);
+  assert.deepEqual(statuses(f, [], "No licenses in packages found\n"), [0, 0]);
+  for (const bad of ["", "garbage", '{"MIT":[', "[]", "null", '{"error":{"code":"X"}}', '{"MIT":"x"}', '{"MIT":[{"versions":[]}]}', "ERR_PNPM_FETCH failed"]) {
+    assert.deepEqual(statuses(f, [], bad), [1, 1], JSON.stringify(bad));
+  }
 });
