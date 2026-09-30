@@ -30,6 +30,33 @@
 import { http, HttpResponse } from "msw";
 
 export const handlers = [
+  // getKpiReport <- kpi-report.json
+  http.get("*/admin/reports/kpi", () =>
+    HttpResponse.json({
+    "currency": "VND",
+    "totals": {
+      "revenue": 1284500000,
+      "orders": 3120,
+      "aov": 411699,
+      "conversion_rate": 0.021
+    },
+    "series": [
+      {
+        "bucket": "2026-09-01",
+        "revenue": 41200000,
+        "orders": 98
+      }
+    ],
+    "top_products": [
+      {
+        "product_id": "prod_01TEST0001",
+        "title": "Áo thun basic đen",
+        "units": 412,
+        "revenue": 65508000
+      }
+    ]
+  }, { status: 200 }),
+  ),
   // createOrderLookup <- order-lookup-session.json
   http.post("*/store/order-lookup", () =>
     HttpResponse.json({
@@ -74,33 +101,6 @@ export const handlers = [
     }
   }, { status: 200 }),
   ),
-  // getKpiReport <- kpi-report.json
-  http.get("*/admin/reports/kpi", () =>
-    HttpResponse.json({
-    "currency": "VND",
-    "totals": {
-      "revenue": 1284500000,
-      "orders": 3120,
-      "aov": 411699,
-      "conversion_rate": 0.021
-    },
-    "series": [
-      {
-        "bucket": "2026-09-01",
-        "revenue": 41200000,
-        "orders": 98
-      }
-    ],
-    "top_products": [
-      {
-        "product_id": "prod_01TEST0001",
-        "title": "Áo thun basic đen",
-        "units": 412,
-        "revenue": 65508000
-      }
-    ]
-  }, { status: 200 }),
-  ),
   // getOrderLookupSession <- order-lookup-paid-pending.json
   http.get("*/store/order-lookup/session", () =>
     HttpResponse.json({
@@ -138,40 +138,6 @@ export const handlers = [
     "zns_opt_in": true
   }, { status: 200 }),
   ),
-  // quoteShipping <- shipping-quote.json
-  http.post("*/store/shipping/quote", () =>
-    HttpResponse.json({
-    "quotes": [
-      {
-        "carrier": "GHN",
-        "status": "OK",
-        "service_name": "Chuẩn",
-        "fee": 32000,
-        "eta_from": "2026-10-03",
-        "eta_to": "2026-10-05",
-        "shipping_option_id": "so_01TESTGHN"
-      },
-      {
-        "carrier": "GHTK",
-        "status": "TIMEOUT",
-        "service_name": null,
-        "fee": 0,
-        "eta_from": null,
-        "eta_to": null,
-        "shipping_option_id": null
-      },
-      {
-        "carrier": "FLAT_RATE",
-        "status": "OK",
-        "service_name": "Đồng giá",
-        "fee": 35000,
-        "eta_from": null,
-        "eta_to": null,
-        "shipping_option_id": "so_01TESTFLAT"
-      }
-    ]
-  }, { status: 200 }),
-  ),
   // requestGuestCancelOtp <- order-lookup-cancel-otp.json#challenge
   http.post("*/store/order-lookup/session/cancel-otp", () =>
     HttpResponse.json({
@@ -182,6 +148,15 @@ export const handlers = [
     "resend_after_sec": 60,
     "attempts_left": 5
   }, { status: 202 }),
+  ),
+  // verifyVnpayReturn <- vnpay-return-pending.json
+  http.post("*/store/payments/vnpay/verify-return", () =>
+    HttpResponse.json({
+    "checksum_valid": true,
+    "display_status": "PENDING_CONFIRMATION",
+    "order_id": null,
+    "cart_id": "cart_01TEST0001"
+  }, { status: 200 }),
   ),
   // searchProducts <- search-result.json
   http.get("*/store/search", () =>
@@ -227,13 +202,38 @@ export const handlers = [
     "took_ms": 18
   }, { status: 200 }),
   ),
-  // verifyVnpayReturn <- vnpay-return-pending.json
-  http.post("*/store/payments/vnpay/verify-return", () =>
+  // quoteShipping <- shipping-quote.json
+  http.post("*/store/shipping/quote", () =>
     HttpResponse.json({
-    "checksum_valid": true,
-    "display_status": "PENDING_CONFIRMATION",
-    "order_id": null,
-    "cart_id": "cart_01TEST0001"
+    "quotes": [
+      {
+        "carrier": "GHN",
+        "status": "OK",
+        "service_name": "Chuẩn",
+        "fee": 32000,
+        "eta_from": "2026-10-03",
+        "eta_to": "2026-10-05",
+        "shipping_option_id": "so_01TESTGHN"
+      },
+      {
+        "carrier": "GHTK",
+        "status": "TIMEOUT",
+        "service_name": null,
+        "fee": 0,
+        "eta_from": null,
+        "eta_to": null,
+        "shipping_option_id": null
+      },
+      {
+        "carrier": "FLAT_RATE",
+        "status": "OK",
+        "service_name": "Đồng giá",
+        "fee": 35000,
+        "eta_from": null,
+        "eta_to": null,
+        "shipping_option_id": "so_01TESTFLAT"
+      }
+    ]
   }, { status: 200 }),
   ),
 ];
