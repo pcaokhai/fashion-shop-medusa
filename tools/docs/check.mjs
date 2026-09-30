@@ -1,5 +1,5 @@
-/* global process, console, URL */
-// Usage: node check.mjs   (repo root override: VCK_ROOT). docs/12 §6 subset; fails closed: any violation or thrown error => exit 1.
+/* global console, URL */
+// Library: runChecks/main (the CLI is check-cli.mjs; repo root override: VCK_ROOT). docs/12 §6 subset; fails closed: any violation or thrown error => exit 1.
 // To add a check (Task 2): append { name, run(root) -> { violations, summary } } to CHECKS.
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -43,5 +43,3 @@ export function main(env, checks = CHECKS, io = console) {
   return 0;
 }
 
-// Only when run as a script (not when imported by tests).
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) process.exit(main(process.env));

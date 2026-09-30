@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { hasUnterminatedFence, section, stripComments, unfencedLines } from "./sections.mjs";
+import { cleanLines, section, unfencedLines, unterminated } from "./sections.mjs";
 
 // Only this exact name is skipped. Any file named bug-*.md (any case) must be exactly BUG-<nnn>-<slug>.md.
 // ponytail: other extensions (BUG-002-x.md.bak) are ignored by design; add a check if stray copies become a problem.
@@ -10,7 +10,7 @@ const LOOKS_LIKE_BUG = /^bug-.*\.md$/i;
 const TITLE = /^# BUG-\d{3}(?:\s|$)/;
 const SEVERITY = /^Severity: S[1-4](?: ·|$)/;
 const STATUS = /(?:^| · )Status: (OPEN|INVESTIGATING|FIXED|VERIFIED|CLOSED)$/;
-const PLACEHOLDER = /^(?:\d+\.|[-*])?\s*(?:Why\s*)?(?:\.{3})?$/;
+const PLACEHOLDER = /^(?:-->$|\d+\.|[-*])?\s*(?:Why\s*)?(?:\.{3})?$/;
 const DONE = new Set(["FIXED", "VERIFIED", "CLOSED"]);
 const count = (s, w) => s.split(w).length - 1;
 
@@ -27,12 +27,13 @@ function checkHeader(lines, md, out) {
 
 function checkBody(md, num) {
   const out = [];
-  if (hasUnterminatedFence(md)) out.push("unterminated code fence");
-  const status = checkHeader(md.split(/\r?\n/), md, out);
+  const open = unterminated(md);
+  if (open) out.push(`unterminated ${open}`);
+  const status = checkHeader(cleanLines(md), md, out);
   if (!DONE.has(status)) return out;
-  const cause = stripComments((section(md, "## Root cause (5 whys)") ?? []).join("\n")).split("\n").filter((l) => !PLACEHOLDER.test(l.trim()));
+  const cause = (section(md, "## Root cause (5 whys)") ?? []).filter((l) => !PLACEHOLDER.test(l.trim()));
   if (cause.length === 0) out.push(`${status} bug needs a filled '## Root cause (5 whys)' section`);
-  const reg = stripComments((section(md, "## Regression test") ?? []).join("\n"));
+  const reg = (section(md, "## Regression test") ?? []).join("\n");
   if (!reg.includes(`[BUG-${num}]`)) out.push(`${status} bug needs '[BUG-${num}]' in '## Regression test'`);
   return out;
 }

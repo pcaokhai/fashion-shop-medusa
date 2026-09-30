@@ -26,4 +26,4 @@ contracts-diff:
 
 # Validates BUG records and PROGRESS "Now" (docs/12 §6); exits 1 on any violation.
 docs-check:
-	node tools/docs/check.mjs
+	node tools/docs/check-cli.mjs

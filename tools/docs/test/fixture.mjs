@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-export const CHECK = fileURLToPath(new URL("../check.mjs", import.meta.url));
+export const CHECK = fileURLToPath(new URL("../check-cli.mjs", import.meta.url));
 
 export const bug = (n, { sev = "S2", status = "OPEN", cause = "1. Why did it break? Because X.", reg = `\`a.test.mjs::it [BUG-${n}]\`` } = {}) =>
   `# BUG-${n} title\nSeverity: ${sev} · Status: ${status}\nFound: 2026-10-01 · by PLAT · via test · Release affected: unreleased\n\n## Reproduction\n1. x\n\n## Root cause (5 whys)\n${cause}\n\n## Regression test\n${reg}\n`;
