@@ -239,3 +239,37 @@ test('[VCK-004-AC2] gate step proceeds to the gate when the spec exists on origi
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.match(r.stdout, /gate ran/);
 });
+
+test('[VCK-004-AC4] contracts.yml: jobs spec+generated, triggers, no paths filter, distinct group prefix, drift gate step', () => {
+  assert.ok(files.includes('contracts.yml'));
+  const wf = load('contracts.yml');
+  assert.deepEqual(Object.keys(wf.jobs).sort(), ['generated', 'spec']);
+  assert.deepEqual(wf.on.pull_request.types, ['opened', 'synchronize', 'reopened']);
+  assert.equal(wf.on.pull_request.paths, undefined);
+  assert.equal(wf.on.pull_request['paths-ignore'], undefined);
+  assert.ok(wf.concurrency.group.startsWith('contracts-${{ github.event.pull_request.number }}'));
+  for (const f of files.filter((x) => x !== 'contracts.yml')) assert.notEqual(load(f).concurrency.group.split('${{')[0], 'contracts-');
+  assert.ok(jobRuns(wf.jobs.generated).includes('node tools/contracts/check-generated.mjs'));
+  for (const r of runs(wf)) assert.ok(!r.includes('${{'), 'no expression inside run');
+});
+
+test('[VCK-004-AC4] contracts.yml: generated runs generators before the drift check; spec asserts python3', () => {
+  const wf = load('contracts.yml');
+  const g = jobRuns(wf.jobs.generated);
+  assert.ok(g.indexOf('run gen') >= 0 && g.indexOf('run gen') < g.indexOf('check-generated.mjs'));
+  assert.match(g, /make contracts/);
+  const s = jobRuns(wf.jobs.spec);
+  assert.match(s, /python3 --version/);
+  for (const k of ['lint:spec', 'compile', 'vectors']) assert.match(s, new RegExp(`contracts-tools run ${k}\\b`));
+});
+
+test('[VCK-004-AC2] gate step fails closed when origin/main resolves but git ls-tree fails', () => {
+  // ref resolves to a commit whose root tree object is deleted, so `rev-parse --verify` passes and `ls-tree` errors
+  const r = runGate(
+    (git) =>
+      `echo x > contracts/openapi.yaml && git add -A && ${git} commit -q -m x && git update-ref refs/remotes/origin/main HEAD && ` +
+      `t=$(git rev-parse HEAD^{tree}) && rm -f ".git/objects/\${t:0:2}/\${t:2}"`,
+  );
+  assert.notEqual(r.status, 0, r.stdout + r.stderr);
+  assert.doesNotMatch(r.stdout, /no baseline|gate ran/);
+});

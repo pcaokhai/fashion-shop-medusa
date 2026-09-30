@@ -7,7 +7,11 @@
     "lint": "eslint .",
     "typecheck": "tsc -p . --noEmit",
     "test": "node --test test/*.test.mjs",
-    "contracts": "node lint.mjs && node compile-schemas.mjs && node vectors.mjs && pnpm run gen",
+    "lint:spec": "node lint.mjs",
+    "compile": "node compile-schemas.mjs",
+    "vectors": "node vectors.mjs",
+    "check-generated": "node check-generated.mjs",
+    "contracts": "pnpm run lint:spec && pnpm run compile && pnpm run vectors && pnpm run gen && pnpm run check-generated",
     "gen": "node gen-types.mjs && node gen-zod.mjs && node gen-msw.mjs",
     "gen:storefront": "node gen-types.mjs && node gen-msw.mjs",
     "gen:backend": "node gen-zod.mjs"
