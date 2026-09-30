@@ -26,11 +26,22 @@ export function runChecks(root, checks = CHECKS) {
   return { violations, summaries };
 }
 
-const root = resolve(process.env.VCK_ROOT ?? fileURLToPath(new URL("../../", import.meta.url)));
-const { violations, summaries } = runChecks(root);
-if (violations.length > 0) {
-  for (const v of violations) console.error(v);
-  console.error(`docs-check: FAILED (${violations.length} violation(s))`);
-  process.exit(1);
+/** Returns the exit code; io = { log, error }. */
+export function main(env, checks = CHECKS, io = console) {
+  if (env.VCK_ROOT === "") {
+    io.error("docs-check: VCK_ROOT is set but empty");
+    return 1;
+  }
+  const root = resolve(env.VCK_ROOT ?? fileURLToPath(new URL("../../", import.meta.url)));
+  const { violations, summaries } = runChecks(root, checks);
+  if (violations.length > 0) {
+    for (const v of violations) io.error(v);
+    io.error(`docs-check: FAILED (${violations.length} violation(s))`);
+    return 1;
+  }
+  io.log(`docs-check: OK (${summaries.join("; ")})`);
+  return 0;
 }
-console.log(`docs-check: OK (${summaries.join("; ")})`);
+
+// Only when run as a script (not when imported by tests).
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) process.exit(main(process.env));

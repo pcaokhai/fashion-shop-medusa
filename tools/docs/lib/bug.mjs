@@ -1,26 +1,38 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { section, trimBlank } from "./sections.mjs";
+import { hasUnterminatedFence, section, stripComments, unfencedLines } from "./sections.mjs";
 
+// Only this exact name is skipped. Any file named bug-*.md (any case) must be exactly BUG-<nnn>-<slug>.md.
+// ponytail: other extensions (BUG-002-x.md.bak) are ignored by design; add a check if stray copies become a problem.
 const TEMPLATE = "BUG-000-template.md";
 const GOOD_NAME = /^BUG-(\d{3})-.+\.md$/;
-const SEVERITY = /^Severity: S[1-4]\s*(?:·|$)/m;
-const STATUS = /^(?:Severity:[^\n]*·\s*)?Status: (OPEN|INVESTIGATING|FIXED|VERIFIED|CLOSED)\s*(?:·|$)/m;
-const PLACEHOLDER = /^(?:\d+\.\s*)?(?:Why\s*)?\.{3}$/;
+const LOOKS_LIKE_BUG = /^bug-.*\.md$/i;
+const TITLE = /^# BUG-\d{3}(?:\s|$)/;
+const SEVERITY = /^Severity: S[1-4](?: ·|$)/;
+const STATUS = /(?:^| · )Status: (OPEN|INVESTIGATING|FIXED|VERIFIED|CLOSED)$/;
+const PLACEHOLDER = /^(?:\d+\.|[-*])?\s*(?:Why\s*)?(?:\.{3})?$/;
 const DONE = new Set(["FIXED", "VERIFIED", "CLOSED"]);
+const count = (s, w) => s.split(w).length - 1;
+
+/** The line right after the title must carry exactly one Severity and one Status; returns status or null. */
+function checkHeader(lines, md, out) {
+  if (!TITLE.test(lines[0] ?? "")) out.push("first line must be the '# BUG-<nnn> <title>' heading");
+  const h = (lines[1] ?? "").trimEnd();
+  if (count(h, "Severity:") !== 1 || !SEVERITY.test(h)) out.push("line 2 needs exactly one valid 'Severity: S1..S4' (header line)");
+  const status = count(h, "Status:") === 1 ? h.match(STATUS)?.[1] : undefined;
+  if (!status) out.push("line 2 needs exactly one valid 'Status: OPEN|INVESTIGATING|FIXED|VERIFIED|CLOSED' (header line)");
+  if (unfencedLines(md).slice(2).some((l) => /^(Severity|Status):/i.test(l))) out.push("second Severity/Status header line found");
+  return status ?? null;
+}
 
 function checkBody(md, num) {
   const out = [];
-  if (!SEVERITY.test(md)) out.push("missing or invalid 'Severity: S1..S4' header");
-  const status = md.match(STATUS)?.[1];
-  if (!status) {
-    out.push("missing or invalid 'Status: OPEN|INVESTIGATING|FIXED|VERIFIED|CLOSED' header");
-    return out;
-  }
+  if (hasUnterminatedFence(md)) out.push("unterminated code fence");
+  const status = checkHeader(md.split(/\r?\n/), md, out);
   if (!DONE.has(status)) return out;
-  const cause = trimBlank(section(md, "## Root cause (5 whys)") ?? []).filter((l) => !PLACEHOLDER.test(l.trim()));
+  const cause = stripComments((section(md, "## Root cause (5 whys)") ?? []).join("\n")).split("\n").filter((l) => !PLACEHOLDER.test(l.trim()));
   if (cause.length === 0) out.push(`${status} bug needs a filled '## Root cause (5 whys)' section`);
-  const reg = (section(md, "## Regression test") ?? []).join("\n");
+  const reg = stripComments((section(md, "## Regression test") ?? []).join("\n"));
   if (!reg.includes(`[BUG-${num}]`)) out.push(`${status} bug needs '[BUG-${num}]' in '## Regression test'`);
   return out;
 }
@@ -36,7 +48,7 @@ export function checkBugs(root) {
   }
   const violations = [];
   let count = 0;
-  for (const name of names.filter((n) => /^BUG-.*\.md$/.test(n) && n !== TEMPLATE).sort()) {
+  for (const name of names.filter((n) => LOOKS_LIKE_BUG.test(n) && n !== TEMPLATE).sort()) {
     const path = `${dir}/${name}`;
     const m = name.match(GOOD_NAME);
     if (!m) {
