@@ -19,6 +19,7 @@ test("[VCK-008-AC1] every violation is printed as path: message; exit 1", () => 
   const f = baseFiles();
   f["docs/bugs/BUG-002-x.md"] = bug("002", { sev: "S9" });
   f["docs/bugs/BUG-3-y.md"] = "x";
+  f["docs/bugs/README.md"] += "| BUG-002 | x |\n";
   f["docs/progress/PROGRESS.md"] = progress(16);
   const root = makeRoot(f);
   try {

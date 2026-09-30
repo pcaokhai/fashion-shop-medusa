@@ -1,14 +1,19 @@
 /* global console, URL */
 // Library: runChecks/main (the CLI is check-cli.mjs; repo root override: VCK_ROOT). docs/12 §6 subset; fails closed: any violation or thrown error => exit 1.
-// To add a check (Task 2): append { name, run(root) -> { violations, summary } } to CHECKS.
+// To add a check: append { name, run(root) -> { violations, summary } } to CHECKS.
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { checkBugs } from "./lib/bug.mjs";
+import { checkIndexes } from "./lib/index-rows.mjs";
+import { checkReleases, checkRequiredFiles } from "./lib/release-doc.mjs";
 import { checkProgress, NOW_LIMIT } from "./lib/progress.mjs";
 
 export const CHECKS = [
   { name: "bugs", run: (root) => { const r = checkBugs(root); return { violations: r.violations, summary: `${r.count} bug file(s)` }; } },
   { name: "progress", run: (root) => { const r = checkProgress(root); return { violations: r.violations, summary: `Now ${r.lines}/${NOW_LIMIT} lines` }; } },
+  { name: "releases", run: (root) => { const r = checkReleases(root); return { violations: r.violations, summary: `${r.count} release file(s)` }; } },
+  { name: "required-files", run: (root) => { const r = checkRequiredFiles(root); return { violations: r.violations, summary: `${r.count} required file(s)` }; } },
+  { name: "indexes", run: (root) => { const r = checkIndexes(root); return { violations: r.violations, summary: `${r.count} indexed record(s)` }; } },
 ];
 
 export function runChecks(root, checks = CHECKS) {

@@ -31,6 +31,11 @@ export const baseFiles = () => ({
   "docs/bugs/BUG-000-template.md": "# BUG-<nnn> <short title>\nSeverity: S1 | S2 | S3 | S4 · Status: OPEN | INVESTIGATING\n",
   "docs/bugs/BUG-001-open.md": bug("001"),
   "docs/progress/PROGRESS.md": progress(),
+  // Task 2 required files + indexes (one row per bug record in baseFiles)
+  "docs/bugs/README.md": "# Bug index\n\n| ID | Title |\n| --- | --- |\n| BUG-001 | open |\n",
+  "docs/releases/README.md": "# Releases\n\n| Version | Date | Highlights | File |\n| --- | --- | --- | --- |\n",
+  "docs/releases/RELEASE-template.md": "# Release <x.y.z>\n\n## Summary\n<p>\n",
+  "CHANGELOG.md": "# Changelog\n",
 });
 
 export function runCheck(root) {
