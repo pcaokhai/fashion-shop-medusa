@@ -117,7 +117,7 @@ test('[VCK-003-AC2] security job: licence gate with exact shape, bash, no || tru
   const s = j.steps.find((x) => (x.run ?? '').includes('check-licenses.mjs'));
   assert.ok(s, 'licence step missing');
   assert.equal(s.shell, 'bash');
-  assert.ok(s.run.includes('out=$(pnpm licenses list --prod --json 2>&1) || [ "$out" = "No licenses in packages found" ]'));
+  assert.ok(s.run.includes('out=$(pnpm licenses list --prod --json) || [ "$out" = "No licenses in packages found" ]'));
   assert.ok(s.run.includes("printf '%s' \"$out\" | node scripts/check-licenses.mjs"));
   assert.ok(!s.run.includes('|| true'));
   const i = j.steps.indexOf(s);
@@ -149,4 +149,33 @@ test('[VCK-003-AC3] ci.yml has no pr-title job and no edited trigger', () => {
   assert.ok(!Object.keys(wf.jobs).some((n) => /title/.test(n)));
   assert.ok(!runs(wf).some((r) => r.includes('check-pr-title')));
   assert.ok(!wf.on.pull_request.types.includes('edited'));
+});
+
+// Required status checks (branch protection, when available): checks, integration, security, pins, pr-title.
+// A skipped job counts as passing, so no job may carry an `if:`; job ids and concurrency prefixes must not collide.
+test('[VCK-003-AC1] required-check safety: exact job ids, no job-level if, unique ids and group prefixes', () => {
+  assert.deepEqual(Object.keys(load('ci.yml').jobs).sort(), ['checks', 'integration', 'pins', 'security']);
+  assert.deepEqual(Object.keys(load('pr-title.yml').jobs), ['pr-title']);
+  const ids = files.flatMap((f) => Object.keys(load(f).jobs));
+  assert.equal(new Set(ids).size, ids.length, 'job ids must be unique across workflows');
+  for (const f of files) {
+    for (const [n, j] of Object.entries(load(f).jobs)) assert.equal(j.if, undefined, `${f}:${n} has a job-level if`);
+  }
+  const prefixes = files.map((f) => load(f).concurrency.group.split('${{')[0]);
+  assert.equal(new Set(prefixes).size, prefixes.length, `group prefixes collide: ${prefixes}`);
+});
+
+test('[VCK-003-AC1] runners are pinned: no ubuntu-latest, ubuntu-24.04 everywhere', () => {
+  for (const f of files) {
+    assert.ok(!raw(f).includes('ubuntu-latest'), `${f} uses ubuntu-latest`);
+    for (const [n, j] of Object.entries(load(f).jobs)) assert.equal(j['runs-on'], 'ubuntu-24.04', `${f}:${n}`);
+  }
+});
+
+test('[VCK-003-AC2] every checkout sets persist-credentials: false', () => {
+  for (const f of files) {
+    for (const s of steps(load(f)).filter((x) => x.uses?.startsWith('actions/checkout@'))) {
+      assert.equal(s.with?.['persist-credentials'], false, `${f}: checkout keeps credentials`);
+    }
+  }
 });

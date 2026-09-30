@@ -108,3 +108,8 @@ test("[VCK-003-AC2] licence CLI fails closed, also via symlink", () => {
     assert.deepEqual(statuses(f, [], bad), [1, 1], JSON.stringify(bad));
   }
 });
+
+test("[VCK-003-AC3] rejects blank or whitespace-only descriptions", () => {
+  for (const t of ["feat:   (VCK-003)", "feat: \t (VCK-003)", "feat:  (VCK-003)"]) assert.equal(checkPrTitle(t).ok, false, JSON.stringify(t));
+  assert.equal(checkPrTitle("feat: real thing (VCK-003)").ok, true);
+});
