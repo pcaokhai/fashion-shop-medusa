@@ -11,3 +11,5 @@ tools/seed/out/
 .env.*
 !.env.example
 .turbo/
+.superpowers/
+/AGENTS.md

@@ -12,3 +12,17 @@
 /packages/                          @pcaokhai
 /packages/ui-kit/                   @pcaokhai
 /design-system/                     @pcaokhai
+
+# PLAT (root tooling)
+/Makefile                           @pcaokhai
+/turbo.json                         @pcaokhai
+/pnpm-workspace.yaml                @pcaokhai
+/package.json                       @pcaokhai
+/tsconfig.base.json                 @pcaokhai
+/eslint.config.mjs                  @pcaokhai
+/scripts/                           @pcaokhai
+
+# ADM (root CLAUDE.md §5)
+/apps/backend/src/modules/audit_log/  @pcaokhai
+/apps/backend/src/modules/import_job/  @pcaokhai
+/apps/backend/src/modules/reporting/  @pcaokhai
