@@ -177,6 +177,8 @@ Errors to Sentry with PII scrubbing. Alerts in docs/runbooks.
 | backend-server | 9000 | `/app` admin; health `/health/ready` |
 | backend-worker | — | same image, `MEDUSA_WORKER_MODE=worker` |
 | postgres / redis / meilisearch | 5432 / 6379 / 7700 | private network only |
+| minio (S3-compatible, dev only) | 9002 API, 9003 console | moved off default 9000 (backend-server owns 9000); never in production |
+| mailpit (dev only) | 1025 SMTP, 8025 UI | never in production |
 | sims (dev/CI/staging) | 9100 vnpay, 9101 ghn | never in production |
 Environments: local (compose), staging (VPS, sandbox providers, stress seed), production-demo (VPS, sandbox providers,
 realistic seed, nightly reset). AWS reference (ECS Fargate, RDS, ElastiCache, S3+CloudFront) documented in ADR-009.
