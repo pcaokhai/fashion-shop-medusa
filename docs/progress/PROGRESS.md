@@ -5,10 +5,10 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 - Sprint: 0 — Repo, infra, CI, contracts, skeletons (docs/07 §3)
 - Goal: `make up && make dev` shows empty storefront and admin; contracts pipeline green
 - In progress: —
-- Next: VCK-004 ∥ VCK-008 ∥ VCK-009, then VCK-005
+- Next: VCK-008 ∥ VCK-009, then VCK-005 (after the preconditions in the VCK-004 entry)
 - Blocked: VNPay sandbox registration pending (R-02)
 - Open rulings: Node 20 LTS is EOL (2026-04-30) — decide ADR to move to Node 22 (would re-allow pnpm 11); CI checks are advisory: no branch protection on private free plan (R-003-16)
-- Review queue: PR #2 (VCK-003)
+- Review queue: PRs #3 (contract fix), #4 (VCK-004)
 
 ## Checkpoints
 | Slice | Date | Result | Evidence |
@@ -16,6 +16,11 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 
 ## Log
 <!-- newest first; one entry per merged story (docs/12 §2) -->
+### 2026-10-01 · VCK-004 Contracts pipeline · PLAT · PR #4 open (feat/VCK-004-contracts-pipeline, stacked on PR #3)
+- AC: 1–4 proven by tools/contracts tests (166+ incl. real oasdiff), scripts/ci.test.mjs and real GitHub runs on PR #4 (spec 24 s, generated 29 s with ubuntu/Node 20 output byte-identical to the macOS commit, breaking 21 s; security fixed after gitleaks flagged the fake token inlined in generated handlers); scratch PR #5 (closed): removing /health/ready made `breaking` FAIL ("requires the label 'contract-breaking'") and `generated` FAIL (drift), `spec` pass
+- Decisions: plan docs/plans/VCK-004.md; R-004-1..14 (merge #3 before #4; accepted orval-7 gaps; `make contracts` vs `make contracts-check`; narrow gitleaks allowlist; size exception; contract PRs regenerate output)
+- Bugs: none
+- Follow-ups: VCK-005 preconditions: (i) generated validators do NOT enforce integer VND (ADR-008): do not rely on them for money until the Node 22 ADR / orval 8 or an integer post-step; (ii) zod alignment: Medusa 2.14–2.21.2 pins zod 4.2.0 exactly (`@medusajs/framework/zod`), backend has zod ^4.6.5 so a SECOND copy: pin Medusa >= 2.14 and align zod or import from `@medusajs/framework/zod`, plus a test that a generated schema error becomes a 400 through Medusa; (iii) pnpm `onlyBuiltDependencies` (msw, esbuild, @scarf/scarf); (iv) 202 response validator gap (requestGuestCancelOtp). VCK-006 consumes `gen:api`/`msw-handlers.ts` (agents read the spec/fixtures, not generated/). Node 22 ADR (unblocks msw 3, orval 8, pnpm 11; Node 20 EOL 2026-04-30). PLAT: `push: main` trigger for contracts.yml once branch protection exists; split scripts/ci.test.mjs (294/300 lines); delete unused `--check/--out` CLI surface and `gen:storefront`/`gen:backend` if still unused; docs PR for docs/04 §6 + CLAUDE.md §5/§9 (contract PRs regenerate output; agents do not read generated/); merge order #3 before #4 (rebase)
 ### 2026-09-30 · VCK-003 CI pipeline · PLAT · PR #2 open (feat/VCK-003-ci-pipeline)
 - AC: 1–3 proven by scripts/ci.test.mjs, check-scripts.test.mjs, check-pins.test.mjs + real GitHub run of PR #2 (checks 46 s, integration 1m5s, security 22 s, pins 20 s, pr-title 7–11 s; title mutation `wip:` failed as expected); AC4 open
 - Decisions: plan docs/plans/VCK-003.md; R-003-1..16 (two workflow files, pinned gitleaks + narrow allowlist, pins verification, ubuntu-24.04, advisory checks)
