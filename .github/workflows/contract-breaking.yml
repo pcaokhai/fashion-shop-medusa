@@ -43,7 +43,12 @@ jobs:
           PR_LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
           PR_BODY: ${{ github.event.pull_request.body }}
         run: |
-          if ! git cat-file -e origin/main:contracts/openapi.yaml 2>/dev/null; then
+          if ! git rev-parse --verify --quiet origin/main > /dev/null; then
+            echo "::error::origin/main does not resolve; cannot compute a baseline (failing closed)"
+            exit 1
+          fi
+          listing=$(git ls-tree --name-only origin/main -- contracts/openapi.yaml)
+          if [ -z "$listing" ]; then
             echo "contracts/openapi.yaml does not exist on origin/main: no baseline, skipping"
             exit 0
           fi
