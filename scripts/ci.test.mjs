@@ -257,7 +257,8 @@ test('[VCK-004-AC4] contracts.yml: generated runs generators before the drift ch
   const wf = load('contracts.yml');
   const g = jobRuns(wf.jobs.generated);
   assert.ok(g.indexOf('run gen') >= 0 && g.indexOf('run gen') < g.indexOf('check-generated.mjs'));
-  assert.match(g, /make contracts/);
+  assert.match(g, /pnpm --filter @vck\/contracts-tools run gen\b/);
+  assert.match(g, /node tools\/contracts\/check-generated\.mjs/);
   const s = jobRuns(wf.jobs.spec);
   assert.match(s, /python3 --version/);
   for (const k of ['lint:spec', 'compile', 'vectors']) assert.match(s, new RegExp(`contracts-tools run ${k}\\b`));

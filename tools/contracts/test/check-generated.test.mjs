@@ -68,3 +68,19 @@ test("[VCK-004-AC4] not a git repo fails closed with exit 2", () => {
   tmps.push(d);
   assert.equal(check(d).status, 2);
 });
+
+test("[VCK-004-AC4] package scripts: contracts only regenerates, contracts-check adds the drift gate", async () => {
+  const { readFileSync } = await import("node:fs");
+  const pkg = JSON.parse(readFileSync(fileURLToPath(new URL("../package.json", import.meta.url)), "utf8"));
+  assert.ok(!pkg.scripts.contracts.includes("check-generated"));
+  assert.match(pkg.scripts["contracts-check"], /\bcontracts\b.*check-generated/);
+});
+
+test("[VCK-004-AC4] Makefile: contracts and contracts-check targets, both in .PHONY", async () => {
+  const { readFileSync } = await import("node:fs");
+  const mk = readFileSync(fileURLToPath(new URL("../../../Makefile", import.meta.url)), "utf8");
+  const phony = mk.match(/^\.PHONY:(.*)$/m)[1].split(/\s+/);
+  assert.ok(phony.includes("contracts") && phony.includes("contracts-check"), phony.join(" "));
+  assert.match(mk, /^contracts:\n\tpnpm --filter @vck\/contracts-tools run contracts$/m);
+  assert.match(mk, /^contracts-check:\n\tpnpm --filter @vck\/contracts-tools run contracts-check$/m);
+});
