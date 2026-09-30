@@ -9,6 +9,8 @@ up:
 down:
 	$(COMPOSE) down $(if $(filter 1,$(v)),-v)
 
+# lint + compile + vectors + generate, then the drift gate (check-generated): fails if generated output or golden vectors
+# differ from HEAD. Clean tree passes; after a legitimate spec change it fails until you commit the regenerated files.
 contracts:
 	pnpm --filter @vck/contracts-tools run contracts
 
