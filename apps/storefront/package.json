@@ -10,6 +10,6 @@
     "gen:api": "pnpm --filter @vck/contracts-tools run gen"
   },
   "devDependencies": {
-    "msw": "^3.0.0"
+    "msw": "^2.15.0"
   }
 }
