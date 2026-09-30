@@ -1,14 +1,15 @@
-/* global URL */
+/* global URL, process */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, writeFileSync, copyFileSync } from "node:fs";
+import { spawnSync, execFileSync } from "node:child_process";
+import { mkdtempSync, readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const here = (p) => new URL(`../${p}`, import.meta.url).pathname;
-const repo = new URL("../../../", import.meta.url).pathname;
-const run = (script, args = []) => spawnSync("node", [here(script), ...args], { cwd: repo, encoding: "utf8" });
+const here = (p) => fileURLToPath(new URL(`../${p}`, import.meta.url));
+const repo = fileURLToPath(new URL("../../../", import.meta.url));
+const run = (script, args = [], env = {}) => spawnSync(process.execPath, [here(script), ...args], { cwd: repo, encoding: "utf8", env: { ...process.env, ...env } });
 const tmp = () => mkdtempSync(join(tmpdir(), "vck-contracts-"));
 
 test("[VCK-004-AC1] Spectral: real openapi.yaml has 0 errors", () => {
@@ -44,15 +45,86 @@ test("[VCK-004-AC1] no schemas found is a failure", () => {
   assert.equal(run("compile-schemas.mjs", [tmp()]).status, 1);
 });
 
-test("[VCK-004-AC1] vectors: regenerated file is identical to committed", () => {
+const realSpec = () => readFileSync(join(repo, "contracts/openapi.yaml"), "utf8");
+const lintMutated = (from, to) => {
+  const spec = realSpec();
+  assert.ok(spec.includes(from), `fixture anchor missing: ${from}`);
+  const f = join(tmp(), "openapi.yaml");
+  writeFileSync(f, spec.replace(from, to));
+  return run("lint.mjs", [f]);
+};
+
+test("[VCK-004-AC1] lint fails closed on a missing spec path", () => {
+  assert.notEqual(run("lint.mjs", [join(tmp(), "nope.yaml")]).status, 0);
+});
+
+test("[VCK-004-AC1] lint fails closed on a ruleset extending a missing file", () => {
+  const d = tmp();
+  const rs = join(d, ".spectral.yaml");
+  writeFileSync(rs, "extends: [./does-not-exist.yaml]\n");
+  assert.notEqual(run("lint.mjs", [join(repo, "contracts/openapi.yaml"), rs]).status, 0);
+});
+
+test("[VCK-004-AC1] vck-money-not-float flags amount as type number, also in a type array", () => {
+  const anchor = /(\s{4}VietqrInstruction:[\s\S]*?\n\s{8}amount: )\{ \$ref: '#\/components\/schemas\/Money' \}/;
+  assert.match(realSpec(), anchor);
+  for (const t of ["{ type: number }", "{ type: [number, 'null'] }"]) {
+    const f = join(tmp(), "openapi.yaml");
+    writeFileSync(f, realSpec().replace(anchor, `$1${t}`));
+    const r = run("lint.mjs", [f]);
+    assert.equal(r.status, 1, r.stdout + r.stderr);
+    assert.match(r.stdout, /vck-money-not-float/);
+  }
+});
+
+test("[VCK-004-AC1] vck-problem-json-errors flags an error response without problem+json", () => {
+  const r = lintMutated("'503': { $ref: '#/components/responses/Problem' }", "'503': { description: x }");
+  assert.equal(r.status, 1, r.stdout + r.stderr);
+  assert.match(r.stdout, /vck-problem-json-errors/);
+});
+
+// vectors: temp git repo holding a copy of the generator and golden file; VCK_ROOT points the script at it.
+const vectorRepo = (mutate) => {
+  const d = tmp();
+  mkdirSync(join(d, "contracts/vnpay"), { recursive: true });
+  for (const f of ["generate_vectors.py", "golden-vectors.json"]) writeFileSync(join(d, "contracts/vnpay", f), readFileSync(join(repo, "contracts/vnpay", f)));
+  if (mutate) writeFileSync(join(d, "contracts/vnpay/golden-vectors.json"), readFileSync(join(d, "contracts/vnpay/golden-vectors.json"), "utf8").replace("HMAC-SHA512", "HMAC-SHA513"));
+  const git = (...a) => execFileSync("git", ["-c", "user.name=t", "-c", "user.email=t@t", ...a], { cwd: d, stdio: "ignore" });
+  git("init", "-q");
+  git("add", "-A");
+  git("commit", "-q", "-m", "x");
+  return { d, git, golden: join(d, "contracts/vnpay/golden-vectors.json") };
+};
+
+test("[VCK-004-AC1] vectors: real golden file exists and regenerated output matches HEAD", () => {
+  assert.ok(existsSync(join(repo, "contracts/vnpay/golden-vectors.json")));
   const r = run("vectors.mjs");
   assert.equal(r.status, 0, r.stdout + r.stderr);
 });
 
-test("[VCK-004-AC1] vectors: a mutated copy of the golden file fails the diff check", () => {
-  const f = join(tmp(), "golden-vectors.json");
-  copyFileSync(join(repo, "contracts/vnpay/golden-vectors.json"), f);
-  writeFileSync(f, readFileSync(f, "utf8").replace("HMAC-SHA512", "HMAC-SHA513"));
-  const r = run("vectors.mjs", [f]);
-  assert.equal(r.status, 1, r.stdout + r.stderr);
+test("[VCK-004-AC1] vectors: clean temp repo passes", () => {
+  assert.equal(run("vectors.mjs", [], { VCK_ROOT: vectorRepo(false).d }).status, 0);
+});
+
+test("[VCK-004-AC1] vectors: committed file stale vs generator fails", () => {
+  assert.equal(run("vectors.mjs", [], { VCK_ROOT: vectorRepo(true).d }).status, 1);
+});
+
+test("[VCK-004-AC1] vectors: uncommitted edit (unstaged or staged) is refused and left untouched", () => {
+  for (const stage of [false, true]) {
+    const { d, git, golden } = vectorRepo(false);
+    writeFileSync(golden, readFileSync(golden, "utf8") + " ");
+    if (stage) git("add", "-A");
+    const before = readFileSync(golden, "utf8");
+    const r = run("vectors.mjs", [], { VCK_ROOT: d });
+    assert.equal(r.status, 1, r.stdout + r.stderr);
+    assert.match(r.stderr, /uncommitted/);
+    assert.equal(readFileSync(golden, "utf8"), before);
+  }
+});
+
+test("[VCK-004-AC1] vectors: python3 absent gives a clear message", () => {
+  const r = run("vectors.mjs", [], { VCK_ROOT: vectorRepo(false).d, PATH: tmp() });
+  assert.equal(r.status, 1);
+  assert.match(r.stderr, /python3 is required/);
 });
