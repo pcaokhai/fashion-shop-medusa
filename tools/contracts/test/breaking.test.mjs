@@ -43,6 +43,10 @@ test("[VCK-004-AC2] path traversal is not an ADR link", () => {
     assert.equal(decide({ breaking: true, labels: [L], body: b, adrExists: true }).ok, false, b);
   }
 });
+test("[VCK-004-AC2] ADR-000 template is not a valid ADR link", () => {
+  assert.equal(decide({ breaking: true, labels: [L], body: "docs/adr/ADR-000-template.md", adrExists: true }).ok, false);
+  assert.equal(decide({ breaking: true, labels: [L], body: "docs/adr/ADR-000-template.md " + ADR, adrExists: true }).ok, true);
+});
 test("[VCK-004-AC2] 100 kB and unicode bodies are handled fast", () => {
   const t = Date.now();
   const big = "docs/adr/ADR-01".repeat(6000) + "\u{1F4A9}\u0000é".repeat(5000);
@@ -92,6 +96,10 @@ test("[VCK-004-AC2] CLI: ERR change without label => exit 1, lists the change", 
 test("[VCK-004-AC2] CLI: label + ADR present in checkout => exit 0", () => {
   const r = run({ BREAKING_JSON: change(3), PR_LABELS: JSON.stringify([L]), PR_BODY: ADR });
   assert.equal(r.status, 0, r.stdout + r.stderr);
+});
+test("[VCK-004-AC2] CLI: label + ADR template link => exit 1", () => {
+  const r = run({ BREAKING_JSON: change(3), PR_LABELS: JSON.stringify([L]), PR_BODY: "docs/adr/ADR-000-template.md" });
+  assert.equal(r.status, 1);
 });
 test("[VCK-004-AC2] CLI: label + made-up ADR number => exit 1", () => {
   const r = run({ BREAKING_JSON: change(3), PR_LABELS: JSON.stringify([L]), PR_BODY: "docs/adr/ADR-998-made-up.md" });

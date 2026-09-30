@@ -8,8 +8,8 @@ import { resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 export const BREAKING_LABEL = "contract-breaking";
-// Prefix form is not enough: the full file name is required so existence can be checked. No `/` allowed after ADR-nnn => no traversal.
-const ADR_LINK = /docs\/adr\/ADR-\d{3}[A-Za-z0-9._-]*\.md/g;
+// ADR-000 is the template, never a decision. Prefix form is not enough: the full file name is required so existence can be checked. No `/` allowed after ADR-nnn => no traversal.
+const ADR_LINK = /docs\/adr\/ADR-(?!000)\d{3}[A-Za-z0-9._-]*\.md/g;
 const MAX_LINKS = 20;
 const MAX_LISTED = 25;
 

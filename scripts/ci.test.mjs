@@ -205,16 +205,37 @@ test('[VCK-004-AC2] contract-breaking.yml: oasdiff checksum literal verified bef
   for (const f of files) for (const r of runs(load(f))) assert.ok(!r.includes('${{'), `${f}: expression inside run`);
 });
 
-test('[VCK-004-AC2] contract-breaking.yml: missing baseline on origin/main skips cleanly (exit 0)', () => {
+// Runs the gate step's script in a temp git repo. `setup` builds the repo; a stub breaking.mjs proves the gate was reached.
+const runGate = (setup) => {
   const gate = load('contract-breaking.yml').jobs.breaking.steps.find((s) => /breaking\.mjs/.test(s.run ?? ''));
   const d = mkdtempSync(join(tmpdir(), 'vck-ci-'));
   try {
-    const sh = (c) => spawnSync('bash', ['-ec', c], { cwd: d, encoding: 'utf8', env: { ...process.env, RUNNER_TEMP: d } });
-    sh('git init -q && git -c user.name=t -c user.email=t@t commit -q --allow-empty -m x && git update-ref refs/remotes/origin/main HEAD');
-    const r = sh(gate.run);
-    assert.equal(r.status, 0, r.stdout + r.stderr);
-    assert.match(r.stdout, /no baseline/);
+    const sh = (c, a = ['-ec']) => spawnSync('bash', [...a, c], { cwd: d, encoding: 'utf8', env: { ...process.env, RUNNER_TEMP: d } });
+    const git = 'git -c user.name=t -c user.email=t@t';
+    const w = sh(`git init -q && mkdir -p contracts tools/contracts && echo "console.log('gate ran')" > tools/contracts/breaking.mjs && ${setup(git)}`);
+    assert.equal(w.status, 0, w.stderr);
+    return sh(gate.run, ['-eo', 'pipefail', '-c']);
   } finally {
     rmSync(d, { recursive: true, force: true });
   }
+};
+
+test('[VCK-004-AC2] gate step fails closed when origin/main does not resolve', () => {
+  const r = runGate((git) => `${git} commit -q --allow-empty -m x`);
+  assert.notEqual(r.status, 0, r.stdout);
+  assert.match(r.stdout + r.stderr, /origin\/main/);
+  assert.doesNotMatch(r.stdout, /no baseline/);
+});
+
+test('[VCK-004-AC2] gate step skips (exit 0) only when origin/main resolves and lacks the spec', () => {
+  const r = runGate((git) => `${git} commit -q --allow-empty -m x && git update-ref refs/remotes/origin/main HEAD`);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /no baseline/);
+  assert.doesNotMatch(r.stdout, /gate ran/);
+});
+
+test('[VCK-004-AC2] gate step proceeds to the gate when the spec exists on origin/main', () => {
+  const r = runGate((git) => `echo x > contracts/openapi.yaml && git add -A && ${git} commit -q -m x && git update-ref refs/remotes/origin/main HEAD`);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /gate ran/);
 });

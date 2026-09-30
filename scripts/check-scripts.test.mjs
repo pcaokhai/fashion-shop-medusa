@@ -1,7 +1,7 @@
-import { test } from "node:test";
+import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, symlinkSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -86,6 +86,7 @@ test("[VCK-003-AC3] rejects trailing newline and multi-line titles", () => {
 });
 
 const dir = mkdtempSync(join(tmpdir(), "vck-cli-"));
+after(() => rmSync(dir, { recursive: true, force: true }));
 const cli = (file, args, input) => {
   const link = join(dir, `link-${file}`);
   if (!existsSync(link)) symlinkSync(fileURLToPath(new URL(file, import.meta.url)), link);
