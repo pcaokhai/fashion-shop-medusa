@@ -7,11 +7,16 @@
     "lint": "eslint .",
     "typecheck": "tsc -p . --noEmit",
     "test": "node --test test/*.test.mjs",
-    "contracts": "node lint.mjs && node compile-schemas.mjs && node vectors.mjs"
+    "contracts": "node lint.mjs && node compile-schemas.mjs && node vectors.mjs && pnpm run gen",
+    "gen": "node gen-types.mjs && node gen-zod.mjs && node gen-msw.mjs",
+    "gen:storefront": "node gen-types.mjs && node gen-msw.mjs",
+    "gen:backend": "node gen-zod.mjs"
   },
   "devDependencies": {
     "@stoplight/spectral-cli": "^6.16.3",
     "ajv": "^8.20.0",
-    "ajv-formats": "^3.0.1"
+    "ajv-formats": "^3.0.1",
+    "openapi-typescript": "^7.13.0",
+    "orval": "^8.38.0"
   }
 }
