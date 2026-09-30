@@ -1,4 +1,4 @@
-.PHONY: up down contracts contracts-diff
+.PHONY: up down contracts contracts-check contracts-diff
 
 # A root .env is passed explicitly: compose's project dir is infra/, so it would otherwise be ignored.
 COMPOSE := docker compose -f infra/docker-compose.yml $(if $(wildcard .env),--env-file .env)
@@ -9,10 +9,14 @@ up:
 down:
 	$(COMPOSE) down $(if $(filter 1,$(v)),-v)
 
-# lint + compile + vectors + generate, then the drift gate (check-generated): fails if generated output or golden vectors
-# differ from HEAD. Clean tree passes; after a legitimate spec change it fails until you commit the regenerated files.
+# `make contracts` regenerates (lint + compile + vectors + generate; exit 0 when the checks pass).
+# `make contracts-check` = regenerate, then fail if generated output or golden vectors differ from what is committed
+# (run before pushing; CI runs the same package scripts).
 contracts:
 	pnpm --filter @vck/contracts-tools run contracts
+
+contracts-check:
+	pnpm --filter @vck/contracts-tools run contracts-check
 
 # Breaking-change report against a git ref (default origin/main). Needs oasdiff: go install github.com/oasdiff/oasdiff@latest
 BASE ?= origin/main

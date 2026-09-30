@@ -53,6 +53,6 @@ jobs:
         shell: bash
         run: |
           node tools/contracts/check-generated.mjs || {
-            echo "::error::Generated files are out of date. Run make contracts and commit the result."
+            echo "::error::Generated files are out of date. Run make contracts and commit the generated files."
             exit 1
           }

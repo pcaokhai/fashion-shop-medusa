@@ -1,6 +1,7 @@
 /* global process, console, URL */
 // Drift gate (AC4): after generation, ANY tracked or untracked change under apps/*/src/generated/** or in the
 // VNPay golden vectors means someone forgot to run `make contracts` and commit. Exit 1 = drift, 2 = git failed (fail closed).
+// Caveat: ignored or info/exclude'd untracked files are invisible to git status; if .gitignore ever covers generated paths this gate stops seeing them.
 // VCK_ROOT overrides the repo root (tests use a temp git repo).
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
