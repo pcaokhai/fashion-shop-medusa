@@ -6,4 +6,4 @@ createServer((req, res) => {
   const ok = req.method === "GET" && req.url === "/health";
   res.writeHead(ok ? 200 : 404, { "content-type": "application/json" });
   res.end(JSON.stringify(ok ? { status: "ok", sim: "ghn-placeholder" } : { error: "not_found" }));
-}).listen(port) // dual-stack: wget "localhost" resolves to ::1;
+}).listen(port); // dual-stack: wget "localhost" resolves to ::1

@@ -10,7 +10,7 @@ const skip = hasDocker ? false : "docker compose not available; skipping compose
 // Scrubbed env + no .env file: results must not depend on the developer's shell.
 const cleanEnv = Object.fromEntries(
   Object.entries(process.env).filter(
-    ([k]) => !/^(POSTGRES|REDIS|MEILI|MINIO|MAILPIT|VNPAY_SIM|GHN_SIM|COMPOSE)_/.test(k),
+    ([k]) => !/^(POSTGRES|REDIS|MEILI|MINIO|MAILPIT|VNPAY_SIM|GHN_SIM|COMPOSE)_/.test(k) && k !== "v",
   ),
 );
 const compose = () => {
@@ -71,8 +71,26 @@ test("[VCK-002-AC2] minio-init is gated on minio health and does not restart", {
   assert.equal(c.restart, "no");
 });
 
-test("[VCK-002-AC2] minio is pinned by digest", { skip }, () => {
-  assert.match(compose().services.minio.image, /@sha256:[0-9a-f]{64}$/);
+test("[VCK-002-AC2] minio and minio-init share one pinned digest", { skip }, () => {
+  const { minio, "minio-init": init } = compose().services;
+  const digest = (i) => i.match(/@(sha256:[0-9a-f]{64})$/)?.[1];
+  assert.ok(digest(minio.image));
+  assert.equal(digest(init.image), digest(minio.image));
+});
+
+test("[VCK-002-AC2] minio-init forwards signals (init) and takes creds from minio's vars", { skip }, () => {
+  const { minio, "minio-init": init } = compose().services;
+  assert.equal(init.init, true);
+  assert.equal(
+    init.environment.MC_HOST_local,
+    `http://${minio.environment.MINIO_ROOT_USER}:${minio.environment.MINIO_ROOT_PASSWORD}@minio:9000`,
+  );
+});
+
+test("[VCK-002-AC2] sim healthchecks hit their own port", { skip }, () => {
+  const c = compose().services;
+  assert.match(c["vnpay-sim"].healthcheck.test.join(" "), /:9100\/health/);
+  assert.match(c["ghn-sim"].healthcheck.test.join(" "), /:9101\/health/);
 });
 
 test("[VCK-002-AC2] every service has a healthcheck", { skip }, () => {
