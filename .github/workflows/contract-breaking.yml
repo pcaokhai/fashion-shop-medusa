@@ -1,0 +1,51 @@
+name: contract-breaking
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled, edited]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: contract-breaking-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  breaking:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # oasdiff v1.32.1, official release binary; checksum from checksums.txt, pinned here
+      # https://github.com/oasdiff/oasdiff/releases/download/v1.32.1/checksums.txt
+      - name: Install oasdiff (checksum-verified)
+        shell: bash
+        run: |
+          curl -sSfL -O "https://github.com/oasdiff/oasdiff/releases/download/v1.32.1/oasdiff_1.32.1_linux_amd64.tar.gz"
+          echo "7c8939fc49b75ee11fec66a5b83b37a2fca6aee109fed85013b1ba2ac2a1ee7f  oasdiff_1.32.1_linux_amd64.tar.gz" > oasdiff.sha256
+          sha256sum -c oasdiff.sha256
+          mkdir -p "$RUNNER_TEMP/bin"
+          tar -xzf oasdiff_1.32.1_linux_amd64.tar.gz -C "$RUNNER_TEMP/bin" oasdiff
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - name: Breaking-change gate
+        shell: bash
+        env:
+          PR_LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          if ! git cat-file -e origin/main:contracts/openapi.yaml 2>/dev/null; then
+            echo "contracts/openapi.yaml does not exist on origin/main: no baseline, skipping"
+            exit 0
+          fi
+          git show origin/main:contracts/openapi.yaml > "$RUNNER_TEMP/base-openapi.yaml"
+          BASE_SPEC="$RUNNER_TEMP/base-openapi.yaml" HEAD_SPEC=contracts/openapi.yaml node tools/contracts/breaking.mjs

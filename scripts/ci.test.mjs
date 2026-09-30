@@ -1,6 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readdirSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { parse } from 'yaml';
 
 const dir = new URL('../.github/workflows/', import.meta.url);
@@ -177,5 +180,41 @@ test('[VCK-003-AC2] every checkout sets persist-credentials: false', () => {
     for (const s of steps(load(f)).filter((x) => x.uses?.startsWith('actions/checkout@'))) {
       assert.equal(s.with?.['persist-credentials'], false, `${f}: checkout keeps credentials`);
     }
+  }
+});
+
+test('[VCK-004-AC2] contract-breaking.yml: triggers, distinct group prefix, job id breaking', () => {
+  assert.ok(files.includes('contract-breaking.yml'));
+  const wf = load('contract-breaking.yml');
+  assert.deepEqual(wf.on.pull_request.types, ['opened', 'synchronize', 'reopened', 'labeled', 'unlabeled', 'edited']);
+  assert.ok(wf.concurrency.group.startsWith('contract-breaking-${{ github.event.pull_request.number }}'));
+  assert.deepEqual(Object.keys(wf.jobs), ['breaking']);
+  for (const f of ['ci.yml', 'pr-title.yml']) assert.notEqual(load(f).concurrency.group.split('${{')[0], 'contract-breaking-');
+});
+
+test('[VCK-004-AC2] contract-breaking.yml: oasdiff checksum literal verified before tar; PR text only via env', () => {
+  const wf = load('contract-breaking.yml');
+  const install = wf.jobs.breaking.steps.find((s) => /oasdiff/.test(s.name ?? '') && s.run);
+  assert.ok(install, 'install step missing');
+  assert.match(install.run, /echo "[0-9a-f]{64} {2}oasdiff_[\d.]+_linux_amd64\.tar\.gz"/);
+  const i = install.run.indexOf('sha256sum -c');
+  assert.ok(i >= 0 && i < install.run.indexOf('tar '), 'sha256sum -c must precede tar');
+  const gate = wf.jobs.breaking.steps.find((s) => /breaking\.mjs/.test(s.run ?? ''));
+  assert.match(gate.env.PR_BODY, /github\.event\.pull_request\.body/);
+  assert.match(gate.env.PR_LABELS, /toJson\(github\.event\.pull_request\.labels\.\*\.name\)/);
+  for (const f of files) for (const r of runs(load(f))) assert.ok(!r.includes('${{'), `${f}: expression inside run`);
+});
+
+test('[VCK-004-AC2] contract-breaking.yml: missing baseline on origin/main skips cleanly (exit 0)', () => {
+  const gate = load('contract-breaking.yml').jobs.breaking.steps.find((s) => /breaking\.mjs/.test(s.run ?? ''));
+  const d = mkdtempSync(join(tmpdir(), 'vck-ci-'));
+  try {
+    const sh = (c) => spawnSync('bash', ['-ec', c], { cwd: d, encoding: 'utf8', env: { ...process.env, RUNNER_TEMP: d } });
+    sh('git init -q && git -c user.name=t -c user.email=t@t commit -q --allow-empty -m x && git update-ref refs/remotes/origin/main HEAD');
+    const r = sh(gate.run);
+    assert.equal(r.status, 0, r.stdout + r.stderr);
+    assert.match(r.stdout, /no baseline/);
+  } finally {
+    rmSync(d, { recursive: true, force: true });
   }
 });
