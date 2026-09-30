@@ -725,7 +725,7 @@ paths:
       operationId: getReadiness
       tags: [health]
       responses:
-        '200': { description: DB, Redis and search reachable }
+        '200': { description: 'DB, Redis and search reachable' }
         '503': { $ref: '#/components/responses/Problem' }
 components:
   securitySchemes:
