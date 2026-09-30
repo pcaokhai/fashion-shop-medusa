@@ -146,3 +146,41 @@ test("[VCK-004-AC1] vectors: python3 absent gives a clear message", () => {
   assert.equal(r.status, 1);
   assert.match(r.stderr, /python3 is required/);
 });
+
+// warning ratchet: the real spec against temp baselines (docs/08 "0 new warnings")
+const REAL = { "info-contact": 1, "operation-description": 30 };
+const withBaseline = (content) => {
+  const f = join(tmp(), "lint-baseline.json");
+  if (content !== undefined) writeFileSync(f, typeof content === "string" ? content : JSON.stringify(content));
+  return run("lint.mjs", [join(repo, "contracts/openapi.yaml"), join(repo, ".spectral.yaml"), f]);
+};
+
+test("[VCK-004-AC1] ratchet: baseline equal to current counts passes", () => {
+  const r = withBaseline(REAL);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+});
+
+test("[VCK-004-AC1] ratchet: one warning above baseline of a known code fails", () => {
+  const r = withBaseline({ ...REAL, "operation-description": 29 });
+  assert.equal(r.status, 1, r.stdout + r.stderr);
+  assert.match(r.stdout + r.stderr, /operation-description/);
+});
+
+test("[VCK-004-AC1] ratchet: a code missing from the baseline fails", () => {
+  const r = withBaseline({ "operation-description": REAL["operation-description"] });
+  assert.equal(r.status, 1, r.stdout + r.stderr);
+  assert.match(r.stdout + r.stderr, /info-contact/);
+});
+
+test("[VCK-004-AC1] ratchet: fewer warnings than baseline passes with a hint to lower it", () => {
+  const r = withBaseline({ ...REAL, "operation-description": 31 });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /lower .*baseline/i);
+});
+
+test("[VCK-004-AC1] ratchet: missing or malformed baseline fails closed", () => {
+  for (const c of [undefined, "{not json", "[]", '{"info-contact":"1"}', '{"info-contact":-1}']) {
+    const r = withBaseline(c);
+    assert.notEqual(r.status, 0, `${c}\n${r.stdout}${r.stderr}`);
+  }
+});

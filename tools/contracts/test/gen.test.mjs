@@ -1,4 +1,4 @@
-/* global URL, process, fetch */
+/* global URL, process, fetch, structuredClone */
 // AC3: generators. TS output is exercised by transpiling the COMMITTED files (Node 20 in CI cannot import .ts)
 // into a tmp dir whose node_modules symlinks to the owning workspace, so `zod` / `msw` resolve normally.
 import { test, before, after } from "node:test";
@@ -192,4 +192,25 @@ test("[VCK-004-AC3] fixture-map validation rejects typos, missing fields and bad
   assert.equal(readMap(f).unmapped.length, 1);
   writeFileSync(f, JSON.stringify({ unmapped_fixtures: [{ file: "b.json" }] }));
   assert.throws(() => readMap(f), /unmapped_fixtures/);
+});
+
+// ---- fix round 2 ----
+// KNOWN GAP (orval 7.13.2): integers are validated as zod.number(); ADR-008 integer-VND is NOT enforced. Remove this test when orval emits .int()
+test("[VCK-004-AC3] KNOWN GAP guard: generated validators accept fractional VND (ADR-008 not enforced)", () => {
+  const e = ops.quoteShipping;
+  const body = structuredClone(fixtureBody(e));
+  const holder = Array.isArray(body.quotes) ? body.quotes[0] : body;
+  assert.equal(typeof holder.fee, "number", "fixture shape changed: expected a numeric fee");
+  holder.fee = 32000.5;
+  const enforced = zodMod.quoteShippingResponse.safeParse(body).success === false || /\.int\(\)/.test(readFileSync(at(ZOD_PATH), "utf8"));
+  assert.equal(
+    enforced,
+    false,
+    "orval now enforces integers: DELETE this KNOWN GAP test, wire ADR-008 (integer VND) into the validators, and drop the warning from the gen-zod HEADER",
+  );
+});
+
+test("[VCK-004-AC3] gen-zod: a hung or failing child process throws with the spawn error message", async () => {
+  await assert.rejects(buildZod({ code: "setTimeout(() => {}, 60000)", timeout: 300 }), /orval could not run.*ETIMEDOUT/s);
+  await assert.rejects(buildZod({ code: "process.exit(3)" }), /orval failed/);
 });
