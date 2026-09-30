@@ -1,0 +1,83 @@
+{
+  "algorithm": "HMAC-SHA512",
+  "secret": "TESTSECRETVCK0000000000000000000",
+  "vectors": [
+    {
+      "name": "pay_request_basic",
+      "params": {
+        "vnp_Version": "2.1.0",
+        "vnp_Command": "pay",
+        "vnp_TmnCode": "VCKTEST1",
+        "vnp_Amount": "25900000",
+        "vnp_CurrCode": "VND",
+        "vnp_TxnRef": "VCK20261001A1B2C3",
+        "vnp_OrderInfo": "Thanh toan don hang VCK20261001A1B2C3",
+        "vnp_OrderType": "other",
+        "vnp_Locale": "vn",
+        "vnp_ReturnUrl": "https://shop.example.test/checkout/vnpay-return",
+        "vnp_IpAddr": "127.0.0.1",
+        "vnp_CreateDate": "20261001103000",
+        "vnp_ExpireDate": "20261001104500"
+      },
+      "sign_data": "vnp_Amount=25900000&vnp_Command=pay&vnp_CreateDate=20261001103000&vnp_CurrCode=VND&vnp_ExpireDate=20261001104500&vnp_IpAddr=127.0.0.1&vnp_Locale=vn&vnp_OrderInfo=Thanh+toan+don+hang+VCK20261001A1B2C3&vnp_OrderType=other&vnp_ReturnUrl=https%3A%2F%2Fshop.example.test%2Fcheckout%2Fvnpay-return&vnp_TmnCode=VCKTEST1&vnp_TxnRef=VCK20261001A1B2C3&vnp_Version=2.1.0",
+      "vnp_SecureHash": "59e169837f936cb24de727553e22203917f928309dfc7164d49b72007b770ad4b339649efa24c6e382b38243ea958cb0fe3e20cd6a5853f793fe2f41ec9e2741"
+    },
+    {
+      "name": "ipn_success",
+      "params": {
+        "vnp_Amount": "25900000",
+        "vnp_BankCode": "NCB",
+        "vnp_OrderInfo": "Thanh toan don hang VCK20261001A1B2C3",
+        "vnp_PayDate": "20261001103512",
+        "vnp_ResponseCode": "00",
+        "vnp_TmnCode": "VCKTEST1",
+        "vnp_TransactionNo": "14000001",
+        "vnp_TransactionStatus": "00",
+        "vnp_TxnRef": "VCK20261001A1B2C3"
+      },
+      "sign_data": "vnp_Amount=25900000&vnp_BankCode=NCB&vnp_OrderInfo=Thanh+toan+don+hang+VCK20261001A1B2C3&vnp_PayDate=20261001103512&vnp_ResponseCode=00&vnp_TmnCode=VCKTEST1&vnp_TransactionNo=14000001&vnp_TransactionStatus=00&vnp_TxnRef=VCK20261001A1B2C3",
+      "vnp_SecureHash": "222627dd554b234272b9f7583767378e38741df295fb51f7ed4348fc175505fa26dbcfa4d672345b2c91a5397fceda3776715ffb298bf2e4dbd7e0d8ebe63dfd"
+    },
+    {
+      "name": "ipn_user_cancelled",
+      "params": {
+        "vnp_Amount": "25900000",
+        "vnp_OrderInfo": "Thanh toan don hang VCK20261001D4E5F6",
+        "vnp_ResponseCode": "24",
+        "vnp_TmnCode": "VCKTEST1",
+        "vnp_TransactionNo": "0",
+        "vnp_TransactionStatus": "02",
+        "vnp_TxnRef": "VCK20261001D4E5F6"
+      },
+      "sign_data": "vnp_Amount=25900000&vnp_OrderInfo=Thanh+toan+don+hang+VCK20261001D4E5F6&vnp_ResponseCode=24&vnp_TmnCode=VCKTEST1&vnp_TransactionNo=0&vnp_TransactionStatus=02&vnp_TxnRef=VCK20261001D4E5F6",
+      "vnp_SecureHash": "62c26402b0a7b3807368ed2be2b84250e977b69c90adc49fdc0e309bb77295036e35c1e5c68227ed19bc037c7c50b7b629bfd0e3c861146bb1dfa1a41ff9c1bf"
+    },
+    {
+      "name": "unicode_and_space_encoding",
+      "params": {
+        "vnp_Amount": "100000",
+        "vnp_OrderInfo": "Áo thun nam size M & quà tặng",
+        "vnp_TmnCode": "VCKTEST1",
+        "vnp_TxnRef": "VCK20261001ENC001"
+      },
+      "sign_data": "vnp_Amount=100000&vnp_OrderInfo=%C3%81o+thun+nam+size+M+%26+qu%C3%A0+t%E1%BA%B7ng&vnp_TmnCode=VCKTEST1&vnp_TxnRef=VCK20261001ENC001",
+      "vnp_SecureHash": "deb70cb7e16c12db2abf71260a7761af0ce5b286a9cfeb37d7e607a44cacccbc03ed6bbf1537a17789cc3fd12bdfabeef03db393c070471787c85231691447d5"
+    },
+    {
+      "name": "ipn_tampered_amount_must_fail",
+      "params": {
+        "vnp_Amount": "25900001",
+        "vnp_BankCode": "NCB",
+        "vnp_OrderInfo": "Thanh toan don hang VCK20261001A1B2C3",
+        "vnp_PayDate": "20261001103512",
+        "vnp_ResponseCode": "00",
+        "vnp_TmnCode": "VCKTEST1",
+        "vnp_TransactionNo": "14000001",
+        "vnp_TransactionStatus": "00",
+        "vnp_TxnRef": "VCK20261001A1B2C3"
+      },
+      "vnp_SecureHash": "222627dd554b234272b9f7583767378e38741df295fb51f7ed4348fc175505fa26dbcfa4d672345b2c91a5397fceda3776715ffb298bf2e4dbd7e0d8ebe63dfd",
+      "expect_valid": false
+    }
+  ]
+}

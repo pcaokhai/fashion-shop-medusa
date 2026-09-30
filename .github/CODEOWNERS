@@ -1,0 +1,14 @@
+# Lanes (docs/07, root CLAUDE.md §5). Tech lead reviews everything.
+*                                   @pcaokhai
+/contracts/                         @pcaokhai
+/infra/                             @pcaokhai
+/tools/                             @pcaokhai
+/.github/                           @pcaokhai
+/docs/                              @pcaokhai
+/apps/backend/                      @pcaokhai
+/apps/backend/src/admin/            @pcaokhai
+/apps/backend/src/api/admin/        @pcaokhai
+/apps/storefront/                   @pcaokhai
+/packages/                          @pcaokhai
+/packages/ui-kit/                   @pcaokhai
+/design-system/                     @pcaokhai

@@ -1,0 +1,17 @@
+{
+  "token": "olt_4f1c9a0e7b2d4c6f8a1e3b5d7c9f0a2b4d6e8f0a1c3e5b7d9f1a3c5e7b9d1f3a",
+  "expires_at": "2026-09-30T11:15:00+07:00",
+  "order": {
+    "display_id": "VCK-264098",
+    "placed_at": "2026-09-29T18:02:00+07:00",
+    "status": "pending",
+    "payment": { "method": "cod", "state": "cod_pending" },
+    "totals": { "subtotal": 459000, "shipping": 0, "total": 459000 },
+    "items": [ { "title": "Quần jeans ống suông", "variant_title": "M / Xanh", "quantity": 1, "total": 459000 } ],
+    "recipient": { "name_masked": "Trần *** Hà", "phone_masked": "0900 *** 321", "address_masked": "[***], Phường Hoàn Kiếm, Hà Nội" },
+    "eta": { "from": "2026-10-02", "to": "2026-10-04" },
+    "tracking": [],
+    "actions": { "can_cancel": true, "can_opt_in_zns": true },
+    "zns_opt_in": false
+  }
+}

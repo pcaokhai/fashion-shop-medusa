@@ -1,0 +1,6 @@
+{
+  "challenge": { "challenge_id": "otc_01J9Z8Q4M2", "channel": "zns", "destination_masked": "0900 *** 321", "expires_at": "2026-09-30T11:05:00+07:00", "resend_after_sec": 60, "attempts_left": 5 },
+  "otp_invalid_problem": { "type": "https://vck.dev/problems/otp-invalid", "title": "OTP invalid", "status": 422, "attempts_left": 3, "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736" },
+  "not_allowed_problem": { "type": "https://vck.dev/problems/cancellation-not-allowed", "title": "Cancellation not allowed", "status": 409, "reason": "not_pending", "trace_id": "4bf92f3577b34da6a3ce929d0e0e4737" },
+  "lookup_failed_problem": { "type": "https://vck.dev/problems/not-found", "title": "Not found", "status": 404, "detail": "No order matches this code and phone.", "trace_id": "4bf92f3577b34da6a3ce929d0e0e4738" }
+}

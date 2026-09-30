@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-commerce-kit.local/events/shipment-events.schema.json",
+  "title": "Shipment events",
+  "description": "vck.shipment.status_changed is emitted only for forward transitions (docs/03 §6.3).",
+  "type": "object",
+  "required": ["name", "id", "occurred_at", "version", "data"],
+  "properties": {
+    "name": { "const": "vck.shipment.status_changed" },
+    "id": { "type": "string" },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "version": { "const": 1 },
+    "trace_id": { "type": "string" },
+    "data": {
+      "type": "object",
+      "required": ["order_id", "carrier", "tracking_code", "from", "to"],
+      "properties": {
+        "order_id": { "type": "string" },
+        "fulfillment_id": { "type": "string" },
+        "carrier": { "enum": ["GHN", "GHTK"] },
+        "tracking_code": { "type": "string" },
+        "from": { "type": "string" },
+        "to": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

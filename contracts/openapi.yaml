@@ -1,0 +1,1098 @@
+openapi: 3.1.0
+info:
+  title: VN Commerce Kit — custom API surface
+  version: 0.1.0
+  description: |
+    Normative contract for every endpoint this project ADDS on top of Medusa v2.
+    Medusa core Store/Admin APIs are NOT re-specified here; consumers use @medusajs/js-sdk types for them (ADR-005).
+    Conventions: docs/04-api-contract.md. Money = integer VND (ADR-008). Errors = RFC 9457 problem+json.
+servers:
+  - url: http://localhost:9000
+    description: Local Medusa server
+tags:
+  - name: store-search
+  - name: store-address
+  - name: store-shipping
+  - name: store-payments
+  - name: store-engagement
+  - name: store-account
+  - name: store-order-lookup
+  - name: hooks
+  - name: admin-ops
+  - name: feeds
+  - name: health
+paths:
+  /store/search:
+    get:
+      operationId: searchProducts
+      tags: [store-search]
+      summary: Accent-insensitive product search with facets (VCK-106)
+      parameters:
+        - $ref: '#/components/parameters/PublishableKey'
+        - name: q
+          in: query
+          schema: { type: string, maxLength: 120 }
+          description: Free text; "ao thun" matches "áo thun".
+        - name: category_id
+          in: query
+          schema: { type: array, items: { type: string } }
+        - name: price_min
+          in: query
+          schema: { type: integer, minimum: 0 }
+        - name: price_max
+          in: query
+          schema: { type: integer, minimum: 0 }
+        - name: options
+          in: query
+          description: Variant option filters, e.g. options=size:M&options=color:Đen
+          schema: { type: array, items: { type: string, pattern: '^[^:]+:.+$' } }
+        - name: sort
+          in: query
+          schema: { type: string, enum: [RELEVANCE, PRICE_ASC, PRICE_DESC, NEWEST, BEST_SELLING], default: RELEVANCE }
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Search page
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SearchResult' }
+        '400': { $ref: '#/components/responses/Problem' }
+  /store/vn-address/provinces:
+    get:
+      operationId: listProvinces
+      tags: [store-address]
+      summary: Provinces under the 2-tier administrative model (VCK-401)
+      parameters: [ { $ref: '#/components/parameters/PublishableKey' } ]
+      responses:
+        '200':
+          description: Provinces (Cache-Control public, max-age=86400)
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [provinces]
+                properties:
+                  provinces: { type: array, items: { $ref: '#/components/schemas/AdminUnit' } }
+  /store/vn-address/provinces/{province_code}/wards:
+    get:
+      operationId: listWards
+      tags: [store-address]
+      parameters:
+        - $ref: '#/components/parameters/PublishableKey'
+        - name: province_code
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Wards/communes of a province
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [wards]
+                properties:
+                  wards: { type: array, items: { $ref: '#/components/schemas/AdminUnit' } }
+        '404': { $ref: '#/components/responses/Problem' }
+  /store/vn-address/resolve-legacy:
+    post:
+      operationId: resolveLegacyAddress
+      tags: [store-address]
+      summary: Map a pre-reform 3-tier address (province/district/ward) to current 2-tier codes
+      parameters: [ { $ref: '#/components/parameters/PublishableKey' } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [province_name, ward_name]
+              properties:
+                province_name: { type: string }
+                district_name: { type: [string, 'null'] }
+                ward_name: { type: string }
+      responses:
+        '200':
+          description: AMBIGUOUS returns candidates for the user to choose
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status: { type: string, enum: [RESOLVED, AMBIGUOUS, NOT_FOUND] }
+                  province: { $ref: '#/components/schemas/AdminUnit' }
+                  ward: { $ref: '#/components/schemas/AdminUnit' }
+                  candidates: { type: array, items: { $ref: '#/components/schemas/AdminUnit' } }
+  /store/shipping/quote:
+    post:
+      operationId: quoteShipping
+      tags: [store-shipping]
+      summary: Live fee + ETA per enabled carrier (VCK-402)
+      parameters:
+        - $ref: '#/components/parameters/PublishableKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [cart_id]
+              properties:
+                cart_id: { type: string }
+      responses:
+        '200':
+          description: Carrier failures are reported per quote, not as HTTP errors
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [quotes]
+                properties:
+                  quotes: { type: array, items: { $ref: '#/components/schemas/ShippingQuote' } }
+        '422': { $ref: '#/components/responses/Problem' }
+  /store/payments/vnpay/verify-return:
+    post:
+      operationId: verifyVnpayReturn
+      tags: [store-payments]
+      summary: Verify browser return query. DISPLAY ONLY — never completes the order (ADR-007)
+      parameters: [ { $ref: '#/components/parameters/PublishableKey' } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [query]
+              properties:
+                query:
+                  type: object
+                  additionalProperties: { type: string }
+                  description: Raw vnp_* query parameters from the return URL
+      responses:
+        '200':
+          description: Verification result
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PaymentReturnStatus' }
+  /store/payments/vietqr/{cart_id}:
+    get:
+      operationId: getVietqrInstruction
+      tags: [store-payments]
+      summary: Bank-transfer instruction with VietQR payload and unique memo (VCK-604)
+      parameters:
+        - $ref: '#/components/parameters/PublishableKey'
+        - name: cart_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Transfer instruction
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VietqrInstruction' }
+        '404': { $ref: '#/components/responses/Problem' }
+  /store/orders/{order_id}/tracking:
+    get:
+      operationId: getOrderTracking
+      tags: [store-shipping]
+      parameters:
+        - $ref: '#/components/parameters/PublishableKey'
+        - name: order_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Shipment timeline
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [shipments]
+                properties:
+                  shipments: { type: array, items: { $ref: '#/components/schemas/ShipmentTracking' } }
+        '404': { $ref: '#/components/responses/Problem' }
+  /store/customers/me/wishlist:
+    get:
+      operationId: getWishlist
+      tags: [store-engagement]
+      security: [ { customerBearer: [] } ]
+      parameters: [ { $ref: '#/components/parameters/PublishableKey' } ]
+      responses:
+        '200':
+          description: Wishlist
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Wishlist' }
+        '401': { $ref: '#/components/responses/Problem' }
+    post:
+      operationId: addWishlistItem
+      tags: [store-engagement]
+      security: [ { customerBearer: [] } ]
+      parameters:
+        - $ref: '#/components/parameters/PublishableKey'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [variant_id]
+              properties:
+                variant_id: { type: string }
+      responses:
+        '200':
+          description: Updated wishlist (adding an existing item is a no-op)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Wishlist' }
+        '401': { $ref: '#/components/responses/Problem' }
+  /store/customers/me/wishlist/{variant_id}:
+    delete:
+      operationId: removeWishlistItem
+      tags: [store-engagement]
+      security: [ { customerBearer: [] } ]
+      parameters:
+        - $ref: '#/components/parameters/PublishableKey'
+        - name: variant_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Updated wishlist
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Wishlist' }
+  /store/products/{product_id}/reviews:
+    get:
+      operationId: listProductReviews
+      tags: [store-engagement]
+      parameters:
+        - $ref: '#/components/parameters/PublishableKey'
+        - name: product_id
+          in: path
+          required: true
+          schema: { type: string }
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Approved reviews + rating summary
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReviewPage' }
+    post:
+      operationId: createProductReview
+      tags: [store-engagement]
+      security: [ { customerBearer: [] } ]
+      parameters:
+        - $ref: '#/components/parameters/PublishableKey'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - name: product_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [order_id, rating]
+              properties:
+                order_id: { type: string }
+                rating: { type: integer, minimum: 1, maximum: 5 }
+                body: { type: [string, 'null'], maxLength: 2000 }
+                image_upload_ids: { type: array, maxItems: 5, items: { type: string } }
+      responses:
+        '201':
+          description: Review created with status PENDING
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Review' }
+        '403': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+  /store/customers/me/deletion-request:
+    post:
+      operationId: requestAccountDeletion
+      tags: [store-account]
+      security: [ { customerBearer: [] } ]
+      parameters:
+        - $ref: '#/components/parameters/PublishableKey'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: Deletion scheduled; personal data anonymised after the grace period
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [scheduled_for]
+                properties:
+                  scheduled_for: { type: string, format: date-time }
+  /store/order-lookup:
+    post:
+      operationId: createOrderLookup
+      summary: Guest order lookup by display id + phone (ADR-014)
+      description: |
+        Returns a masked order view and a short-lived token. Mismatch of either factor yields the SAME generic 404
+        with constant response time. Rate limits: 10 attempts / 10 min / IP, 5 failures per display id then 15 min lock,
+        captcha required after 3 failures from one IP (module options, docs/14).
+      tags: [store-order-lookup]
+      parameters:
+        - $ref: '#/components/parameters/PublishableKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/GuestLookupRequest' }
+      responses:
+        '200':
+          description: Match; token + masked order
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GuestOrderSession' }
+        '400': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '429':
+          description: rate-limited or captcha-required (problem extension `captcha_required`)
+          headers:
+            Retry-After: { schema: { type: integer } }
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+  /store/order-lookup/session:
+    get:
+      operationId: getOrderLookupSession
+      summary: Refresh the masked order view (tracking) for the current lookup token
+      tags: [store-order-lookup]
+      security: [ { orderLookupToken: [] } ]
+      parameters:
+        - $ref: '#/components/parameters/PublishableKey'
+      responses:
+        '200':
+          description: Masked order view
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GuestOrderView' }
+        '401': { $ref: '#/components/responses/Problem' }
+  /store/order-lookup/session/notifications:
+    put:
+      operationId: setOrderLookupNotifications
+      summary: Opt in/out of Zalo ZNS status updates for this order (explicit consent, logged)
+      tags: [store-order-lookup]
+      security: [ { orderLookupToken: [] } ]
+      parameters:
+        - $ref: '#/components/parameters/PublishableKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [zns_opt_in]
+              properties:
+                zns_opt_in: { type: boolean }
+      responses:
+        '200':
+          description: Stored preference
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [zns_opt_in]
+                properties:
+                  zns_opt_in: { type: boolean }
+        '401': { $ref: '#/components/responses/Problem' }
+  /store/order-lookup/session/cancel-otp:
+    post:
+      operationId: requestGuestCancelOtp
+      summary: Send a cancel OTP to the phone on the order (policy-checked first)
+      tags: [store-order-lookup]
+      security: [ { orderLookupToken: [] } ]
+      parameters:
+        - $ref: '#/components/parameters/PublishableKey'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: OTP sent (or re-sent)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CancelOtpChallenge' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '409':
+          description: cancellation-not-allowed (problem extension `reason`, see GuestOrderView.actions.cancel_block_reason)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '429':
+          description: rate-limited (resend cooldown 60 s, max 5 sends/hour/order)
+          headers:
+            Retry-After: { schema: { type: integer } }
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+  /store/order-lookup/session/cancel:
+    post:
+      operationId: confirmGuestCancel
+      summary: Verify the OTP and cancel the order (option A — COD, not yet confirmed)
+      tags: [store-order-lookup]
+      security: [ { orderLookupToken: [] } ]
+      parameters:
+        - $ref: '#/components/parameters/PublishableKey'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/GuestCancelRequest' }
+      responses:
+        '200':
+          description: Order cancelled; stock released; `vck.order.guest_cancelled` emitted
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GuestOrderView' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '409':
+          description: cancellation-not-allowed — state changed since the OTP was sent (e.g. shop confirmed)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '410':
+          description: otp-expired
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '422':
+          description: otp-invalid (problem extension `attempts_left`)
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '429':
+          description: rate-limited — challenge locked after 5 wrong codes
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+  /hooks/vnpay/ipn:
+    get:
+      operationId: receiveVnpayIpn
+      tags: [hooks]
+      summary: VNPay IPN (server-to-server GET). SOURCE OF TRUTH for payment outcome (docs/03 §4)
+      description: All vnp_* params are passed through as received and included in the checksum.
+      parameters:
+        - name: vnp_TxnRef
+          in: query
+          required: true
+          schema: { type: string }
+        - name: vnp_SecureHash
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: VNPay acknowledgement format (always HTTP 200)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VnpayIpnAck' }
+  /hooks/ghn:
+    post:
+      operationId: receiveGhnWebhook
+      tags: [hooks]
+      parameters:
+        - name: X-Webhook-Token
+          in: header
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [OrderCode, Status]
+              additionalProperties: true
+              properties:
+                OrderCode: { type: string }
+                Status: { type: string }
+                Time: { type: string }
+      responses:
+        '200': { description: Accepted (duplicates and stale statuses acknowledged and ignored) }
+        '401': { $ref: '#/components/responses/Problem' }
+  /hooks/vietqr:
+    post:
+      operationId: receiveBankTransferWebhook
+      tags: [hooks]
+      summary: Bank-transaction webhook from the transfer-reconciliation provider (VCK-604)
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BankTransaction' }
+      responses:
+        '200': { description: Accepted }
+        '401': { $ref: '#/components/responses/Problem' }
+  /admin/reports/kpi:
+    get:
+      operationId: getKpiReport
+      tags: [admin-ops]
+      security: [ { adminBearer: [] } ]
+      parameters:
+        - name: from
+          in: query
+          required: true
+          schema: { type: string, format: date }
+        - name: to
+          in: query
+          required: true
+          schema: { type: string, format: date }
+        - name: granularity
+          in: query
+          schema: { type: string, enum: [DAY, WEEK, MONTH], default: DAY }
+      responses:
+        '200':
+          description: KPI series (Asia/Ho_Chi_Minh day boundaries)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/KpiReport' }
+        '400': { $ref: '#/components/responses/Problem' }
+  /admin/payments/reconciliations:
+    get:
+      operationId: listReconciliations
+      tags: [admin-ops]
+      security: [ { adminBearer: [] } ]
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [MATCHED, MISMATCH, PENDING_QUERY, RESOLVED] }
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Reconciliation records
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items: { type: array, items: { $ref: '#/components/schemas/Reconciliation' } }
+                  next_cursor: { type: [string, 'null'] }
+  /admin/payments/reconciliations/{reconciliation_id}/resolve:
+    post:
+      operationId: resolveReconciliation
+      tags: [admin-ops]
+      security: [ { adminBearer: [] } ]
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/IfMatch'
+        - name: reconciliation_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action, note]
+              properties:
+                action: { type: string, enum: [CAPTURE_ORDER, REFUND_PAYMENT, MARK_RESOLVED] }
+                note: { type: string, minLength: 5, maxLength: 500 }
+      responses:
+        '200':
+          description: Resolved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Reconciliation' }
+        '409': { $ref: '#/components/responses/Problem' }
+        '412': { $ref: '#/components/responses/Problem' }
+  /admin/fulfillment/packing-slips:
+    post:
+      operationId: generatePackingSlips
+      tags: [admin-ops]
+      security: [ { adminBearer: [] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [order_ids]
+              properties:
+                order_ids: { type: array, minItems: 1, maxItems: 200, items: { type: string } }
+      responses:
+        '200':
+          description: One PDF, one A6 slip per page
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
+  /admin/imports/products:
+    post:
+      operationId: startProductImport
+      tags: [admin-ops]
+      security: [ { adminBearer: [] } ]
+      parameters: [ { $ref: '#/components/parameters/IdempotencyKey' } ]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file: { type: string, format: binary }
+                dry_run: { type: boolean, default: true }
+      responses:
+        '202':
+          description: Import job accepted
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ImportJob' }
+  /admin/imports/{job_id}:
+    get:
+      operationId: getImportJob
+      tags: [admin-ops]
+      security: [ { adminBearer: [] } ]
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Job status with per-row errors
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ImportJob' }
+  /admin/audit-logs:
+    get:
+      operationId: listAuditLogs
+      tags: [admin-ops]
+      security: [ { adminBearer: [] } ]
+      parameters:
+        - name: actor_id
+          in: query
+          schema: { type: string }
+        - name: entity
+          in: query
+          schema: { type: string }
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Audit entries, newest first
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items: { type: array, items: { $ref: '#/components/schemas/AuditLog' } }
+                  next_cursor: { type: [string, 'null'] }
+  /feeds/google-merchant.xml:
+    get:
+      operationId: getGoogleMerchantFeed
+      tags: [feeds]
+      responses:
+        '200':
+          description: RSS 2.0 product feed (regenerated hourly)
+          content:
+            application/xml:
+              schema: { type: string }
+  /feeds/meta-catalog.csv:
+    get:
+      operationId: getMetaCatalogFeed
+      tags: [feeds]
+      responses:
+        '200':
+          description: Meta/TikTok catalog CSV
+          content:
+            text/csv:
+              schema: { type: string }
+  /health/ready:
+    get:
+      operationId: getReadiness
+      tags: [health]
+      responses:
+        '200': { description: DB, Redis and search reachable }
+        '503': { $ref: '#/components/responses/Problem' }
+components:
+  securitySchemes:
+    customerBearer: { type: http, scheme: bearer }
+    orderLookupToken: { type: apiKey, in: header, name: X-Order-Lookup-Token, description: 'Opaque token from createOrderLookup; 15 min TTL; scoped to one order (ADR-014)' }
+    adminBearer: { type: http, scheme: bearer }
+  parameters:
+    PublishableKey:
+      name: x-publishable-api-key
+      in: header
+      required: true
+      schema: { type: string }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+    IfMatch:
+      name: If-Match
+      in: header
+      required: true
+      schema: { type: string }
+    Cursor:
+      name: cursor
+      in: query
+      schema: { type: string }
+    Limit:
+      name: limit
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 24 }
+  responses:
+    Problem:
+      description: RFC 9457 problem
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+  schemas:
+    Problem:
+      type: object
+      required: [type, title, status]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string }
+        trace_id: { type: string }
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field: { type: string }
+              message: { type: string }
+    Money:
+      type: integer
+      minimum: 0
+      description: Amount in VND (integer, VND has no minor unit). Never a float.
+    AdminUnit:
+      type: object
+      required: [code, name, level]
+      properties:
+        code: { type: string }
+        name: { type: string }
+        level: { type: string, enum: [PROVINCE, WARD] }
+        ghn_code: { type: [string, 'null'], description: Carrier mapping; null if unmapped }
+    SearchHit:
+      type: object
+      required: [product_id, handle, title, thumbnail, price_min]
+      properties:
+        product_id: { type: string }
+        handle: { type: string }
+        title: { type: string }
+        thumbnail: { type: [string, 'null'] }
+        price_min: { $ref: '#/components/schemas/Money' }
+        price_max: { $ref: '#/components/schemas/Money' }
+        rating_avg: { type: [number, 'null'] }
+        in_stock: { type: boolean }
+    Facet:
+      type: object
+      required: [key, values]
+      properties:
+        key: { type: string }
+        values:
+          type: array
+          items:
+            type: object
+            required: [value, count]
+            properties:
+              value: { type: string }
+              count: { type: integer }
+    SearchResult:
+      type: object
+      required: [hits, facets, total_estimate]
+      properties:
+        hits: { type: array, items: { $ref: '#/components/schemas/SearchHit' } }
+        facets: { type: array, items: { $ref: '#/components/schemas/Facet' } }
+        total_estimate: { type: integer }
+        next_cursor: { type: [string, 'null'] }
+        took_ms: { type: integer }
+    ShippingQuote:
+      type: object
+      required: [carrier, status]
+      properties:
+        carrier: { type: string, enum: [GHN, GHTK, FLAT_RATE] }
+        status: { type: string, enum: [OK, UNAVAILABLE, TIMEOUT] }
+        service_name: { type: [string, 'null'] }
+        fee: { $ref: '#/components/schemas/Money' }
+        eta_from: { type: [string, 'null'], format: date }
+        eta_to: { type: [string, 'null'], format: date }
+        shipping_option_id: { type: [string, 'null'] }
+    PaymentReturnStatus:
+      type: object
+      required: [checksum_valid, display_status]
+      properties:
+        checksum_valid: { type: boolean }
+        display_status: { type: string, enum: [PAID, PENDING_CONFIRMATION, FAILED, CANCELLED_BY_USER] }
+        order_id: { type: [string, 'null'], description: Present only once the IPN has completed the order }
+        cart_id: { type: [string, 'null'] }
+    VietqrInstruction:
+      type: object
+      required: [bank_bin, account_number, account_name, amount, memo, qr_payload, expires_at]
+      properties:
+        bank_bin: { type: string }
+        account_number: { type: string }
+        account_name: { type: string }
+        amount: { $ref: '#/components/schemas/Money' }
+        memo: { type: string, pattern: '^VCK[A-Z0-9]{8}$', description: Unique per cart; used for matching }
+        qr_payload: { type: string, description: EMVCo string rendered as QR client-side }
+        expires_at: { type: string, format: date-time }
+    ShipmentStatus:
+      type: string
+      enum: [CREATED, PICKING, PICKED, IN_TRANSIT, DELIVERING, DELIVERED, DELIVERY_FAILED, RETURNING, RETURNED, CANCELLED]
+    ShipmentTracking:
+      type: object
+      required: [carrier, tracking_code, status, events]
+      properties:
+        carrier: { type: string }
+        tracking_code: { type: string }
+        status: { $ref: '#/components/schemas/ShipmentStatus' }
+        events:
+          type: array
+          items:
+            type: object
+            required: [status, at]
+            properties:
+              status: { $ref: '#/components/schemas/ShipmentStatus' }
+              at: { type: string, format: date-time }
+              note: { type: [string, 'null'] }
+    Wishlist:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            required: [variant_id, added_at]
+            properties:
+              variant_id: { type: string }
+              product_id: { type: string }
+              added_at: { type: string, format: date-time }
+    Review:
+      type: object
+      required: [id, rating, status, verified_purchase, created_at]
+      properties:
+        id: { type: string }
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        body: { type: [string, 'null'] }
+        status: { type: string, enum: [PENDING, APPROVED, REJECTED] }
+        verified_purchase: { type: boolean }
+        author_display: { type: string, description: 'Masked, e.g. "Khai P."' }
+        image_urls: { type: array, items: { type: string } }
+        created_at: { type: string, format: date-time }
+    ReviewPage:
+      type: object
+      required: [items, summary]
+      properties:
+        items: { type: array, items: { $ref: '#/components/schemas/Review' } }
+        summary:
+          type: object
+          required: [count, average, distribution]
+          properties:
+            count: { type: integer }
+            average: { type: number }
+            distribution: { type: object, additionalProperties: { type: integer } }
+        next_cursor: { type: [string, 'null'] }
+    VnpayIpnAck:
+      type: object
+      required: [RspCode, Message]
+      properties:
+        RspCode: { type: string, enum: ['00', '01', '02', '04', '97', '99'] }
+        Message: { type: string }
+    BankTransaction:
+      type: object
+      required: [id, amount, content, transaction_date, transfer_type]
+      properties:
+        id: { type: string, description: Provider transaction id (dedupe key) }
+        gateway: { type: string }
+        account_number: { type: string }
+        amount: { $ref: '#/components/schemas/Money' }
+        content: { type: string, description: Free-text memo typed by the payer }
+        transaction_date: { type: string }
+        transfer_type: { type: string, enum: [in, out] }
+    KpiReport:
+      type: object
+      required: [currency, series, totals]
+      properties:
+        currency: { type: string, const: VND }
+        totals:
+          type: object
+          required: [revenue, orders, aov]
+          properties:
+            revenue: { $ref: '#/components/schemas/Money' }
+            orders: { type: integer }
+            aov: { $ref: '#/components/schemas/Money' }
+            conversion_rate: { type: [number, 'null'] }
+        series:
+          type: array
+          items:
+            type: object
+            required: [bucket, revenue, orders]
+            properties:
+              bucket: { type: string, format: date }
+              revenue: { $ref: '#/components/schemas/Money' }
+              orders: { type: integer }
+        top_products:
+          type: array
+          items:
+            type: object
+            properties:
+              product_id: { type: string }
+              title: { type: string }
+              units: { type: integer }
+              revenue: { $ref: '#/components/schemas/Money' }
+    Reconciliation:
+      type: object
+      required: [id, provider, txn_ref, status, expected_amount, version]
+      properties:
+        id: { type: string }
+        provider: { type: string, enum: [VNPAY, VIETQR, MOMO] }
+        txn_ref: { type: string }
+        cart_id: { type: [string, 'null'] }
+        order_id: { type: [string, 'null'] }
+        status: { type: string, enum: [MATCHED, MISMATCH, PENDING_QUERY, RESOLVED] }
+        mismatch_reason:
+          type: [string, 'null']
+          enum: [AMOUNT_DIFF, PAID_NO_ORDER, ORDER_NO_PAYMENT, DUPLICATE_PAYMENT, LATE_PAYMENT_AFTER_CANCEL, null]
+        expected_amount: { $ref: '#/components/schemas/Money' }
+        provider_amount: { type: [integer, 'null'] }
+        version: { type: integer }
+        resolved_by: { type: [string, 'null'] }
+        resolution_note: { type: [string, 'null'] }
+    ImportJob:
+      type: object
+      required: [id, status, dry_run]
+      properties:
+        id: { type: string }
+        status: { type: string, enum: [QUEUED, VALIDATING, RUNNING, SUCCEEDED, FAILED, PARTIAL] }
+        dry_run: { type: boolean }
+        rows_total: { type: integer }
+        rows_ok: { type: integer }
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              row: { type: integer }
+              column: { type: string }
+              message: { type: string }
+    AuditLog:
+      type: object
+      required: [id, actor_id, action, entity, entity_id, at]
+      properties:
+        id: { type: string }
+        actor_id: { type: string }
+        action: { type: string }
+        entity: { type: string }
+        entity_id: { type: string }
+        diff: { type: object, additionalProperties: true }
+        at: { type: string, format: date-time }
+    GuestLookupRequest:
+      type: object
+      required: [display_id, phone]
+      properties:
+        display_id: { type: string, description: 'Order code; accepts "VCK-264091", "vck264091", "264091"; normalised server-side', maxLength: 20 }
+        phone: { type: string, pattern: '^(0|\+84)[0-9]{9}$', description: 'Phone used at checkout; +84 and 0 prefixes are equivalent' }
+        captcha_token: { type: string, description: 'Required when a previous 429 carried captcha_required=true' }
+      additionalProperties: false
+    GuestOrderSession:
+      type: object
+      required: [token, expires_at, order]
+      properties:
+        token: { type: string, description: 'Opaque, 256-bit random; send as X-Order-Lookup-Token' }
+        expires_at: { type: string, format: date-time }
+        order: { $ref: '#/components/schemas/GuestOrderView' }
+    GuestOrderView:
+      type: object
+      description: Masking is applied server-side; unmasked PII never leaves the backend on this surface.
+      required: [display_id, placed_at, status, payment, totals, items, recipient, tracking, actions, zns_opt_in]
+      properties:
+        display_id: { type: string }
+        placed_at: { type: string, format: date-time }
+        status: { enum: [pending, confirmed, shipping, delivered, cancelled, returned] }
+        payment:
+          type: object
+          required: [method, state]
+          properties:
+            method: { enum: [cod, vnpay, vietqr] }
+            state: { enum: [awaiting, paid, cod_pending, cod_collected, refunded, none] }
+        totals:
+          type: object
+          required: [subtotal, shipping, total]
+          properties:
+            subtotal: { $ref: '#/components/schemas/Money' }
+            shipping: { $ref: '#/components/schemas/Money' }
+            total: { $ref: '#/components/schemas/Money' }
+        items:
+          type: array
+          items:
+            type: object
+            required: [title, quantity, total]
+            properties:
+              title: { type: string }
+              variant_title: { type: string }
+              quantity: { type: integer, minimum: 1 }
+              thumbnail: { type: string, format: uri }
+              total: { $ref: '#/components/schemas/Money' }
+        recipient:
+          type: object
+          required: [name_masked, phone_masked, address_masked]
+          properties:
+            name_masked: { type: string, examples: ['Nguyễn *** Anh'] }
+            phone_masked: { type: string, examples: ['0900 *** 123'] }
+            address_masked: { type: string, examples: ['[***], Phường Bến Thành, TP. Hồ Chí Minh'] }
+        eta:
+          type: object
+          properties:
+            from: { type: string, format: date }
+            to: { type: string, format: date }
+        tracking:
+          type: array
+          items: { $ref: '#/components/schemas/ShipmentTracking' }
+        actions:
+          type: object
+          required: [can_cancel, can_opt_in_zns]
+          properties:
+            can_cancel: { type: boolean }
+            cancel_block_reason: { enum: [not_pending, payment_mode_not_allowed, cancellation_disabled, already_cancelled] }
+            can_opt_in_zns: { type: boolean }
+        zns_opt_in: { type: boolean }
+    CancelOtpChallenge:
+      type: object
+      required: [challenge_id, channel, destination_masked, expires_at, resend_after_sec, attempts_left]
+      properties:
+        challenge_id: { type: string }
+        channel: { enum: [zns, sms, email] }
+        destination_masked: { type: string, examples: ['0900 *** 123'] }
+        expires_at: { type: string, format: date-time }
+        resend_after_sec: { type: integer, minimum: 0 }
+        attempts_left: { type: integer, minimum: 0 }
+    GuestCancelRequest:
+      type: object
+      required: [challenge_id, otp, reason_code]
+      properties:
+        challenge_id: { type: string }
+        otp: { type: string, pattern: '^[0-9]{6}$' }
+        reason_code: { enum: [changed_mind, wrong_item_or_size, found_better_price, duplicate_order, delivery_too_slow, other] }
+        note: { type: string, maxLength: 300 }
+      additionalProperties: false

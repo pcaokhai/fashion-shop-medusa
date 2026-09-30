@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-commerce-kit.local/events/engagement-events.schema.json",
+  "title": "Engagement and notification events",
+  "type": "object",
+  "required": ["name", "id", "occurred_at", "version", "data"],
+  "properties": {
+    "name": { "enum": ["vck.review.submitted", "vck.notification.requested", "vck.customer.deletion_scheduled"] },
+    "id": { "type": "string" },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "version": { "const": 1 },
+    "trace_id": { "type": "string" },
+    "data": {
+      "type": "object",
+      "properties": {
+        "review_id": { "type": "string" },
+        "product_id": { "type": "string" },
+        "customer_id": { "type": "string" },
+        "template": { "enum": ["ORDER_CONFIRMED", "PAYMENT_RECEIVED", "SHIPPED", "DELIVERED", "PASSWORD_RESET", "EMAIL_VERIFY"] },
+        "channels": { "type": "array", "items": { "enum": ["EMAIL", "ZALO_ZNS", "SMS"] } },
+        "order_id": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

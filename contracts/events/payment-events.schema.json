@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-commerce-kit.local/events/payment-events.schema.json",
+  "title": "Payment domain events emitted on the Medusa event bus",
+  "description": "Envelope + payloads. Event names: vck.payment.ipn_received, vck.payment.reconciled, vck.payment.mismatch_detected. Payloads carry IDs only, never raw provider payloads with secrets.",
+  "type": "object",
+  "required": ["name", "id", "occurred_at", "version", "data"],
+  "properties": {
+    "name": { "enum": ["vck.payment.ipn_received", "vck.payment.reconciled", "vck.payment.mismatch_detected"] },
+    "id": { "type": "string", "description": "Event id (dedupe key for subscribers)" },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "version": { "const": 1 },
+    "trace_id": { "type": "string" },
+    "data": {
+      "type": "object",
+      "required": ["provider", "txn_ref"],
+      "properties": {
+        "provider": { "enum": ["VNPAY", "VIETQR", "MOMO"] },
+        "txn_ref": { "type": "string" },
+        "cart_id": { "type": ["string", "null"] },
+        "order_id": { "type": ["string", "null"] },
+        "amount": { "type": "integer", "minimum": 0 },
+        "provider_status": { "type": "string" },
+        "mismatch_reason": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

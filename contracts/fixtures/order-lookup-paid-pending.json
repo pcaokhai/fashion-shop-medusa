@@ -1,0 +1,12 @@
+{
+  "display_id": "VCK-264097",
+  "placed_at": "2026-09-29T17:40:00+07:00",
+  "status": "pending",
+  "payment": { "method": "vnpay", "state": "paid" },
+  "totals": { "subtotal": 529000, "shipping": 0, "total": 529000 },
+  "items": [ { "title": "Đầm midi hoa nhí", "variant_title": "S", "quantity": 1, "total": 529000 } ],
+  "recipient": { "name_masked": "Phạm *** Lan", "phone_masked": "0900 *** 456", "address_masked": "[***], Phường Hải Châu, Đà Nẵng" },
+  "tracking": [],
+  "actions": { "can_cancel": false, "cancel_block_reason": "payment_mode_not_allowed", "can_opt_in_zns": true },
+  "zns_opt_in": true
+}
