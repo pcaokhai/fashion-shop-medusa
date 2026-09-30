@@ -1,8 +1,8 @@
 /* global URL, process */
-import { test } from "node:test";
+import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync, execFileSync } from "node:child_process";
-import { mkdtempSync, readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -10,7 +10,13 @@ import { fileURLToPath } from "node:url";
 const here = (p) => fileURLToPath(new URL(`../${p}`, import.meta.url));
 const repo = fileURLToPath(new URL("../../../", import.meta.url));
 const run = (script, args = [], env = {}) => spawnSync(process.execPath, [here(script), ...args], { cwd: repo, encoding: "utf8", env: { ...process.env, ...env } });
-const tmp = () => mkdtempSync(join(tmpdir(), "vck-contracts-"));
+const tmpDirs = [];
+const tmp = () => {
+  const d = mkdtempSync(join(tmpdir(), "vck-contracts-"));
+  tmpDirs.push(d);
+  return d;
+};
+after(() => tmpDirs.forEach((d) => rmSync(d, { recursive: true, force: true })));
 
 test("[VCK-004-AC1] Spectral: real openapi.yaml has 0 errors", () => {
   const r = run("lint.mjs");
@@ -73,6 +79,18 @@ test("[VCK-004-AC1] vck-money-not-float flags amount as type number, also in a t
     writeFileSync(f, realSpec().replace(anchor, `$1${t}`));
     const r = run("lint.mjs", [f]);
     assert.equal(r.status, 1, r.stdout + r.stderr);
+    assert.match(r.stdout, /vck-money-not-float/);
+  }
+});
+
+test("[VCK-004-AC1] vck-money-not-float flags _amount, _vnd and price_ names", () => {
+  for (const [from, to] of [
+    ["expected_amount: { $ref: '#/components/schemas/Money' }", "expected_amount: { type: number }"],
+    ["provider_amount: { type: [integer, 'null'] }", "provider_vnd: { type: number }"],
+    ["price_min: { $ref: '#/components/schemas/Money' }", "price_min: { type: number }"],
+  ]) {
+    const r = lintMutated(from, to);
+    assert.equal(r.status, 1, `${to}\n${r.stdout}${r.stderr}`);
     assert.match(r.stdout, /vck-money-not-float/);
   }
 });
