@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, writeFileSync, chmodSync, rmSync, existsSync, readFileSync } from "node:fs";
 import { tmpdir, homedir } from "node:os";
-import { join } from "node:path";
+import { join, delimiter } from "node:path";
 import { fileURLToPath } from "node:url";
 import { decide } from "../breaking.mjs";
 
@@ -125,7 +125,11 @@ test("[VCK-004-AC2] CLI via oasdiff: fake breaking output blocks, empty array pa
 });
 
 // ---- real oasdiff ----
-const bin = [join(homedir(), "go/bin/oasdiff"), "/usr/local/bin/oasdiff"].find(existsSync);
+const onPath = (process.env.PATH ?? "").split(delimiter).map((d) => join(d, "oasdiff"));
+const bin = [join(homedir(), "go/bin/oasdiff"), "/usr/local/bin/oasdiff", ...onPath].find(existsSync);
+const SKIP = bin ? false : "oasdiff binary not installed; CI's `breaking` job runs these tests";
+// The `breaking` job sets VCK_REQUIRE_OASDIFF=1 so a missing binary fails there instead of skipping silently.
+if (process.env.VCK_REQUIRE_OASDIFF) test("[VCK-004-AC2] oasdiff binary is installed where required", () => assert.ok(bin, "oasdiff not found on PATH"));
 const specV = (schema, desc) =>
   `openapi: 3.0.3\ninfo: {title: t, version: "1"}\npaths:\n  /x:\n    post:\n      operationId: op\n      description: ${desc}\n      requestBody:\n        content:\n          application/json:\n            schema: ${schema}\n      responses: {"200": {description: ok}}\n`;
 const realRun = (a, b, extra = {}) => {
@@ -136,17 +140,17 @@ const realRun = (a, b, extra = {}) => {
 };
 const open = "{type: object, properties: {a: {type: string}}}";
 const req = "{type: object, required: [a], properties: {a: {type: string}}}";
-test("[VCK-004-AC2] real oasdiff: required request field added is breaking", { skip: bin ? false : "oasdiff binary not installed (CI installs it)" }, () => {
+test("[VCK-004-AC2] real oasdiff: required request field added is breaking", { skip: SKIP }, () => {
   const r = realRun(specV(open, "one"), specV(req, "one"));
   assert.equal(r.status, 1, r.stdout + r.stderr);
   assert.match(r.stdout, /request-property-became-required/);
   assert.equal(realRun(specV(open, "one"), specV(req, "one"), { PR_LABELS: JSON.stringify([L]), PR_BODY: ADR }).status, 0);
 });
-test("[VCK-004-AC2] real oasdiff: description-only change is not breaking", { skip: bin ? false : "oasdiff binary not installed (CI installs it)" }, () => {
+test("[VCK-004-AC2] real oasdiff: description-only change is not breaking", { skip: SKIP }, () => {
   const r = realRun(specV(open, "one"), specV(open, "two"));
   assert.equal(r.status, 0, r.stdout + r.stderr);
 });
-test("[VCK-004-AC2] real oasdiff: missing spec file => exit 2", { skip: bin ? false : "oasdiff binary not installed (CI installs it)" }, () => {
+test("[VCK-004-AC2] real oasdiff: missing spec file => exit 2", { skip: SKIP }, () => {
   assert.equal(run({ BASE_SPEC: join(tmp(), "no.yaml"), HEAD_SPEC: join(tmp(), "no.yaml"), OASDIFF_BIN: bin, PR_LABELS: "[]", PR_BODY: "" }).status, 2);
 });
 test("[VCK-004-AC2] ADR-014 exists in the checkout (fixture for the CLI tests)", () => {

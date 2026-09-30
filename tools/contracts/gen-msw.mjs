@@ -62,6 +62,9 @@ function byRoute(a, b) {
   return sa.length - sb.length || (a.method < b.method ? -1 : a.method > b.method ? 1 : 0);
 }
 
+// ids/fixture names land in `//` comments: anything outside this set (newlines, `*/`, quotes) could inject code.
+const safe = (x) => String(x).replace(/[^A-Za-z0-9_.-]/g, "_");
+
 export async function buildMsw({ specFile = specPath, map = readMap().ops, fixturesDir = FIXTURES_DIR } = {}) {
   const ops = map;
   const all = specOperations(specFile).sort(byRoute);
@@ -71,13 +74,13 @@ export async function buildMsw({ specFile = specPath, map = readMap().ops, fixtu
     const e = ops[o.id];
     const path = toMswPath(o.path);
     const body = JSON.stringify(fixtureBody(e, fixturesDir), null, 2).replace(/\n/g, "\n  ");
-    return `  // ${o.id} <- ${e.fixture}${e.key ? `#${e.key}` : ""}\n  http.${o.method}(${JSON.stringify(path)}, () =>\n    HttpResponse.json(${body}, { status: ${e.status} }),\n  ),`;
+    return `  // ${safe(o.id)} <- ${safe(e.fixture)}${e.key ? `#${safe(e.key)}` : ""}\n  http.${o.method}(${JSON.stringify(path)}, () =>\n    HttpResponse.json(${body}, { status: ${e.status} }),\n  ),`;
   });
   return [
     HEADER.trimEnd(),
     "//",
     "// Operations without a fixture (no handler generated):",
-    ...unmapped.map((id) => `//   ${id}`),
+    ...unmapped.map((id) => `//   ${safe(id)}`),
     "",
     'import { http, HttpResponse } from "msw";',
     "",

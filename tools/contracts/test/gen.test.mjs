@@ -214,3 +214,15 @@ test("[VCK-004-AC3] gen-zod: a hung or failing child process throws with the spa
   await assert.rejects(buildZod({ code: "setTimeout(() => {}, 60000)", timeout: 300 }), /orval could not run.*ETIMEDOUT/s);
   await assert.rejects(buildZod({ code: "process.exit(3)" }), /orval failed/);
 });
+
+test("[VCK-004-AC3] gen-msw: a hostile operationId cannot break out of the generated // comments", async () => {
+  const dir = tmp();
+  const specFile = join(dir, "spec.yaml");
+  const evil = "a\\nimport evil from 'x'; /* */";
+  writeFileSync(specFile, `openapi: 3.1.0\ninfo: { title: t, version: "1" }\npaths:\n  /x:\n    get: { operationId: "${evil}", responses: { "200": { description: ok } } }\n  /y:\n    get: { operationId: "b\\nimport evil2 from 'y'", responses: { "200": { description: ok } } }\n`);
+  writeFileSync(join(dir, "f.json"), '{"ok":true}');
+  const text = await buildMsw({ specFile, map: { [`a\nimport evil from 'x'; /* */`]: { fixture: "f.json", status: 200 } }, fixturesDir: dir });
+  for (const line of text.split("\n")) assert.ok(!/^\s*import evil/.test(line), `injected line: ${line}`);
+  assert.ok(text.split("\n").every((l) => !l.startsWith("import evil")));
+  assert.match(text, /a_import_evil_from__x___/);
+});

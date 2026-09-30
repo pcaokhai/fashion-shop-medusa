@@ -18,8 +18,8 @@ contracts:
 contracts-check:
 	pnpm --filter @vck/contracts-tools run contracts-check
 
-# Breaking-change report against a git ref (default origin/main). Needs oasdiff: go install github.com/oasdiff/oasdiff@latest
+# Breaking-change report against a git ref (default origin/main). Needs oasdiff: go install github.com/oasdiff/oasdiff@v1.32.1
 BASE ?= origin/main
 contracts-diff:
-	@command -v oasdiff >/dev/null || { echo "oasdiff not found. Install: go install github.com/oasdiff/oasdiff@latest (or brew install oasdiff)"; exit 1; }
+	@command -v oasdiff >/dev/null || { echo "oasdiff not found. Install: go install github.com/oasdiff/oasdiff@v1.32.1 (or brew install oasdiff)"; exit 1; }
 	@t=$$(mktemp -d) && trap 'rm -rf "$$t"' EXIT && git show "$(BASE):contracts/openapi.yaml" > "$$t/base.yaml" && oasdiff breaking "$$t/base.yaml" contracts/openapi.yaml

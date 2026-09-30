@@ -121,7 +121,9 @@ test("[VCK-004-AC1] vectors: real golden file exists and regenerated output matc
 });
 
 test("[VCK-004-AC1] vectors: clean temp repo passes", () => {
-  assert.equal(run("vectors.mjs", [], { VCK_ROOT: vectorRepo(false).d }).status, 0);
+  const r = run("vectors.mjs", [], { VCK_ROOT: vectorRepo(false).d });
+  assert.equal(r.status, 0);
+  assert.match(r.stdout, /vectors: golden-vectors\.json unchanged/);
 });
 
 test("[VCK-004-AC1] vectors: committed file stale vs generator fails", () => {

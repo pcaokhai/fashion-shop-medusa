@@ -20,3 +20,4 @@ if (!existsSync(`${root}/${golden}`) || !existsSync(`${root}/${gen}`)) fail(`mis
 if (run("git", ["diff", "--quiet", "HEAD", "--", golden]).status !== 0) fail(`${golden} has uncommitted changes (or git failed); commit or restore it before running`);
 if (run("python3", [gen]).status !== 0) fail("generate_vectors.py failed");
 if (run("git", ["diff", "HEAD", "--exit-code", "--", golden]).status !== 0) fail("golden-vectors.json differs from the generator output");
+console.log("vectors: golden-vectors.json unchanged");

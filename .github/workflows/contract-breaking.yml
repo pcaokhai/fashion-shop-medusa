@@ -37,6 +37,10 @@ jobs:
           mkdir -p "$RUNNER_TEMP/bin"
           tar -xzf oasdiff_1.32.1_linux_amd64.tar.gz -C "$RUNNER_TEMP/bin" oasdiff
           echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - name: Breaking-change tests (real oasdiff; a missing binary fails, never skips)
+        env:
+          VCK_REQUIRE_OASDIFF: "1"
+        run: node --test tools/contracts/test/breaking.test.mjs
       - name: Breaking-change gate
         shell: bash
         env:
