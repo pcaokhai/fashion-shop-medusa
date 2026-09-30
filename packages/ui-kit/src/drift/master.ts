@@ -144,7 +144,7 @@ export function expectedTokens(m: Master, motion: Record<string, string>): Recor
   t["--leading-body"] = m.leading.body;
   t["--leading-heading"] = m.leading.heading;
   t["--tracking-heading"] = m.tracking;
-  t["--container-max"] = m.containerMax;
+  t["--layout-max"] = m.containerMax;
   t["--font-sans"] = m.font;
   return { ...t, ...m.space, ...m.radius, ...m.shadow, ...motion };
 }

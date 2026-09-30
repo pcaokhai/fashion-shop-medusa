@@ -23,7 +23,7 @@ const DERIVED = [
   "--leading-body",
   "--leading-heading",
   "--tracking-heading",
-  "--container-max",
+  "--layout-max",
   "--font-sans",
   ...["instant", "fast", "base", "slow", "expressive"].map((d) => `--dur-${d}`),
   ...["standard", "enter", "exit"].map((e) => `--ease-${e}`),
@@ -139,6 +139,10 @@ describe("tokens.css matches MASTER [VCK-009-AC2]", () => {
   it("is plain CSS within 300 lines", () => {
     expect(css.split("\n").length).toBeLessThanOrEqual(300);
     expect((css.match(/@[a-z-]+/g) ?? []).filter((a) => a !== "@theme")).toEqual([]);
+  });
+
+  it("declares no --container-* token (Tailwind v4 namespace for max-w-*/@container)", () => {
+    expect(Object.keys(parseTokensCss(css).tokens).filter((n) => n.startsWith("--container-"))).toEqual([]);
   });
 
   describe("guards fail closed (in-memory mutations)", () => {
