@@ -5,6 +5,7 @@
     "build": { "dependsOn": ["^build"], "outputs": ["dist/**", ".next/**", ".medusa/**"] },
     "lint": {},
     "typecheck": { "dependsOn": ["^typecheck"] },
-    "test": { "dependsOn": ["^build"] }
+    "test": { "dependsOn": ["^build"] },
+    "test:integration": { "cache": false }
   }
 }

@@ -1,0 +1,77 @@
+name: ci
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Record start time
+        shell: bash
+        run: echo "JOB_START=$(date +%s)" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 20
+          cache: pnpm
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ github.sha }}
+          restore-keys: turbo-${{ runner.os }}-
+      - run: pnpm install --frozen-lockfile
+      - name: Lint, typecheck, test (affected only)
+        run: pnpm turbo run lint typecheck test --filter='...[origin/main]'
+      - name: Root policy tests
+        run: node --test scripts/*.test.mjs
+      - name: Job duration
+        if: always()
+        shell: bash
+        run: |
+          echo "checks duration: $(( $(date +%s) - JOB_START ))s" >> "$GITHUB_STEP_SUMMARY"
+
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Record start time
+        shell: bash
+        run: echo "JOB_START=$(date +%s)" >> "$GITHUB_ENV"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 20
+          cache: pnpm
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .turbo
+          key: turbo-int-${{ runner.os }}-${{ github.sha }}
+          restore-keys: turbo-int-${{ runner.os }}-
+      - run: pnpm install --frozen-lockfile
+      - run: make up
+      - name: Integration tests (affected only)
+        run: pnpm turbo run test:integration --filter='...[origin/main]'
+      - name: Tear down
+        if: always()
+        run: make down v=1
+      - name: Job duration
+        if: always()
+        shell: bash
+        run: |
+          echo "integration duration: $(( $(date +%s) - JOB_START ))s" >> "$GITHUB_STEP_SUMMARY"
