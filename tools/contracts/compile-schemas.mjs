@@ -4,8 +4,9 @@ import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { readdirSync, readFileSync } from "node:fs";
 import { resolve, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const dir = resolve(process.argv[2] ?? new URL("../../contracts/events", import.meta.url).pathname);
+const dir = resolve(process.argv[2] ?? fileURLToPath(new URL("../../contracts/events", import.meta.url)));
 const files = readdirSync(dir).filter((f) => f.endsWith(".schema.json")).sort();
 if (!files.length) {
   console.error(`no *.schema.json found in ${dir}`);

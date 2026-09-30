@@ -17,10 +17,15 @@ rules:
   # docs/04: money is integer VND, "no decimals, no floats". docs/04 states no naming convention, so only the
   # unambiguous money names are checked (a blanket ban on `number` would flag rating_avg / conversion_rate).
   vck-money-not-float:
-    description: Money-named properties (amount, *_amount, *_vnd, price_*) must not be type number.
+    description: Money-named properties (amount, *_amount, *_vnd, price_*) must not be type number (also inside a type array).
     severity: error
     given: "$.components.schemas..properties[?(@property.match(/(^amount$|_amount$|_vnd$|^price_)/))]"
     then:
       field: type
-      function: pattern
-      functionOptions: { notMatch: "^number$" }
+      function: schema
+      functionOptions:
+        schema:
+          not:
+            anyOf:
+              - { const: number }
+              - { type: array, contains: { const: number } }
