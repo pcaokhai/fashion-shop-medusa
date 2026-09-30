@@ -11,14 +11,14 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: vck
-      POSTGRES_PASSWORD: vck
-      POSTGRES_DB: vck
+      POSTGRES_USER: ${POSTGRES_USER:-vck}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vck}
+      POSTGRES_DB: ${POSTGRES_DB:-vck}
     ports: ["127.0.0.1:${POSTGRES_PORT:-5432}:5432"]
     volumes: [postgres-data:/var/lib/postgresql/data]
     healthcheck:
       <<: *health
-      test: ["CMD-SHELL", "pg_isready -U vck -d vck"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-vck} -d ${POSTGRES_DB:-vck}"]
 
   redis:
     image: redis:7-alpine
@@ -31,7 +31,7 @@ services:
     image: getmeili/meilisearch:v1.54.2
     environment:
       MEILI_ENV: development
-      MEILI_MASTER_KEY: dev-only-meili-key
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-dev-only-meili-key}
     ports: ["127.0.0.1:${MEILI_PORT:-7700}:7700"]
     volumes: [meili-data:/meili_data]
     healthcheck:

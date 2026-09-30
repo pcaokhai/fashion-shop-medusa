@@ -65,6 +65,16 @@ test("[VCK-002-AC1] documented ${VAR:-default} port defaults hold", { skip }, ()
   assert.deepEqual(pub("ghn-sim"), ["9101:9101"]);
 });
 
+test("[VCK-002-AC4] credential vars default to the previous literals", { skip }, () => {
+  const c = compose().services;
+  assert.deepEqual(
+    [c.postgres.environment.POSTGRES_USER, c.postgres.environment.POSTGRES_PASSWORD, c.postgres.environment.POSTGRES_DB],
+    ["vck", "vck", "vck"],
+  );
+  assert.equal(c.postgres.healthcheck.test[1], "pg_isready -U vck -d vck");
+  assert.equal(c.meilisearch.environment.MEILI_MASTER_KEY, "dev-only-meili-key");
+});
+
 test("[VCK-002-AC2] minio-init is gated on minio health and does not restart", { skip }, () => {
   const c = compose().services["minio-init"];
   assert.equal(c.depends_on.minio.condition, "service_healthy");
@@ -106,7 +116,7 @@ test("[VCK-002-AC3] Makefile has up, down and v=1 handling", () => {
   assert.match(mk, /^\.PHONY:.*\bup\b.*\bdown\b/m);
   assert.match(mk, /^up:\n\tdocker compose -f infra\/docker-compose\.yml up -d --wait --wait-timeout 90$/m);
   assert.match(mk, /^down:\n\tdocker compose -f infra\/docker-compose\.yml down \$\(if \$\(filter 1,\$\(v\)\),-v\)$/m);
-  const dry = (v) => spawnSync("make", ["-n", "down", ...(v === undefined ? [] : [`v=${v}`])], { cwd: root, encoding: "utf8" }).stdout;
+  const dry = (v) => spawnSync("make", ["-n", "down", ...(v === undefined ? [] : [`v=${v}`])], { cwd: root, encoding: "utf8", env: cleanEnv }).stdout;
   assert.match(dry(1), / -v$/m);
   for (const v of [0, "", undefined]) assert.doesNotMatch(dry(v), / -v\b/, `v=${v} must keep volumes`);
 });
