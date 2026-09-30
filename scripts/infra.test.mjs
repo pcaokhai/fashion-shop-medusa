@@ -7,23 +7,33 @@ const root = new URL("../", import.meta.url);
 const hasDocker = spawnSync("docker", ["compose", "version"]).status === 0;
 const skip = hasDocker ? false : "docker compose not available; skipping compose checks";
 
+// Scrubbed env + no .env file: results must not depend on the developer's shell.
+const cleanEnv = Object.fromEntries(
+  Object.entries(process.env).filter(
+    ([k]) => !/^(POSTGRES|REDIS|MEILI|MINIO|MAILPIT|VNPAY_SIM|GHN_SIM|COMPOSE)_/.test(k),
+  ),
+);
 const compose = () => {
   const r = spawnSync(
     "docker",
-    ["compose", "-f", "infra/docker-compose.yml", "config", "--format", "json"],
-    { cwd: root, encoding: "utf8" },
+    ["compose", "--env-file", "/dev/null", "-f", "infra/docker-compose.yml", "config", "--format", "json"],
+    { cwd: root, encoding: "utf8", env: cleanEnv },
   );
   assert.equal(r.status, 0, r.stderr);
   return JSON.parse(r.stdout);
 };
 
-// Task 1 subset; Task 2 adds vnpay-sim, ghn-sim (and minio-init).
-const DATA_SERVICES = ["postgres", "redis", "meilisearch", "minio", "mailpit"];
+const SERVICES = ["postgres", "redis", "meilisearch", "minio", "mailpit", "vnpay-sim", "ghn-sim", "minio-init"];
 
-test("[VCK-002-AC1] compose defines postgres, redis, meilisearch, minio, mailpit", { skip }, () => {
+test("[VCK-002-AC1] compose defines exactly the expected services", { skip }, () => {
   const c = compose();
   assert.equal(c.name, "vck");
-  for (const s of DATA_SERVICES) assert.ok(c.services[s], `missing service ${s}`);
+  assert.deepEqual(Object.keys(c.services).sort(), [...SERVICES].sort());
+});
+
+test("[VCK-002-AC1] only postgres, meilisearch, minio have named volumes", { skip }, () => {
+  const c = compose();
+  assert.deepEqual(Object.keys(c.volumes).sort(), ["meili-data", "minio-data", "postgres-data"]);
 });
 
 test("[VCK-002-AC1] host ports match docs/02 §8 and R-002-1", { skip }, () => {
@@ -34,6 +44,8 @@ test("[VCK-002-AC1] host ports match docs/02 §8 and R-002-1", { skip }, () => {
     meilisearch: [7700],
     minio: [9002, 9003],
     mailpit: [1025, 8025],
+    "vnpay-sim": [9100],
+    "ghn-sim": [9101],
   };
   for (const [svc, ports] of Object.entries(expected)) {
     const got = c.services[svc].ports.map((p) => {
@@ -42,6 +54,25 @@ test("[VCK-002-AC1] host ports match docs/02 §8 and R-002-1", { skip }, () => {
     });
     assert.deepEqual(got.sort(), ports, svc);
   }
+});
+
+test("[VCK-002-AC1] documented ${VAR:-default} port defaults hold", { skip }, () => {
+  const c = compose();
+  const pub = (s) => c.services[s].ports.map((p) => `${p.published}:${p.target}`).sort();
+  assert.deepEqual(pub("postgres"), ["5432:5432"]);
+  assert.deepEqual(pub("minio"), ["9002:9000", "9003:9001"]);
+  assert.deepEqual(pub("vnpay-sim"), ["9100:9100"]);
+  assert.deepEqual(pub("ghn-sim"), ["9101:9101"]);
+});
+
+test("[VCK-002-AC2] minio-init is gated on minio health and does not restart", { skip }, () => {
+  const c = compose().services["minio-init"];
+  assert.equal(c.depends_on.minio.condition, "service_healthy");
+  assert.equal(c.restart, "no");
+});
+
+test("[VCK-002-AC2] minio is pinned by digest", { skip }, () => {
+  assert.match(compose().services.minio.image, /@sha256:[0-9a-f]{64}$/);
 });
 
 test("[VCK-002-AC2] every service has a healthcheck", { skip }, () => {
@@ -56,5 +87,8 @@ test("[VCK-002-AC3] Makefile has up, down and v=1 handling", () => {
   const mk = readFileSync(new URL("Makefile", root), "utf8");
   assert.match(mk, /^\.PHONY:.*\bup\b.*\bdown\b/m);
   assert.match(mk, /^up:\n\tdocker compose -f infra\/docker-compose\.yml up -d --wait --wait-timeout 90$/m);
-  assert.match(mk, /^down:\n\tdocker compose -f infra\/docker-compose\.yml down \$\(if \$\(v\),-v\)$/m);
+  assert.match(mk, /^down:\n\tdocker compose -f infra\/docker-compose\.yml down \$\(if \$\(filter 1,\$\(v\)\),-v\)$/m);
+  const dry = (v) => spawnSync("make", ["-n", "down", ...(v === undefined ? [] : [`v=${v}`])], { cwd: root, encoding: "utf8" }).stdout;
+  assert.match(dry(1), / -v$/m);
+  for (const v of [0, "", undefined]) assert.doesNotMatch(dry(v), / -v\b/, `v=${v} must keep volumes`);
 });
