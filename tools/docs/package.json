@@ -1,0 +1,12 @@
+{
+  "name": "@vck/docs-tools",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc -p . --noEmit",
+    "test": "node --test test/*.test.mjs",
+    "docs-check": "node check.mjs"
+  }
+}
