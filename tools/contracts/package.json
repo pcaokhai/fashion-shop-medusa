@@ -1,0 +1,17 @@
+{
+  "name": "@vck/contracts-tools",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc -p . --noEmit",
+    "test": "node --test test/*.test.mjs",
+    "contracts": "node lint.mjs && node compile-schemas.mjs && node vectors.mjs"
+  },
+  "devDependencies": {
+    "@stoplight/spectral-cli": "^6.16.3",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
+  }
+}

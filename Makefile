@@ -1,4 +1,4 @@
-.PHONY: up down
+.PHONY: up down contracts
 
 # A root .env is passed explicitly: compose's project dir is infra/, so it would otherwise be ignored.
 COMPOSE := docker compose -f infra/docker-compose.yml $(if $(wildcard .env),--env-file .env)
@@ -8,3 +8,6 @@ up:
 
 down:
 	$(COMPOSE) down $(if $(filter 1,$(v)),-v)
+
+contracts:
+	pnpm --filter @vck/contracts-tools run contracts
