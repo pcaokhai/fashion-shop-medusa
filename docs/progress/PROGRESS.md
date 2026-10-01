@@ -4,11 +4,11 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 ## Now
 - Sprint: 0 — Repo, infra, CI, contracts, skeletons (docs/07 §3)
 - Goal: `make up && make dev` shows empty storefront and admin; contracts pipeline green
-- In progress: VCK-009 PR C1 (motion tokens + primitives) awaiting review
-- Next: VCK-009 C2 → VCK-006
+- In progress: VCK-009 PR C2 (`/_design` review route) awaiting review
+- Next: VCK-006
 - Blocked: VNPay sandbox registration pending (R-02)
 - Open rulings: Node 20 LTS is EOL (2026-04-30) — decide ADR to move to Node 22 (would re-allow pnpm 11); CI checks are advisory: no branch protection on private free plan (R-003-16)
-- Review queue: VCK-009 C1
+- Review queue: VCK-009 C2
 
 ## Checkpoints
 | Slice | Date | Result | Evidence |
@@ -16,7 +16,14 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 
 ## Log
 <!-- newest first; one entry per merged story (docs/12 §2) -->
-### 2026-10-02 · VCK-009 (PR C1 of 4) motion tokens + primitives · WEB · PR open (feat/VCK-009-motion)
+### 2026-10-02 · VCK-009 (PR C2 of 4) /_design review route · WEB · PR open (feat/VCK-009-design-route)
+- AC: AC5 proven by src/app/design-gate.test.ts (`isDesignRouteEnabled` true for development/test, false for production/undefined/staging; page calls `notFound()` when disabled), mutation-proven (production enabled, notFound removed); AC3 visual: e2e/design.spec.ts after `document.fonts.ready` Be Vietnam Pro face loaded, unicodeRange has 1EA0, `document.fonts.check` true for the Vietnamese sample (real Google Fonts, network). Local Playwright (dev, reduced, prod projects): 10 passed in the final run on Node 24 (swatch count = tokens.css `--color-*` count, type/Button/Badge/Chip/motion specimens, Tab ring colour, reduced-motion samples `data-motion="reduced"` and no transform, production `/_design` 404, screenshots 375/768/1440 without horizontal overflow)
+- Decisions: R-009-25 (folder `%5Fdesign`: a plain `_design` is a Next private folder; real URL `/_design` tested); `/_design` is `page.dev.tsx`, present only under `next dev` (phase-based `pageExtensions`; production build has no route, chunk or manifest entry; `NODE_ENV=test` build/start and ISR revalidation all 404); script bytes (gzip -9) first-load JS = scripts in the built HTML incl. noModule polyfills: `/` 168.9 KB (<= 170), `/_design` 203.9 KB (scratch build with the route enabled; about +35 KB for Reveal, R-009-24, over the 25 KB budget); bytes Chrome downloads (e2e, cap 145 KB): `/` 130.6 KB, `/_design` 165.8 KB; Button/Badge/Chip are route-local token-styled specimens (no ui-kit API invented); `agentRules: false` in next.config.mjs stops `next dev` editing apps/storefront/CLAUDE.md (guard test in scripts/web-config.test.mjs)
+- Dependencies: @playwright/test@1.63.0 (Apache-2.0, storefront dev only; prod licence gate green); e2e is local-only, no CI job
+- Bugs: none
+- DoD docs/13 §6: [x] tokens only, lint green; [x] reduced-motion variant verified; [ ] MASTER §6 / axe 0 serious and keyboard path (only Tab ring covered); [~] screenshots 375/768/1440 attached to PR (screen recording pending); [ ] Lighthouse mobile and CI bundle budgets (no CI job)
+- Follow-ups: owner budget decision R-009-24 (re-scope 25 KB Motion budget or use §4.6 CSS reveal); reduced-motion toggle UI and persistence (VCK-006); Stagger `as` prop; axe run and screen recording; e2e into CI later
+### 2026-10-02 · VCK-009 (PR C1 of 4) motion tokens + primitives · WEB · merged d0e533a (PR #11)
 - AC: AC4 proven by ui-kit motion.test.ts (motion.ts = docs/13 §4.2 table = tokens.css `--dur-*`/`--ease-*`; changed docs/ts values and a missing row fail) and motion/motion.test.tsx + motion.ssr.test.tsx (OS x toggle matrix, reduced = opacity only <=100 ms, delay 0, `data-motion`; below-fold Reveal starts {opacity 0, y 16} with expressive/enter; in-viewport at mount not animated; Stagger 0..350 then 0 from the 9th; SSR markup has no inline opacity/transform; real `LazyMotion strict` accepts `m`); mutation-proven (token edit, forced-full, always-armed, reduced keeps y, stagger max, SSR hidden)
 - Decisions: R-009-9 (`LazyMotion domAnimation strict` + `m`, now inside `Reveal`, R-009-24; ESLint bans the `motion` namespace); Reveal arms after mount and only below the fold (SSR and LCP stay visible; armed state is remounted on a reduced flip, `key`); `transpilePackages: ["@vck/ui-kit"]` in next.config.mjs (ui-kit exports TS source); Stagger wraps each child in a `div` (Reveal)
 - Dependencies: motion@13.4.6 (MIT, no engines field; storefront prod + ui-kit dev); ui-kit dev: react, react-dom 19.3.0, jsdom@27.4.0 (^20.19), @testing-library/react@16.3.3, @testing-library/dom@10.4.2, @types/react(-dom)@19.3.0; prod licence gate green
