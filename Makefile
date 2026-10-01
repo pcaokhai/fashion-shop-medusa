@@ -1,4 +1,4 @@
-.PHONY: up down contracts contracts-check contracts-diff docs-check
+.PHONY: up down contracts contracts-check contracts-diff docs-check release
 
 # A root .env is passed explicitly: compose's project dir is infra/, so it would otherwise be ignored.
 COMPOSE := docker compose -f infra/docker-compose.yml $(if $(wildcard .env),--env-file .env)
@@ -27,3 +27,9 @@ contracts-diff:
 # docs/12 §6 shipped subset (BUG, PROGRESS Now, RELEASE sections, required files, indexes); exits 1 on any violation.
 docs-check:
 	node tools/docs/check-cli.mjs
+
+# docs/12 §4 draft only: RELEASE-<v>.md + CHANGELOG block + index row; never commits or tags. Usage: make release VERSION=x.y.z
+# VERSION reaches the script through the environment ("$$VERSION"), never spliced into shell text; the script validates it.
+release:
+	@[ -n "$$VERSION" ] || { echo "usage: make release VERSION=x.y.z"; exit 1; }
+	node tools/docs/release-cli.mjs "$$VERSION"

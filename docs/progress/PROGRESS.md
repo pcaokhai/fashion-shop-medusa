@@ -4,11 +4,11 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 ## Now
 - Sprint: 0 — Repo, infra, CI, contracts, skeletons (docs/07 §3)
 - Goal: `make up && make dev` shows empty storefront and admin; contracts pipeline green
-- In progress: VCK-009 PR B1 (lint + token hardening) awaiting review
-- Next: VCK-009 B2, C1, C2 → VCK-006; VCK-008 PR-B (make release)
+- In progress: VCK-008 PR-B (make release) awaiting review
+- Next: VCK-009 B2, C1, C2 → VCK-006
 - Blocked: VNPay sandbox registration pending (R-02)
 - Open rulings: Node 20 LTS is EOL (2026-04-30) — decide ADR to move to Node 22 (would re-allow pnpm 11); CI checks are advisory: no branch protection on private free plan (R-003-16)
-- Review queue: VCK-009 PR B1
+- Review queue: VCK-008 PR-B
 
 ## Checkpoints
 | Slice | Date | Result | Evidence |
@@ -16,6 +16,12 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 
 ## Log
 <!-- newest first; one entry per merged story (docs/12 §2) -->
+### 2026-10-02 · VCK-008 (PR-B of 2) make release · PLAT · PR open (feat/VCK-008-make-release)
+- AC: AC2 proven by the PR-B share of the tools/docs suite (205 total incl. PR-A's) and scripts/docs-ci.test.mjs (no workflow runs `make release`; usage guard); dry run on `--no-hardlinks` clones of the real repo
+- Decisions: R-008-12..21 (draft meant to fail docs-check until edited; no `--force`; atomic three-file write; CLAUDE.md not edited). Size exception R-008-20: ≈1700 changed lines (≈545 code, ≈1070 test, ≈87 docs) over the 400 guideline, one cohesive CLI, splitting would leave a dead half
+- Dependencies: none
+- Bugs: none
+- Follow-ups: hostile findings fixed in review (NUL-delimited log, wx guard, symlink/mode/date); `--no-show-signature` untested; gpg-signed-commit not exercised (ordering and untagged-previous-release now refused); `.changeset/` consumption manual; CLAUDE.md §3 comment wording (user item)
 ### 2026-10-02 · VCK-009 (PR B1 of 4) lint + token hardening · WEB · PR open (feat/VCK-009-design-system-b)
 - AC: AC2 second half proven: storefront lint rule `vck/no-raw-values` fails raw hex/colour functions and px values (apps/storefront/eslint/*, 137 tests, mutation-proven, severity guard) + `check-css.mjs`; tokens.css is `@theme static` with nine `--text-*--line-height` companions, proven by a real Tailwind 4.3.3 compile test (ui-kit 60 tests)
 - Decisions: plan docs/plans/VCK-009.md R-009-6, R-009-7, R-009-15 (4 PRs: B1 lint+tokens, B2 Next scaffold+font+licence exceptions, C1 motion, C2 /_design), R-009-16 (owner decision: keep sharp, per-package LGPL exceptions in B2)
