@@ -1,1 +1,77 @@
-[]
+[
+  {
+    "package": "@img/sharp-libvips-darwin-arm64",
+    "licence": "LGPL-3.0-or-later",
+    "reason": "prebuilt libvips binaries dynamically bundled by sharp (Apache-2.0); LGPL-3.0-or-later: allowed for use, delivery obligations apply — keep the notice, do not modify libvips, the library must stay replaceable (see docs/12 §4 and R-15)"
+  },
+  {
+    "package": "@img/sharp-libvips-darwin-x64",
+    "licence": "LGPL-3.0-or-later",
+    "reason": "prebuilt libvips binaries dynamically bundled by sharp (Apache-2.0); LGPL-3.0-or-later: allowed for use, delivery obligations apply — keep the notice, do not modify libvips, the library must stay replaceable (see docs/12 §4 and R-15)"
+  },
+  {
+    "package": "@img/sharp-libvips-linux-arm",
+    "licence": "LGPL-3.0-or-later",
+    "reason": "prebuilt libvips binaries dynamically bundled by sharp (Apache-2.0); LGPL-3.0-or-later: allowed for use, delivery obligations apply — keep the notice, do not modify libvips, the library must stay replaceable (see docs/12 §4 and R-15)"
+  },
+  {
+    "package": "@img/sharp-libvips-linux-arm64",
+    "licence": "LGPL-3.0-or-later",
+    "reason": "prebuilt libvips binaries dynamically bundled by sharp (Apache-2.0); LGPL-3.0-or-later: allowed for use, delivery obligations apply — keep the notice, do not modify libvips, the library must stay replaceable (see docs/12 §4 and R-15)"
+  },
+  {
+    "package": "@img/sharp-libvips-linux-ppc64",
+    "licence": "LGPL-3.0-or-later",
+    "reason": "prebuilt libvips binaries dynamically bundled by sharp (Apache-2.0); LGPL-3.0-or-later: allowed for use, delivery obligations apply — keep the notice, do not modify libvips, the library must stay replaceable (see docs/12 §4 and R-15)"
+  },
+  {
+    "package": "@img/sharp-libvips-linux-riscv64",
+    "licence": "LGPL-3.0-or-later",
+    "reason": "prebuilt libvips binaries dynamically bundled by sharp (Apache-2.0); LGPL-3.0-or-later: allowed for use, delivery obligations apply — keep the notice, do not modify libvips, the library must stay replaceable (see docs/12 §4 and R-15)"
+  },
+  {
+    "package": "@img/sharp-libvips-linux-s390x",
+    "licence": "LGPL-3.0-or-later",
+    "reason": "prebuilt libvips binaries dynamically bundled by sharp (Apache-2.0); LGPL-3.0-or-later: allowed for use, delivery obligations apply — keep the notice, do not modify libvips, the library must stay replaceable (see docs/12 §4 and R-15)"
+  },
+  {
+    "package": "@img/sharp-libvips-linux-x64",
+    "licence": "LGPL-3.0-or-later",
+    "reason": "prebuilt libvips binaries dynamically bundled by sharp (Apache-2.0); LGPL-3.0-or-later: allowed for use, delivery obligations apply — keep the notice, do not modify libvips, the library must stay replaceable (see docs/12 §4 and R-15)"
+  },
+  {
+    "package": "@img/sharp-libvips-linuxmusl-arm64",
+    "licence": "LGPL-3.0-or-later",
+    "reason": "prebuilt libvips binaries dynamically bundled by sharp (Apache-2.0); LGPL-3.0-or-later: allowed for use, delivery obligations apply — keep the notice, do not modify libvips, the library must stay replaceable (see docs/12 §4 and R-15)"
+  },
+  {
+    "package": "@img/sharp-libvips-linuxmusl-x64",
+    "licence": "LGPL-3.0-or-later",
+    "reason": "prebuilt libvips binaries dynamically bundled by sharp (Apache-2.0); LGPL-3.0-or-later: allowed for use, delivery obligations apply — keep the notice, do not modify libvips, the library must stay replaceable (see docs/12 §4 and R-15)"
+  },
+  {
+    "package": "@img/sharp-wasm32",
+    "licence": "Apache-2.0 AND LGPL-3.0-or-later AND MIT",
+    "reason": "sharp platform package bundling libvips (LGPL-3.0-or-later component): allowed for use, delivery obligations apply — keep the notice, do not modify libvips, the library must stay replaceable (see docs/12 §4 and R-15)"
+  },
+  {
+    "package": "@img/sharp-win32-arm64",
+    "licence": "Apache-2.0 AND LGPL-3.0-or-later",
+    "reason": "sharp platform package bundling libvips (LGPL-3.0-or-later component): allowed for use, delivery obligations apply — keep the notice, do not modify libvips, the library must stay replaceable (see docs/12 §4 and R-15)"
+  },
+  {
+    "package": "@img/sharp-win32-ia32",
+    "licence": "Apache-2.0 AND LGPL-3.0-or-later",
+    "reason": "sharp platform package bundling libvips (LGPL-3.0-or-later component): allowed for use, delivery obligations apply — keep the notice, do not modify libvips, the library must stay replaceable (see docs/12 §4 and R-15)"
+  },
+  {
+    "package": "@img/sharp-win32-x64",
+    "licence": "Apache-2.0 AND LGPL-3.0-or-later",
+    "reason": "sharp platform package bundling libvips (LGPL-3.0-or-later component): allowed for use, delivery obligations apply — keep the notice, do not modify libvips, the library must stay replaceable (see docs/12 §4 and R-15)"
+  },
+  {
+    "package": "caniuse-lite",
+    "licence": "CC-BY-4.0",
+    "reason": "browser-support data, attribution only, via next/browserslist"
+  }
+]

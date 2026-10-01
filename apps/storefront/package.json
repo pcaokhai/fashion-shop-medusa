@@ -9,8 +9,18 @@
     "build": "tsc -p . --noEmit",
     "gen:api": "pnpm --filter @vck/contracts-tools run gen"
   },
+  "dependencies": {
+    "@vck/ui-kit": "workspace:*",
+    "next": "16.3.8",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
   "devDependencies": {
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
     "msw": "^2.15.0",
+    "tailwindcss": "4.3.3",
     "vitest": "4.1.11"
   }
 }
