@@ -11,19 +11,37 @@ function blank(s) {
 }
 
 // Blank (keep newlines, so line numbers hold) comments and @media/@container/@supports preludes.
+// "/*" inside strings and url(...) is not a comment. Returns { text, unclosed: index of an unclosed comment | -1 }.
 export function stripCss(css) {
   let out = "";
   let i = 0;
+  let unclosed = -1;
   while (i < css.length) {
-    const open = css.indexOf("/*", i);
-    if (open === -1) break;
-    const close = css.indexOf("*/", open + 2);
-    const end = close === -1 ? css.length : close + 2;
-    out += css.slice(i, open) + blank(css.slice(open, end));
+    const rest = css.slice(i, i + 4).toLowerCase();
+    let end; // end of a span to copy verbatim
+    if (css.startsWith("/*", i)) {
+      const close = css.indexOf("*/", i + 2);
+      end = close === -1 ? css.length : close + 2;
+      if (close === -1) unclosed = i;
+      out += blank(css.slice(i, end));
+      i = end;
+      continue;
+    }
+    if (css[i] === '"' || css[i] === "'") {
+      end = i + 1;
+      while (end < css.length && css[end] !== css[i] && css[end] !== "\n") end += css[end] === "\\" ? 2 : 1;
+      end = Math.min(end + 1, css.length);
+    } else if (rest === "url(" && !/^\s*["']/.test(css.slice(i + 4, i + 24))) {
+      const close = css.indexOf(")", i + 4);
+      end = close === -1 ? css.length : close + 1;
+    } else {
+      out += css[i++];
+      continue;
+    }
+    out += css.slice(i, end);
     i = end;
   }
-  out += css.slice(i);
-  return out.replace(/@(?:media|container|supports)\b[^{;]*/gi, blank);
+  return { text: out.replace(/@(?:media|container|supports)\b[^{;]*/gi, blank), unclosed };
 }
 
 function listCss(dir) {
@@ -38,7 +56,12 @@ export function checkCss(dir) {
   const files = listCss(dir);
   const violations = [];
   for (const f of files) {
-    const text = stripCss(readFileSync(f, "utf8"));
+    const raw = readFileSync(f, "utf8");
+    const { text, unclosed } = stripCss(raw);
+    if (unclosed !== -1) {
+      const line = raw.slice(0, unclosed).split("\n").length;
+      violations.push(`${relative(dir, f)}:${line}: unclosed comment`);
+    }
     let line = 1;
     let pos = 0;
     for (const h of findRawValues(text)) {

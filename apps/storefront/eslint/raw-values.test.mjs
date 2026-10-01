@@ -18,6 +18,8 @@ const POSITIVE = [
   ["var colour fn + hex", "rgb(var(--x)) #fff", "hex"], ["from var + px", "oklch(from var(--x) l c h) 13px", "px"],
   ["var colour fn, px arg", "hsl(var(--h) 10% 13px)", "px"], ["var not first arg", "rgb(1, var(--x), 3)", "colour-fn"],
   ["fn named like var", "rgb(variable 1 2)", "colour-fn"], ["from literal", "oklch(from #fff l c h)", "hex"], ["px after hyphen", "w-13px", "px"], ["color-mix var fallback literal", "color-mix(in oklab, var(--x, red) 10%, transparent)", "color-mix"], ["tailwind px", "p-[13px]", "px"], ["negative px", "m-[-13px]", "px"], ["-3px", "-3px", "px"],
+  ["var fallback number", "rgb(var(--nope, 255) 0 0)", "colour-fn"], ["var fallback number hsl", "hsl(var(--h, 0) 100% 50%)", "colour-fn"],
+  ["comma form after var", "rgb(var(--x), 255, 0)", "colour-fn"], ["from var fallback number", "oklch(from var(--x, 1) l c h)", "colour-fn"],
   ["0.5px is flagged (only 0/1/2px allowed)", "0.5px", "px"], ["1.5px", "1.5px", "px"], [".5px", ".5px", "px"],
   ["uppercase PX", "13PX", "px"], ["css padding", "a{padding:13px}", "px"], ["template-ish", "p-[13px] ${x}", "px"],
 ];
@@ -27,6 +29,16 @@ const NEGATIVE = [
   'href="#"', 'href="#section"', "url(#a)", "http://x.test/#fff", "&#123;", "#12", "#12345", "#1234567", "#fffffffff",
   "scolor(1)", "my-color(1)", "1px solid var(--color-border)", "oklch(from var(--primary) l c h / .5)", "rgb(var(--x))", "hsl(var(--h) 10% 10%)",
   "rgba(var(--x) / .5)", "color(from var(--x) srgb r g b)", "RGB( VAR(--x))", "rgb(\nvar(--x))", "color-mix(in oklab, var(--color-red) 10%, var(--white))", "13", "px", "rem 1rem", "h1px", "calc(var(--space-4) * 2)",
+  "rgb(var(--x, var(--y)) 0 0)", "rgb(var(--x, calc(1 + 2)))", "rgb(var(--x), var(--y), calc(var(--z) * 2))", "rgb(var(--x), r, g)",
+];
+// accepted misses (R-009-7): pinned so a behaviour change is a conscious decision.
+const ACCEPTED_MISSES = [
+  ["relative colour, literal channels", "oklch(from var(--x) .6 .2 30)"],
+  ["relative colour(), literal channels", "color(from var(--x) srgb 1 0 0)"],
+  ["CSS escape: hex", "#ff\\0066"],
+  ["CSS escape: leading escape hex", "\\23fff"],
+  ["CSS escape: px unit", "13\\70x"],
+  ["CSS escape: paren", "rgb\\28 1,2,3)"],
 ];
 
 describe("findRawValues [VCK-009-AC2]", () => {
@@ -34,6 +46,9 @@ describe("findRawValues [VCK-009-AC2]", () => {
     expect(kinds(text)).toContain(kind);
   });
   it.each(NEGATIVE)("allows %s", (text) => {
+    expect(findRawValues(text)).toEqual([]);
+  });
+  it.each(ACCEPTED_MISSES)("accepted miss: %s", (_n, text) => {
     expect(findRawValues(text)).toEqual([]);
   });
   it("reports value and index", () => {

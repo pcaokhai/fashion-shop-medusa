@@ -12,7 +12,7 @@ export interface ParsedTokens {
 /** Reads the single `@theme static { ... }` block of tokens.css. Throws if there is none or it is not `static`. */
 export function parseTokensCss(css: string): ParsedTokens {
   const bare = css.replace(/\/\*[\s\S]*?\*\//g, "");
-  const m = /@theme\s*(static)?\s*\{([\s\S]*?)\}/.exec(bare);
+  const m = /@theme(?:\s+(static))?\s*\{([\s\S]*?)\}/.exec(bare);
   if (!m) throw new Error("tokens.css: no @theme block");
   const isStatic = m[1] === "static";
   const tokens: Record<string, string> = {};

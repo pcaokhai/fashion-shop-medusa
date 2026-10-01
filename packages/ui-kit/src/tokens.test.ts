@@ -176,6 +176,9 @@ describe("tokens.css matches MASTER [VCK-009-AC2]", () => {
       }
       expect(checkTokens(`${css}\n/* a comment */\n`, expected)).toEqual([]);
     });
+    it("rejects the invalid `@themestatic {` spelling", () => {
+      expect(() => parseTokensCss(css.replace("@theme static {", "@themestatic {"))).toThrow(/@theme/);
+    });
     it("throws when there is no @theme block", () => {
       expect(() => parseTokensCss(":root { --a: 1; }")).toThrow(/@theme/);
     });

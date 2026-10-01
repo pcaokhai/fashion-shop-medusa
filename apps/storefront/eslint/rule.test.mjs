@@ -51,6 +51,7 @@ describe("vck/no-raw-values via ESLint [VCK-009-AC2]", () => {
     const cfg = await eslint.calculateConfigForFile(`${cwd}src/x.tsx`);
     expect(cfg.rules[RULE][0]).toBe(2);
   });
+  // root `**/generated/**` is the real ignore; the storefront-level entry only repeats it
   it("never lints src/generated (ignored by ESLint, no rule message)", async () => {
     const file = `${cwd}src/generated/x.ts`;
     expect(await eslint.isPathIgnored(file)).toBe(true);
@@ -58,6 +59,10 @@ describe("vck/no-raw-values via ESLint [VCK-009-AC2]", () => {
     expect(r.messages).toHaveLength(1);
     expect(r.messages[0]).toMatchObject({ ruleId: null, severity: 1 });
     expect(r.messages[0].message).toMatch(/ignore/i);
+  });
+  it.each(["ts", "tsx", "mts", "cts", "js", "jsx", "mjs", "cjs"])("rule is configured for src/a.%s", async (ext) => {
+    const cfg = await eslint.calculateConfigForFile(`${cwd}src/a.${ext}`);
+    expect(cfg.rules[RULE]?.[0]).toBe(2);
   });
   it("preserves root rules in the same run (no-explicit-any)", async () => {
     const got = await ids('export const a: any = "#c00";');

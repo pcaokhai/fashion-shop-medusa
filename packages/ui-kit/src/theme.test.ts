@@ -9,7 +9,7 @@ import { checkTokens, parseTokensCss } from "./drift/check";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 const cssPath = resolve(root, "packages/ui-kit/src/tokens.css");
 const css = readFileSync(cssPath, "utf8");
-const SOURCE = '@import "tailwindcss/utilities.css" layer(utilities);\n@source inline("bg-primary rounded-md bg-red-500 max-w-max text-body");\n';
+const SOURCE = '@import "tailwindcss/theme.css" layer(theme);\n@import "tailwindcss/utilities.css" layer(utilities);\n@source inline("bg-primary rounded-md bg-red-500 max-w-max text-body");\n';
 
 const STEPS = ["caption", "small", "body", "lead", "h4", "h3", "h2", "h1", "display"];
 const BODY_STEPS = ["caption", "small", "body", "lead"];

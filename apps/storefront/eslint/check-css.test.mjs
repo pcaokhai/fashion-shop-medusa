@@ -27,7 +27,7 @@ const CASES = [
   ["raw px", "a{padding:13px}", 1],
   ["px inside media body", "@media (min-width: 768px){a{padding:13px}}", 1],
   ["comment only", "/* #fff 13px rgb(1,2,3) */ a{margin:0}", 0],
-  ["unclosed comment", "a{margin:0} /* #fff", 0],
+  ["unclosed comment fails closed", "a{margin:0} /* #fff", 1],
   ["colour fn", "a{color:oklch(68% .2 250)}", 1],
   ["allowed 1px", "a{border:1px solid var(--color-border)}", 0],
 ];
@@ -39,6 +39,25 @@ describe("check-css [VCK-009-AC2]", () => {
       expect(r.status, r.stdout + r.stderr).toBe(code);
     });
   }
+  const PLANTED = "\na{color:#fff}\nb{padding:13px}";
+  for (const [name, head] of [
+    ["@source glob", '@source "../app/*.tsx";'],
+    ["@source brace glob", '@source "../../packages/ui-kit/src/*.{ts,tsx}";'],
+    ["url( with /*", "a{background:url(/*x.png)}"],
+    ["string with /*", 'a{content:"/*"}'],
+    ["single-quoted string with /*", "a{content:'/*'}"],
+  ]) {
+    it(`${name} does not hide later violations`, (t) => {
+      const r = run(withDir(t, { "a.css": head + PLANTED }));
+      expect(r.status).toBe(1);
+      expect(r.stderr).toMatch(/#fff/);
+      expect(r.stderr).toMatch(/13px/);
+    });
+  }
+  it("reports unclosed comment with its line", (t) => {
+    const r = run(withDir(t, { "a.css": "a{}\n/* open" }));
+    expect(r.stderr).toMatch(/a\.css:2: unclosed comment/);
+  });
   it("reports path:line: message", (t) => {
     const r = run(withDir(t, { "deep/a.css": "a{}\n/* c */\nb{color:#fff}" }));
     expect(r.stderr).toMatch(/deep[\\/]a\.css:3: .*#fff/);
@@ -64,7 +83,7 @@ describe("check-css [VCK-009-AC2]", () => {
   it("handles a 1 MB line quickly", (t) => {
     const dir = withDir(t, { "big.css": "a{margin:0}" + " ".repeat(1e6) + "/*".repeat(1e5) });
     const t0 = Date.now();
-    expect(run(dir).status).toBe(0);
+    expect(run(dir).status).toBe(1);
     expect(Date.now() - t0).toBeLessThan(5000);
   });
 });
