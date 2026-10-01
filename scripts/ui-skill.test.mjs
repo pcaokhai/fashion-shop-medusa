@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { hashTree } from './ui-skill-hash.mjs';
 
@@ -45,6 +45,15 @@ const pyImports = (dir) => {
   return JSON.parse(r.stdout);
 };
 
+const trackedFiles = () => {
+  const r = spawnSync('git', ['ls-files', '-z', '--', '.claude/skills/ui-ux-pro-max'], { cwd: ROOT, encoding: 'buffer' });
+  assert.equal(r.status, 0, 'git ls-files failed');
+  const files = r.stdout.toString('utf8').split('\0').filter(Boolean);
+  assert.ok(files.length > 0, 'git ls-files returned nothing');
+  return files;
+};
+const pinned = () => decisionSection(ADR).match(/sha256:[0-9a-f]{64}/)?.[0];
+
 const walk = (dir) =>
   readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
     e.isDirectory() ? walk(join(dir, e.name)) : [join(dir, e.name)],
@@ -63,7 +72,11 @@ test('[VCK-009-AC1] tree hash is sensitive to one byte and fails closed', (t) =>
   const repo = join(tmp, 'repo');
   const copy = join(repo, 'skill');
   mkdirSync(repo);
-  cpSync(SKILL, copy, { recursive: true });
+  for (const f of trackedFiles()) {
+    const dst = join(repo, f.replace('.claude/skills/ui-ux-pro-max', 'skill'));
+    mkdirSync(dirname(dst), { recursive: true });
+    cpSync(join(ROOT, f), dst);
+  }
   git(repo, 'init', '-q');
   git(repo, 'add', '-A');
   git(repo, 'commit', '-q', '-m', 'x');
@@ -86,7 +99,7 @@ test('[VCK-009-AC1] untracked files in the real skill dir do not change the hash
   const junk = join(SKILL, '.DS_Store.vck-test');
   writeFileSync(junk, 'junk');
   t.after(() => rmSync(junk, { force: true }));
-  assert.equal(hashTree(SKILL), ADR.match(/sha256:[0-9a-f]{64}/)[0]);
+  assert.equal(hashTree(SKILL), pinned());
 });
 
 test('[VCK-009-AC1] ADR pin outside the Decision section does not count', () => {
@@ -102,6 +115,8 @@ test('[VCK-009-AC1] nested non-stdlib python import is caught', (t) => {
 });
 
 test('[VCK-009-AC1] search.py runs offline with stdlib only and writes no bytecode', () => {
+  const caches = () => walk(SKILL).filter((f) => f.includes('__pycache__'));
+  const before = caches();
   const r = spawnSync(
     'python3',
     [join(SKILL, 'scripts/search.py'), 'vietnamese ecommerce', '--domain', 'typography'],
@@ -109,7 +124,7 @@ test('[VCK-009-AC1] search.py runs offline with stdlib only and writes no byteco
   );
   assert.equal(r.status, 0, r.stderr);
   assert.match(r.stdout, /Be Vietnam Pro/);
-  assert.deepEqual(walk(SKILL).filter((f) => f.includes('__pycache__')), []);
+  assert.deepEqual(caches().filter((f) => !before.includes(f)), []);
 });
 
 test('[VCK-009-AC1] every import in skill scripts/*.py is stdlib or a sibling module', () => {
@@ -123,8 +138,10 @@ test('[VCK-009-AC1] settings.json keeps data/** and scripts/tests/** Read-denied
   for (const d of ['data', 'scripts/tests']) {
     assert.ok(deny.includes(`Read(./.claude/skills/ui-ux-pro-max/${d}/**)`), d);
   }
-  const files = spawnSync('git', ['ls-files'], { cwd: ROOT, encoding: 'utf8' }).stdout;
-  assert.ok(!files.includes('__pycache__'));
+  const ls = spawnSync('git', ['ls-files'], { cwd: ROOT, encoding: 'utf8' });
+  assert.equal(ls.status, 0, 'git ls-files failed');
+  assert.ok(ls.stdout.length > 0, 'git ls-files returned nothing');
+  assert.ok(!ls.stdout.includes('__pycache__'));
   assert.ok(readFileSync(join(ROOT, '.gitignore'), 'utf8').split('\n').includes('__pycache__/'));
   assert.ok(existsSync(SKILL));
 });

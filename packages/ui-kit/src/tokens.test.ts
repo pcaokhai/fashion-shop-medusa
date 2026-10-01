@@ -165,6 +165,17 @@ describe("tokens.css matches MASTER [VCK-009-AC2]", () => {
       expect(bad).not.toBe(css);
       expect(checkTokens(bad, expected).join("\n")).toMatch(/initial/);
     });
+    it("fails when --color-*: initial is not the first declaration", () => {
+      const bad = css.replace(/--color-\*:\s*initial;/, "").replace(/\n}\s*$/, "\n  --color-*: initial;\n}\n");
+      expect(bad).not.toBe(css);
+      expect(checkTokens(bad, expected).join("\n")).toMatch(/first declaration/);
+    });
+    it("fails on CSS outside the @theme block", () => {
+      for (const extra of [":root{--color-sneaky:#f00}", "body{color:red}"]) {
+        expect(checkTokens(`${css}\n${extra}\n`, expected).join("\n")).toMatch(/outside @theme/);
+      }
+      expect(checkTokens(`${css}\n/* a comment */\n`, expected)).toEqual([]);
+    });
     it("throws when there is no @theme block", () => {
       expect(() => parseTokensCss(":root { --a: 1; }")).toThrow(/@theme/);
     });

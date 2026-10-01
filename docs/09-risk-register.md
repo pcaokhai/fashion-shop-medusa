@@ -19,6 +19,7 @@ It is the end of Sprint 7 and the project failed. What happened?
 | R-12 | Guest lookup used to enumerate orders or leak PII | launch-blocking for R1.1 | ADR-014: two factors, generic 404, constant time, IP/order limits, captcha, server-side masking; TS-20 in CI; watch `guest_access_event` for sequential scans | PKG | Sprint 8 |
 | R-13 | OTP abuse drives ZNS/SMS cost (SMS pumping) | fast-follow | OTP only for cancel; policy checked before sending; 60 s cooldown, 5 sends/h/order, IP limits; alert on send spikes; SMS fallback optional | PKG | Sprint 8 |
 | R-11 | Animations hurt performance, accessibility or look "AI-generic" | fast-follow | Motion budgets + reduced-motion E2E (TS-19); curated MASTER, not raw generator output; design QA gate docs/13 §6 | WEB | Sprint 1, 6 |
+| R-14 | ui-ux-pro-max licence unresolved (MIT in package.json vs CC-BY-NC-4.0 in README); a client delivery could ship non-commercial content | launch-blocking (client delivery) | Repo private; exclude the skill dir from deliveries (docs/12 §4); confirm upstream; if NC is confirmed, drop the vendored tree and keep MASTER | WEB/PLAT | before first client delivery |
 
 ## Paper tigers
 | Concern | Why not real |

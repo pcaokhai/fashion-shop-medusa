@@ -17,12 +17,12 @@ Option 3 with motion stack (c). Skill installed project-level from `ui-ux-pro-ma
 are the design source of truth; regeneration with `--force` needs tech-lead approval and a new deviation review.
 Library licences recorded at pin time.
 Pin: no version string exists inside the skill, so the pin is the CLI version plus the tree hash
-`sha256:26d48ef152b7044793f6c6f72da98fbb780253a4a7f18f4672c8661b9c1d631c` (sorted `path\0bytes` of every file; `node scripts/ui-skill-hash.mjs`, checked by `scripts/ui-skill.test.mjs`).
+`sha256:26d48ef152b7044793f6c6f72da98fbb780253a4a7f18f4672c8661b9c1d631c` (sorted `path\0bytes` of every git-tracked file; `node scripts/ui-skill-hash.mjs`, checked by `scripts/ui-skill.test.mjs`).
 Licence: MIT, as declared in the `license` field of `ui-ux-pro-max-cli@2.15.0` `package.json` (registry `npm view` also says MIT). The tarball
 carries no LICENSE file for the skill, no `repository` field and an empty `author`, so the copyright holder and original text could not be
 verified from the package; the full MIT text is therefore not reproduced here. Open item: the CLI README says CC-BY-NC-4.0, which conflicts
-with `package.json`; the owner must confirm the licence upstream before a client delivery (no copyright line is invented here). Python: the skill scripts use the standard library only (no pip); verified on 3.14 locally,
-3.12 on ubuntu-24.04 is proven only by the first CI run. `data/**` and `scripts/tests/**` stay Read-denied in `.claude/settings.json`.
+with `package.json`; the owner must confirm the licence upstream before a client delivery (no copyright line is invented here). Python: the skill scripts use the standard library only (no pip); verified on 3.14 locally and
+on Python 3.12.13 (reviewer-verified: search.py and the import check passed); CI runs 3.12 on ubuntu-24.04 and its first run confirms. `data/**` and `scripts/tests/**` stay Read-denied in `.claude/settings.json`.
 
 ## Consequences
 Consistent, explainable design decisions (useful in client pitches); small extra curation work on regeneration;
