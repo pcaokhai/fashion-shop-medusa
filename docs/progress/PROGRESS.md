@@ -17,7 +17,7 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 ## Log
 <!-- newest first; one entry per merged story (docs/12 §2) -->
 ### 2026-10-02 · VCK-008 (PR-B of 2) make release · PLAT · PR open (feat/VCK-008-make-release)
-- AC: AC2 proven by the PR-B share of the tools/docs suite (201 total incl. PR-A's) and scripts/docs-ci.test.mjs (no workflow runs `make release`; usage guard); dry run on `--no-hardlinks` clones of the real repo
+- AC: AC2 proven by the PR-B share of the tools/docs suite (205 total incl. PR-A's) and scripts/docs-ci.test.mjs (no workflow runs `make release`; usage guard); dry run on `--no-hardlinks` clones of the real repo
 - Decisions: R-008-12..21 (draft meant to fail docs-check until edited; no `--force`; atomic three-file write; CLAUDE.md not edited). Size exception R-008-20: ≈1700 changed lines (≈545 code, ≈1070 test, ≈87 docs) over the 400 guideline, one cohesive CLI, splitting would leave a dead half
 - Dependencies: none
 - Bugs: none
