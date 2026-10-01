@@ -47,8 +47,8 @@ function checkRelease(md, heads, template) {
       continue;
     }
     const b = norm(found[0]);
-    if (b === "") out.push(`section '${h}' is empty`);
-    else if (b === norm(template.get(h))) out.push(`section '${h}' is still the template placeholder`);
+    if (b === "") out.push(`section '${h}' is empty (write 'None.' if nothing applies)`);
+    else if (b === norm(template.get(h))) out.push(`section '${h}' is still the template placeholder (write 'None.' if nothing applies)`);
   }
   return out;
 }

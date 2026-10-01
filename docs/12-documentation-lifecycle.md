@@ -56,3 +56,9 @@ don't merit an ADR; promote a ruling to an ADR if a second story depends on it.
 ## 6. Checks (`make docs-check`)
 Validates: required docs exist; YAML/JSON parse; story ids referenced exist; ADR links resolve; BUG files have required
 fields and closed bugs have regression test ids; RELEASE files have all sections; PROGRESS "Now" ≤ 15 lines.
+
+Shipped now (VCK-008): BUG records (fields; closed bugs need a root cause and a regression test id), PROGRESS "Now" ≤ 15
+lines, RELEASE files with every section of `RELEASE-template.md` (derived from the template at check time), required
+files present and non-empty, BUG and RELEASE index rows matching the files on disk. DEFERRED: dead links, story-id
+existence, ADR link resolution, YAML/JSON parse. Author rule: a required RELEASE section that is empty or still the
+template's own placeholder fails; write `None.` when nothing applies.

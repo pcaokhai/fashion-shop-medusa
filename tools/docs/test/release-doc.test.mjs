@@ -67,12 +67,12 @@ for (const h of NINE) {
   });
   test(`[VCK-008-AC1] release with empty '## ${h}' (comment only) fails`, () => {
     const md = release().replace(`## ${h}\n${body(h)}\n`, `## ${h}\n<!-- todo -->\n`);
-    fails(run(withRel("RELEASE-1.2.3.md", md)), new RegExp(`## ${h}.*empty`));
+    fails(run(withRel("RELEASE-1.2.3.md", md)), new RegExp(`## ${h}.*empty.*\\(write 'None\\.' if nothing applies\\)`));
   });
 }
 test("[VCK-008-AC1] section body identical to the template's own prompt text is a placeholder (fails)", () => {
   const md = release().replace(`## Summary\n${body("Summary")}\n`, "## Summary\n<2–3 sentences: what users/staff can now do>\n");
-  fails(run(withRel("RELEASE-1.2.3.md", md)), /## Summary.*placeholder|## Summary.*empty/);
+  fails(run(withRel("RELEASE-1.2.3.md", md)), /## Summary.*placeholder.*\(write 'None\.' if nothing applies\)/);
 });
 test("[VCK-008-AC1] a section filled with 'None.' passes (non-empty rule)", () => {
   const md = release().replace(`## Known issues\n${body("Known issues")}\n`, "## Known issues\nNone.\n");
