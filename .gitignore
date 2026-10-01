@@ -14,3 +14,5 @@ tools/seed/out/
 .superpowers/
 /AGENTS.md
 __pycache__/
+.next-*/
+test-results/

@@ -9,7 +9,8 @@
     "lint": "eslint . && node eslint/check-css.mjs",
     "typecheck": "next typegen && tsc -p . --noEmit",
     "test": "vitest run",
-    "gen:api": "pnpm --filter @vck/contracts-tools run gen"
+    "gen:api": "pnpm --filter @vck/contracts-tools run gen",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@vck/ui-kit": "workspace:*",
@@ -19,6 +20,7 @@
     "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "20.19.43",
     "@types/react": "19.3.0",

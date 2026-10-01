@@ -1,6 +1,8 @@
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
+  // tsconfig has jsx: preserve (Next compiles JSX); tests need a real transform
+  oxc: { jsx: { runtime: "automatic" } },
   test: {
     environment: "node",
     include: ["eslint/**/*.test.mjs", "src/**/*.test.{ts,tsx}"],
