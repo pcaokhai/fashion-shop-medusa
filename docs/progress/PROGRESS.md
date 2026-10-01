@@ -4,11 +4,11 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 ## Now
 - Sprint: 0 — Repo, infra, CI, contracts, skeletons (docs/07 §3)
 - Goal: `make up && make dev` shows empty storefront and admin; contracts pipeline green
-- In progress: VCK-009 PR B2 (Next scaffold + font + licence exceptions) awaiting review
-- Next: VCK-009 C1, C2 → VCK-006
+- In progress: VCK-009 PR C1 (motion tokens + primitives) awaiting review
+- Next: VCK-009 C2 → VCK-006
 - Blocked: VNPay sandbox registration pending (R-02)
 - Open rulings: Node 20 LTS is EOL (2026-04-30) — decide ADR to move to Node 22 (would re-allow pnpm 11); CI checks are advisory: no branch protection on private free plan (R-003-16)
-- Review queue: VCK-009 B2
+- Review queue: VCK-009 C1
 
 ## Checkpoints
 | Slice | Date | Result | Evidence |
@@ -16,7 +16,13 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 
 ## Log
 <!-- newest first; one entry per merged story (docs/12 §2) -->
-### 2026-10-02 · VCK-009 (PR B2 of 4) Next scaffold + font + licence exceptions · WEB · PR open (feat/VCK-009-next-scaffold)
+### 2026-10-02 · VCK-009 (PR C1 of 4) motion tokens + primitives · WEB · PR open (feat/VCK-009-motion)
+- AC: AC4 proven by ui-kit motion.test.ts (motion.ts = docs/13 §4.2 table = tokens.css `--dur-*`/`--ease-*`; changed docs/ts values and a missing row fail) and motion/motion.test.tsx + motion.ssr.test.tsx (OS x toggle matrix, reduced = opacity only <=100 ms, delay 0, `data-motion`; below-fold Reveal starts {opacity 0, y 16} with expressive/enter; in-viewport at mount not animated; Stagger 0..350 then 0 from the 9th; SSR markup has no inline opacity/transform; real `LazyMotion strict` accepts `m`); mutation-proven (token edit, forced-full, always-armed, reduced keeps y, stagger max, SSR hidden)
+- Decisions: R-009-9 (`LazyMotion domAnimation strict` + `m`); Reveal arms after mount and only below the fold (SSR and LCP stay visible; armed state is remounted on a reduced flip, `key`); `transpilePackages: ["@vck/ui-kit"]` in next.config.mjs (ui-kit exports TS source); Stagger wraps each child in a `div` (Reveal)
+- Dependencies: motion@13.4.6 (MIT, no engines field; storefront prod + ui-kit dev); ui-kit dev: react, react-dom 19.3.0, jsdom@27.4.0 (^20.19), @testing-library/react@16.3.3, @testing-library/dom@10.4.2, @types/react(-dom)@19.3.0; prod licence gate green
+- Bugs: none
+- Follow-ups: gzipped client JS grows about 38 KB with MotionProvider in layout (208 KB vs 170 KB all chunks, Next runtime included) vs the 25 KB Motion budget (docs/13 §4.5): C2 measures `/_design`; if over, load `domAnimation` lazily (`features={() => import(...)}`) in a follow-up; footer reduced-motion toggle UI and persistence (VCK-006); a Reveal-in-list `as` prop if `div` wrappers break `ul > li`
+### 2026-10-02 · VCK-009 (PR B2 of 4) Next scaffold + font + licence exceptions · WEB · merged a639546 (PR #10)
 - AC: AC3 proven by src/app/fonts.test.ts (weights 400-700, vietnamese+latin, swap, `--font-be-vietnam-pro`, `--font-sans` starts with Be Vietnam Pro, `lang="vi"`, unicode-range covers the sample string and rejects 漢) and AC2 by globals.test.ts (tailwind then tokens import, 2px `--color-ring` focus ring, reduced-motion block, no raw values); both mutation-proven. Build smoke green: `next build` (Turbopack, network) and offline `NEXT_FONT_GOOGLE_MOCKED_RESPONSES=$PWD/apps/storefront/test/font-mock.cjs next build --webpack`
 - Decisions: R-009-4, R-009-16 (owner decision: LGPL/CC-BY licence exceptions kept per package), R-009-17..22; typecheck = `next typegen && tsc`, next-env.d.ts gitignored; Turbopack ignores the font mock for woff2 files so the offline smoke uses `--webpack`; no `onlyBuiltDependencies` change (build needs none)
 - Dependencies: next@16.3.8, react@19.3.0, react-dom@19.3.0, tailwindcss@4.3.3, @tailwindcss/postcss@4.3.3, @types/react@19.3.0, @types/react-dom@19.3.0, @types/node@20.19.43 (storefront dev)
