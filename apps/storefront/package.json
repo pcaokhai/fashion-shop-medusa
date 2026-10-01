@@ -3,10 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "eslint . && node eslint/check-css.mjs",
-    "typecheck": "tsc -p . --noEmit",
+    "typecheck": "next typegen && tsc -p . --noEmit",
     "test": "vitest run",
-    "build": "tsc -p . --noEmit",
     "gen:api": "pnpm --filter @vck/contracts-tools run gen"
   },
   "dependencies": {
@@ -17,6 +19,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "20.19.43",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "msw": "^2.15.0",
