@@ -4,11 +4,11 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 ## Now
 - Sprint: 0 — Repo, infra, CI, contracts, skeletons (docs/07 §3)
 - Goal: `make up && make dev` shows empty storefront and admin; contracts pipeline green
-- In progress: VCK-008 PR-A docs-check (feat/VCK-008-docs-tooling)
-- Next: VCK-008 PR-B (make release), VCK-009 PR B/C → VCK-006
+- In progress: VCK-009 PR A (skill + tokens) awaiting review
+- Next: VCK-009 PR B, PR C → VCK-006; VCK-008 PR-B (make release)
 - Blocked: VNPay sandbox registration pending (R-02)
 - Open rulings: Node 20 LTS is EOL (2026-04-30) — decide ADR to move to Node 22 (would re-allow pnpm 11); CI checks are advisory: no branch protection on private free plan (R-003-16)
-- Review queue: VCK-008 PR-A
+- Review queue: VCK-009 PR A
 
 ## Checkpoints
 | Slice | Date | Result | Evidence |
@@ -16,7 +16,13 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 
 ## Log
 <!-- newest first; one entry per merged story (docs/12 §2) -->
-### 2026-10-02 · VCK-008 (PR-A of 2) docs-check · PLAT · PR open (feat/VCK-008-docs-tooling)
+### 2026-10-02 · VCK-009 (PR A of 3) skill + tokens · WEB · PR open (feat/VCK-009-design-system)
+- AC: AC1 (skill 2.15.0 vendored, hash pin in ADR-013, smoke + import checks in scripts/ui-skill.test.mjs) and AC2 first half (tokens.css + drift tests: 66 MASTER/docs13 tokens, 37 DERIVED, contrast table) proven
+- Decisions: plan docs/plans/VCK-009.md; R-009-1..13
+- Dependencies: vitest@4.1.11, @types/node@20.19.43
+- Bugs: none
+- Follow-ups: `docs:` PR to MASTER (name the 37 DERIVED tokens; muted-foreground 7.6:1 is on card, 7.30 on background; rating/card 2.15:1 exemption); PR B (lint + Next scaffold + font + `@theme static` check + `--text-*--line-height`; record `onlyBuiltDependencies`); PR C (motion + /_design); `tsconfig.test.json` alternative to `"types": ["node"]`; Python 3.12.13 passed search.py and the import check locally (reviewer-verified), CI first run confirms; ADR-013 licence conflict (package.json MIT vs README CC-BY-NC-4.0) to confirm; root `eslint .` reports 2 pre-existing errors in tools/sims/vnpay/server.mjs (`process` not defined), PLAT follow-up
+### 2026-10-02 · VCK-008 (PR-A of 2) docs-check · PLAT · merged edc1151 (PR #6)
 - AC: 1, 3 and the RELEASE/required-file/index checks proven by tools/docs tests (17 hostile.test.mjs tests plus round2/round3, release-doc); AC4 (PR template + CI step) by scripts/docs-ci.test.mjs; CI `checks` job runs `node tools/docs/check-cli.mjs`
 - Decisions: plan docs/plans/VCK-008.md; R-008-1..11 (no new dependency, Node stdlib; check-cli.mjs is the only entry, no main-module heuristic; fence- and comment-aware parsing)
 - Bugs: none

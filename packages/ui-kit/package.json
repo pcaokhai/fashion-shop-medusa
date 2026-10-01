@@ -2,10 +2,18 @@
   "name": "@vck/ui-kit",
   "version": "0.0.0",
   "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./src/tokens.css"
+  },
   "scripts": {
     "lint": "eslint .",
     "typecheck": "tsc -p . --noEmit",
-    "test": "echo \"no tests yet\"",
+    "test": "vitest run",
     "build": "tsc -p . --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "20.19.43",
+    "vitest": "4.1.11"
   }
 }

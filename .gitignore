@@ -13,3 +13,4 @@ tools/seed/out/
 .turbo/
 .superpowers/
 /AGENTS.md
+__pycache__/
