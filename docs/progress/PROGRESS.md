@@ -4,11 +4,11 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 ## Now
 - Sprint: 0 — Repo, infra, CI, contracts, skeletons (docs/07 §3)
 - Goal: `make up && make dev` shows empty storefront and admin; contracts pipeline green
-- In progress: VCK-009 PR A (skill + tokens) awaiting review
-- Next: VCK-009 PR B, PR C → VCK-006; VCK-008 PR-B (make release)
+- In progress: VCK-009 PR B1 (lint + token hardening) awaiting review
+- Next: VCK-009 B2, C1, C2 → VCK-006; VCK-008 PR-B (make release)
 - Blocked: VNPay sandbox registration pending (R-02)
 - Open rulings: Node 20 LTS is EOL (2026-04-30) — decide ADR to move to Node 22 (would re-allow pnpm 11); CI checks are advisory: no branch protection on private free plan (R-003-16)
-- Review queue: VCK-009 PR A
+- Review queue: VCK-009 PR B1
 
 ## Checkpoints
 | Slice | Date | Result | Evidence |
@@ -16,6 +16,12 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 
 ## Log
 <!-- newest first; one entry per merged story (docs/12 §2) -->
+### 2026-10-01 · VCK-009 (PR B1 of 4) lint + token hardening · WEB · PR open (feat/VCK-009-design-system-b)
+- AC: AC2 second half proven: storefront lint rule `vck/no-raw-values` fails raw hex/colour functions and px values (apps/storefront/eslint/*, 109 tests, mutation-proven, severity guard) + `check-css.mjs`; tokens.css is `@theme static` with nine `--text-*--line-height` companions, proven by a real Tailwind 4.3.3 compile test (ui-kit 59 tests)
+- Decisions: plan docs/plans/VCK-009.md R-009-6, R-009-7, R-009-15 (4 PRs: B1 lint+tokens, B2 Next scaffold+font+licence exceptions, C1 motion, C2 /_design), R-009-16 (owner decision: keep sharp, per-package LGPL exceptions in B2)
+- Dependencies: vitest@4.1.11 (storefront tests); tailwindcss@4.3.3, @tailwindcss/postcss@4.3.3, postcss@8.5.23 (theme compile test), all MIT; dev-only transitive lightningcss is MPL-2.0 (CI licence gate covers --prod only, stays green)
+- Bugs: none
+- Follow-ups: B2, C1, C2; decide whether the licence gate should also cover dev dependencies (all-deps check currently fails on argparse Python-2.0, Unlicense deps, lightningcss MPL-2.0)
 ### 2026-10-02 · VCK-009 (PR A of 3) skill + tokens · WEB · PR open (feat/VCK-009-design-system)
 - AC: AC1 (skill 2.15.0 vendored, hash pin in ADR-013, smoke + import checks in scripts/ui-skill.test.mjs) and AC2 first half (tokens.css + drift tests: 66 MASTER/docs13 tokens, 37 DERIVED, contrast table) proven
 - Decisions: plan docs/plans/VCK-009.md; R-009-1..13
