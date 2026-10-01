@@ -17,12 +17,16 @@ export function parseChangeset(text, name = "changeset") {
     if (!m || !PKG.test(m[1])) throw fail(`bad front-matter line '${l}' (expected "pkg": patch|minor|major)`);
     return { name: m[1], bump: m[2] };
   });
+  const dup = packages.find((p, i) => packages.findIndex((q) => q.name === p.name) !== i);
+  if (dup) throw fail(`duplicate package '${dup.name}'`);
   if (packages.length === 0) throw fail("front-matter lists no packages");
   const summary = lines.slice(end + 1).join("\n").trim();
   if (summary === "") throw fail("empty summary");
   return { packages, summary };
 }
 
+// Only the exact name README.md is skipped; hidden files and lowercase readme.md are parsed (and so fail unless valid).
+// Dirent.isFile() is false for symlinks, so a symlinked *.md is refused too.
 /** All `*.md` (README.md excluded) in `dir`, sorted. A missing dir is zero changesets; every other problem throws. */
 export function readChangesets(dir) {
   let entries;

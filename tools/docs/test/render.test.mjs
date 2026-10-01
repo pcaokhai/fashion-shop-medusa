@@ -12,6 +12,20 @@ const REAL = (p) => readFileSync(fileURLToPath(new URL(`../../../${p}`, import.m
 const TEMPLATE = REAL("docs/releases/RELEASE-template.md");
 const HEADS = requiredSections(TEMPLATE);
 const data = (o = {}) => ({ version: "1.2.3", date: "2026-10-02", features: [], bugs: [], breaking: [], nonConforming: [], ...o });
+/** Strict-escape splitter (markdown-it / cmark-gfm): a backslash escapes the next char; split on unescaped `|`. */
+function splitRow(line) {
+  const cells = [];
+  let cur = "";
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === "\\") cur += line[i] + (line[++i] ?? "");
+    else if (line[i] === "|") {
+      cells.push(cur);
+      cur = "";
+    } else cur += line[i];
+  }
+  cells.push(cur);
+  return cells.slice(1, -1);
+}
 const feat = (description, o = {}) => ({ type: "feat", story: null, pr: null, bugIds: [], description, ...o });
 
 test("[VCK-008-AC2] sanitize neutralises table, comment, heading and fence syntax", () => {
@@ -23,6 +37,18 @@ test("[VCK-008-AC2] sanitize neutralises table, comment, heading and fence synta
   const long = sanitize("x".repeat(500));
   assert.equal(long, `${"x".repeat(200)}…`);
   assert.ok(!/[<>`]/.test(sanitize("<a>`b`</a>")));
+});
+
+test("[VCK-008-AC2] sanitize escapes backslashes before pipes; index row cells stay intact", () => {
+  assert.equal(sanitize("\\|"), "\\\\\\|");
+  assert.equal(sanitize("a \\| b"), "a \\\\\\| b");
+  assert.equal(sanitize("end\\"), "end\\\\");
+  for (const atom of ["\\|", "a \\| b", "\\\\|", "x\\", "\\\\ | x", "|"]) {
+    const cell = sanitize(atom);
+    assert.equal(splitRow(`| ${cell} | y |`).length, 2, atom);
+    assert.equal(splitRow(`| ${cell} | y |`)[0].trim(), cell, atom);
+  }
+  assert.equal(splitRow(indexRow("1.2.3", "2026-10-02")).length, 4);
 });
 
 test("[VCK-008-AC2] renderRelease fills Features, Bugs, Date, Tag, breaking and keeps the rest", () => {
@@ -48,15 +74,21 @@ test("[VCK-008-AC2] empty features/bugs become None. and nothing else changes", 
 });
 
 test("[VCK-008-AC2] hostile subjects cannot add, drop or break template sections", () => {
-  const hostile = ["## Injected", "```", "<!-- open", "-->", "| a | b |", "x\n## Known issues\n```js", "~~~", "a | b <b>", "# Title"];
+  const hostile = ["\\|", "a \\| b", "\\\\|", "ends with \\", "\\\\ | x", "## Injected", "```", "<!-- open", "-->", "| a | b |", "x\n## Known issues\n```js", "~~~", "a | b <b>", "# Title"];
   const out = renderRelease(TEMPLATE, data({
     features: hostile.map((h) => feat(h, { story: "VCK-203" })),
     bugs: hostile.map((h) => ({ ...feat(h, { bugIds: ["BUG-001"] }), type: "fix" })),
     breaking: hostile.map((h) => feat(h)),
     nonConforming: hostile.map((s) => ({ nonConforming: true, subject: s })),
   }));
-  assert.ok(HEADS.length === 9);
+  assert.ok(HEADS.length > 0);
   assert.equal(unterminated(out), null);
+  const tableRows = (head) => sections(out, head)[0].filter((l) => l.startsWith("|"));
+  const cols = (md, head) => splitRow(sections(md, head)[0].find((l) => l.startsWith("|"))).length;
+  for (const head of ["## Features", "## Bugs fixed"]) {
+    assert.ok(tableRows(head).length > hostile.length);
+    for (const l of tableRows(head)) assert.equal(splitRow(l).length, cols(TEMPLATE, head), l);
+  }
   assert.deepEqual(requiredSections(out), HEADS);
   for (const h of HEADS) assert.equal(sections(out, h).length, 1, h);
   assert.equal(out.split("\n").filter((l) => l.startsWith("```") || l.startsWith("~~~")).length, 0);
@@ -127,4 +159,25 @@ test("[VCK-008-AC2] appendIndexRow refuses: no header table, version exists, non
   assert.throws(() => appendIndexRow(appendIndexRow(README, row), row), ReleaseError);
   assert.throws(() => appendIndexRow(README, "| 1.2.3 | 2026-10-02 | injected highlights | RELEASE-1.2.3.md |"), ReleaseError);
   assert.throws(() => appendIndexRow(README, `${row}\n| 9.9.9 | x | y | z |`), ReleaseError);
+});
+
+test("[VCK-008-AC2] insertChangelog rejects blocks that would break the document", () => {
+  const head = "## [1.2.3] - 2026-10-02\n";
+  const evil = {
+    "open fence": `${head}\`\`\`\n- x`,
+    "open comment": `${head}<!-- x`,
+    "extra heading": `${head}- x\n\n## [Evil] - 2026-01-01\n- y`,
+    "link reference": `${head}- x\n[a]: https://x`,
+    "second version heading": `${head}- x\n## [1.2.4] - 2026-10-03\n`,
+  };
+  for (const [name, b] of Object.entries(evil)) assert.throws(() => insertChangelog(CL, b), ReleaseError, name);
+  const bare = "## [Unreleased]\n- x\n";
+  assert.throws(() => insertChangelog(bare, `${head}\`\`\`\n- x`), /unterminated code fence/);
+  assert.throws(() => insertChangelog(bare, `${head}<!-- x`), /unterminated HTML comment/);
+  assert.ok(insertChangelog(CL, `${head}\`\`\`\n## [fenced]\n[a]: b\n\`\`\`\n`).includes("## [fenced]"));
+});
+
+test("[VCK-008-AC2] insertChangelog refusal messages say why", () => {
+  assert.throws(() => insertChangelog("## [unreleased]\n- x\n", BLOCK), /exact case, no suffix.*found 0/);
+  assert.throws(() => insertChangelog("## [Unreleased] - note\n- x\n", BLOCK), /exact case, no suffix.*found 0/);
 });

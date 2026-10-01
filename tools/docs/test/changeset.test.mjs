@@ -1,7 +1,7 @@
 /* global process */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, chmodSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, chmodSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parseChangeset, readChangesets } from "../lib/changeset.mjs";
@@ -30,6 +30,7 @@ test("[VCK-008-AC2] malformed changesets throw ReleaseError", () => {
     "bad bump": fm(['"a": huge']),
     "unquoted junk line": fm(["a patch"]),
     "empty body": fm(['"a": patch'], "   "),
+    "duplicate package": fm(['"a": patch', '"a": major']),
   };
   for (const [name, text] of Object.entries(bad)) assert.throws(() => parseChangeset(text), ReleaseError, name);
 });
@@ -72,4 +73,33 @@ test("[VCK-008-AC2] readChangesets fails closed on an unreadable directory", (t)
   } finally {
     chmodSync(dir, 0o755);
   }
+});
+
+test("[VCK-008-AC2] duplicate package keys say which package", () => {
+  assert.throws(() => parseChangeset(fm(['"a": patch', '"a": major'])), /duplicate package 'a'/);
+});
+
+test("[VCK-008-AC2] readChangesets refuses symlinks (to an outside file and to a directory)", (t) => {
+  const d = tmp(t);
+  const dir = join(d, ".changeset");
+  mkdirSync(dir);
+  const outside = join(d, "outside.md");
+  writeFileSync(outside, fm(['"p": patch']));
+  mkdirSync(join(d, "adir"));
+  symlinkSync(outside, join(dir, "x.md"));
+  assert.throws(() => readChangesets(dir), /x\.md.*not a regular file/);
+  rmSync(join(dir, "x.md"));
+  symlinkSync(join(d, "adir"), join(dir, "y.md"));
+  assert.throws(() => readChangesets(dir), /y\.md.*not a regular file/);
+});
+
+test("[VCK-008-AC2] hidden files and lowercase readme.md are parsed, not skipped (fail closed)", (t) => {
+  const d = tmp(t);
+  const dir = join(d, ".changeset");
+  mkdirSync(dir);
+  writeFileSync(join(dir, "readme.md"), "not a changeset");
+  assert.throws(() => readChangesets(dir), ReleaseError);
+  rmSync(join(dir, "readme.md"));
+  writeFileSync(join(dir, ".hidden.md"), "not a changeset");
+  assert.throws(() => readChangesets(dir), ReleaseError);
 });

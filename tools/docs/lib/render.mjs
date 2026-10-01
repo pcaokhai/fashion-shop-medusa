@@ -20,9 +20,9 @@ export const cap = (text) => {
   return cps.length > MAX ? `${cps.slice(0, MAX).join("")}…` : text;
 };
 
-/** One safe line for a markdown table cell / list item: cleaned, capped, then `<`, `>`, backtick and `|` neutralised. */
+/** One safe line for a markdown table cell / list item: cleaned, capped, then `\` doubled FIRST (so it cannot escape the `\|` we add), `<`, `>`, backtick and `|` neutralised. */
 export const sanitize = (text) =>
-  cap(oneLine(text)).replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/`/g, "'").replace(/\|/g, "\\|");
+  cap(oneLine(text)).replace(/\\/g, "\\\\").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/`/g, "'").replace(/\|/g, "\\|");
 
 /** The only index row text that is ever written: no commit-derived text. */
 export const indexRow = (version, date) => `| ${version} | ${date} | Draft: fill in highlights | RELEASE-${version}.md |`;
@@ -109,14 +109,26 @@ export function insertChangelog(changelog, block) {
   const live = (re) => r.map((x, i) => (!x.fenced && re.test(x.line) ? i : -1)).filter((i) => i >= 0);
   if (live(/^\[[^\]]+\]: /).length > 0) throw new ReleaseError("CHANGELOG link-reference lines are not supported");
   const unreleased = live(/^## \[Unreleased\]\s*$/);
-  if (unreleased.length !== 1) throw new ReleaseError(`CHANGELOG needs exactly one '## [Unreleased]', found ${unreleased.length}`);
+  if (unreleased.length !== 1) throw new ReleaseError(`CHANGELOG expected exactly one \`## [Unreleased]\` heading (exact case, no suffix); found ${unreleased.length}`);
   if (live(new RegExp(`^## \\[${version.replaceAll(".", "\\.")}\\]`)).length > 0) throw new ReleaseError(`CHANGELOG already has ${version}`);
   const end = live(/^## \[/).find((i) => i > unreleased[0]);
   const pos = end === undefined ? changelog.length : offsets(lines)[end];
   const head = changelog.slice(0, pos);
   const sep = head.endsWith("\n\n") ? "" : head.endsWith("\n") ? "\n" : "\n\n";
   const tail = changelog.slice(pos);
-  return `${head}${sep}${block.trimEnd()}\n${tail === "" ? "" : `\n${tail}`}`;
+  const out = `${head}${sep}${block.trimEnd()}\n${tail === "" ? "" : `\n${tail}`}`;
+  checkChangelog(out, { head, tail, headings: live(/^## \[/).length });
+  return out;
+}
+
+/** Fail-closed self-check of the assembled CHANGELOG (the block body is untrusted). */
+function checkChangelog(out, { head, tail, headings }) {
+  const open = unterminated(out);
+  if (open) throw new ReleaseError(`changelog block leaves an unterminated ${open}`);
+  const r = rows(out).filter((x) => !x.fenced);
+  if (r.filter((x) => /^## \[/.test(x.line)).length !== headings + 1) throw new ReleaseError("changelog block must contain exactly one '## [' heading (its own)");
+  if (r.some((x) => /^\[[^\]]+\]: /.test(x.line))) throw new ReleaseError("changelog block contains a link-reference line");
+  if (!out.startsWith(head) || !out.endsWith(tail)) throw new ReleaseError("changelog insertion altered existing text");
 }
 
 /** Appends the fixed draft row after the last row of the `| Version | Date | Highlights | File |` table. */
