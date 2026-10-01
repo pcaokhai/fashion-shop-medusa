@@ -7,7 +7,7 @@ import { spawnSync } from "node:child_process";
 import { cleanup } from "./fixture.mjs";
 import { requiredSections } from "../lib/release-doc.mjs";
 import { sections, trimBlank } from "../lib/sections.mjs";
-import { CHECK_CLI, FIXED_DATE, REPO_ROOT, TEMPLATE, addMerge, g, repoWith, runRelease, tmp, tmpCount } from "./release-fixture.mjs";
+import { CHECK_CLI, FIXED_DATE, REPO_ROOT, TEMPLATE, addMerge, g, repoWith, runRelease, tmp } from "./release-fixture.mjs";
 
 const SUBJECTS = [
   "feat: add cart (VCK-101) (#5)",
@@ -53,7 +53,7 @@ test("[VCK-008-AC2] no tag: whole history, only the three files change, nothing 
   assert.ok(rel.includes("wip stuff &lt;b&gt;"));
   const log = read(root, "CHANGELOG.md");
   assert.ok(log.indexOf("## [Unreleased]") < log.indexOf("## [1.2.3] - 2026-10-02"));
-  assert.ok(log.indexOf("## [1.2.3]") < log.indexOf("## [0.0.1]"));
+  assert.ok(log.indexOf("## [1.2.3]") < log.indexOf("## [Initial]"));
   assert.ok(log.includes("- Keep me.\n"));
   assert.match(log, /### Added\n- add cart \(VCK-101\) \(#5\)\n/);
   assert.match(log, /### Fixed\n- totals \(VCK-102\)\n/);
@@ -121,16 +121,18 @@ test("[VCK-008-AC2] two runs on identical repos write byte-identical files", (t)
   for (const p of [RELEASE, "docs/releases/README.md", "CHANGELOG.md"]) assert.equal(read(a, p), read(b, p), p);
 });
 
-test("[VCK-008-AC2] a run leaves no temp directories behind", () => {
-  const before = tmpCount();
-  const root = repoWith(["feat: a"]);
+test("[VCK-008-AC2] a run leaves no stray temp files in the repo", (t) => {
+  const root = fresh(t, ["feat: a"]);
   assert.equal(runRelease(root, ["1.2.3"]).code, 0);
-  cleanup(root);
-  assert.equal(tmpCount(), before);
+  assert.equal(g(root, "status", "--porcelain", "--untracked-files=all", "--ignored").split("\n").filter((l) => l.includes(".vck-tmp")).length, 0);
 });
 
 test("[VCK-008-AC2] make release: usage without VERSION, hostile VERSION cannot inject", (t) => {
-  const mk = (...a) => spawnSync("make", ["-s", "-C", REPO_ROOT, "release", ...a], { encoding: "utf8", env: { ...process.env, VCK_DATE: FIXED_DATE } });
+  // Never the real checkout: VERSION is dropped from the inherited env and VCK_ROOT points at a fixture repo.
+  const fx = fresh(t, ["feat: a"]);
+  const env = { ...process.env, VCK_DATE: FIXED_DATE, VCK_ROOT: fx };
+  delete env.VERSION;
+  const mk = (...a) => spawnSync("make", ["-s", "-C", REPO_ROOT, "release", ...a], { encoding: "utf8", env });
   const none = mk();
   assert.ok(none.status > 0); // make itself reports 2 for a failed recipe
   assert.match(`${none.stdout}${none.stderr}`, /usage: make release VERSION=x\.y\.z/);
@@ -151,6 +153,7 @@ test("[VCK-008-AC2] real repo: a clone drafts 0.1.0 (working tree untouched)", (
   t.after(() => cleanup(dir));
   const root = join(dir, "clone");
   g(dir, "clone", "-q", "--no-hardlinks", REPO_ROOT, "clone");
+  g(root, "checkout", "-q", "-B", "release-dry"); // CI checks out a detached HEAD; so does the clone
   const r = runRelease(root, ["0.1.0"]);
   assert.equal(r.code, 0, r.err);
   for (const p of ["docs/releases/RELEASE-0.1.0.md", "docs/releases/README.md", "CHANGELOG.md"]) assert.ok(r.out.includes(p));

@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { readChangesets } from "./lib/changeset.mjs";
 import { groupCommits, parseCommit } from "./lib/commits.mjs";
 import { ReleaseError } from "./lib/errors.mjs";
-import { assertReleasable, lastTag, readCommits } from "./lib/git.mjs";
+import { assertReleasable, gitRun, lastTag, readCommits } from "./lib/git.mjs";
 import { appendIndexRow, indexRow, insertChangelog, renderRelease, sanitize } from "./lib/render.mjs";
 import { RELEASE_DIR, TEMPLATE, readText, requiredSections } from "./lib/release-doc.mjs";
 import { sections, trimBlank } from "./lib/sections.mjs";
@@ -74,6 +74,21 @@ function untouchedSections(template, draft) {
   }).map((h) => h.replace(/^## /, ""));
 }
 
+/** > 0 when a is the higher x.y.z (an optional leading v is ignored). */
+const cmp = (a, b) => {
+  const [x, y] = [a, b].map((v) => v.replace(/^v/, "").split(".").map(Number));
+  const i = x.findIndex((n, k) => n !== y[k]);
+  return i < 0 ? 0 : x[i] - y[i];
+};
+
+/** Fail closed: a drafted-but-untagged previous release would make this one re-list the whole history. */
+function assertOrdered(root, version, tag, changelog) {
+  if (tag && cmp(version, tag) <= 0) throw new ReleaseError(`VERSION ${version} must be greater than the last tag ${tag}`);
+  for (const [, v] of changelog.matchAll(/^## \[(\d+\.\d+\.\d+)\]/gm)) {
+    if (v !== version && gitRun(root, ["rev-parse", "-q", "--verify", `refs/tags/v${v}`]).status !== 0) throw new ReleaseError(`CHANGELOG has ## [${v}] but tag v${v} does not exist (previous release drafted but untagged): tag v${v} first`);
+  }
+}
+
 /** Reads everything and computes the three new files in memory. Throws ReleaseError; touches nothing. */
 export function buildRelease(root, version, date) {
   assertReleasable(root, version);
@@ -85,6 +100,7 @@ export function buildRelease(root, version, date) {
   const changelog = readRaw(root, "CHANGELOG.md");
   const changesets = readChangesets(join(root, ".changeset"));
   const tag = lastTag(root);
+  assertOrdered(root, version, tag, changelog);
   const { commits: raw, merges } = readCommits(root, tag);
   const parsed = raw.map((c) => parseCommit(c.subject, c.body));
   if (raw.length === 0 && changesets.length === 0) throw new ReleaseError(`nothing to release: no commits ${tag ? `since ${tag}` : "in history"} and no changesets`);

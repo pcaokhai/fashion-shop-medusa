@@ -67,10 +67,19 @@ test('[VCK-008-AC2] Makefile: .PHONY lists release; target has the usage guard a
   assert.match(mk, /^release:\n\t@\[ -n "\$\$VERSION" \] \|\| \{ echo "usage: make release VERSION=x\.y\.z"; exit 1; \}\n\tnode tools\/docs\/release-cli\.mjs "\$\$VERSION"$/m);
 });
 
+const RELEASE_RUN = /release-cli|tools\/docs\/release|\b(?:make|MAKE)\b[^\n]*\brelease\b|\bpnpm\b[^\n]*\brelease\b/;
+
+test('[VCK-008-AC2] release guard flags every way of running a release', () => {
+  for (const s of ['make release', 'make -s release', 'make -C . release', 'make docs-check release', '$(MAKE) release', 'make\trelease', 'pnpm --filter @vck/docs-tools release', 'pnpm -r release', 'node tools/docs/release-cli.mjs', 'tools/docs/release', 'bash -c "make release"']) {
+    assert.match(s, RELEASE_RUN, s);
+  }
+  for (const s of ['# official release binary', 'https://github.com/x/y/releases/download/v1/a.tgz', 'make docs-check']) assert.doesNotMatch(s, RELEASE_RUN, s);
+});
+
 test('[VCK-008-AC2] no workflow runs make release (R-008-12: drafts are local, human-run)', () => {
   const files = readdirSync(wfDir);
   assert.ok(files.length > 0);
-  for (const f of files) assert.doesNotMatch(text(`.github/workflows/${f}`), /release-cli|make\s+release|tools\/docs\/release/, f);
+  for (const f of files) assert.doesNotMatch(text(`.github/workflows/${f}`), RELEASE_RUN, f);
 });
 
 test('[VCK-008-AC2] make release without VERSION fails with the usage text', () => {

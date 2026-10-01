@@ -41,7 +41,7 @@ export const docsFiles = () => ({
   ...baseFiles(),
   "docs/releases/RELEASE-template.md": TEMPLATE,
   "docs/releases/README.md": real("docs/releases/README.md"),
-  "CHANGELOG.md": "# Changelog\n\n## [Unreleased]\n### Added\n- Keep me.\n\n## [0.0.1] - 2026-01-01\n- old\n",
+  "CHANGELOG.md": "# Changelog\n\n## [Unreleased]\n### Added\n- Keep me.\n\n## [Initial] - 2026-01-01\n- old\n",
 });
 
 export function writeFiles(root, files) {
@@ -52,9 +52,6 @@ export function writeFiles(root, files) {
 }
 
 export const tmp = () => mkdtempSync(join(tmpdir(), TMP_PREFIX));
-
-/** Number of leftover fixture directories in os.tmpdir(). */
-export const tmpCount = () => readdirSync(tmpdir()).filter((n) => n.startsWith(TMP_PREFIX)).length;
 
 /**
  * Repo on branch main: commit "chore: init" holds the files, then one empty commit per subject (string or [subject, body]).

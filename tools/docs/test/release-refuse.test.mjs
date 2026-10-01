@@ -20,6 +20,9 @@ const CASES = [
   ["existing tag v1.2.3", { tags: { "v1.2.3": 0 } }, /tag v1\.2\.3 already exists/],
   ["tag vfoo", { tags: { vfoo: 0 } }, /last tag .vfoo. is not vMAJOR/],
   ["tag v1.02.3", { tags: { "v1.02.3": 0 } }, /last tag .v1\.02\.3. is not vMAJOR/],
+  ["CHANGELOG heading with no tag (drafted, untagged)", { files: { "CHANGELOG.md": CL("\n## [0.9.0] - 2026-01-01\n- y\n") } }, /## \[0\.9\.0\] but tag v0\.9\.0 does not exist/],
+  ["VERSION below the last tag", { tags: { "v2.0.0": 0 } }, /VERSION 1\.2\.3 must be greater than the last tag v2\.0\.0/],
+  ["VERSION below the last tag (numeric, not lexical)", { tags: { "v1.10.0": 0 } }, /must be greater than the last tag v1\.10\.0/],
   ["existing RELEASE file", { files: { "docs/releases/RELEASE-1.2.3.md": "x\n" } }, /RELEASE-1\.2\.3\.md already exists/],
   ["existing CHANGELOG entry", { files: { "CHANGELOG.md": CL("\n## [1.2.3] - 2026-01-01\n- y\n") } }, /already has 1\.2\.3/],
   ["empty range and no changesets", { tags: { "v0.1.0": 1 } }, /nothing to release/],
@@ -128,4 +131,10 @@ test("[VCK-008-AC2] atomic seam sanity: without injected failures the same in-pr
   t.after(() => cleanup(root));
   const code = main({ VCK_ROOT: root, VCK_DATE: FIXED_DATE }, ["1.2.3"], { log: noop, error: noop });
   assert.equal(code, 0);
+});
+
+test("[VCK-008-AC2] a tagged CHANGELOG release does not block the next one", (t) => {
+  const root = repoWith(OK, { tags: { "v0.9.0": 0 }, files: { "CHANGELOG.md": CL("\n## [0.9.0] - 2026-01-01\n- y\n") } });
+  t.after(() => cleanup(root));
+  assert.equal(runRelease(root, ["1.2.3"]).code, 0);
 });

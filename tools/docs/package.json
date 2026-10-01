@@ -7,7 +7,6 @@
     "lint": "eslint .",
     "typecheck": "tsc -p . --noEmit",
     "test": "node --test test/*.test.mjs",
-    "docs-check": "node check-cli.mjs",
-    "release": "node release-cli.mjs"
+    "docs-check": "node check-cli.mjs"
   }
 }
