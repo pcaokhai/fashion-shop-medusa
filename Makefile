@@ -24,6 +24,6 @@ contracts-diff:
 	@command -v oasdiff >/dev/null || { echo "oasdiff not found. Install: go install github.com/oasdiff/oasdiff@v1.32.1 (or brew install oasdiff)"; exit 1; }
 	@t=$$(mktemp -d) && trap 'rm -rf "$$t"' EXIT && git show "$(BASE):contracts/openapi.yaml" > "$$t/base.yaml" && oasdiff breaking "$$t/base.yaml" contracts/openapi.yaml
 
-# Validates BUG records and PROGRESS "Now" (docs/12 §6); exits 1 on any violation.
+# docs/12 §6 shipped subset (BUG, PROGRESS Now, RELEASE sections, required files, indexes); exits 1 on any violation.
 docs-check:
 	node tools/docs/check-cli.mjs

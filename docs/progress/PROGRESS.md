@@ -8,7 +8,7 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 - Next: VCK-008 PR-B (make release), VCK-009 PR B/C → VCK-006
 - Blocked: VNPay sandbox registration pending (R-02)
 - Open rulings: Node 20 LTS is EOL (2026-04-30) — decide ADR to move to Node 22 (would re-allow pnpm 11); CI checks are advisory: no branch protection on private free plan (R-003-16)
-- Review queue: PRs #3 (contract fix), #4 (VCK-004), VCK-008 PR-A
+- Review queue: VCK-008 PR-A
 
 ## Checkpoints
 | Slice | Date | Result | Evidence |
@@ -17,10 +17,10 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 ## Log
 <!-- newest first; one entry per merged story (docs/12 §2) -->
 ### 2026-10-02 · VCK-008 (PR-A of 2) docs-check · PLAT · PR open (feat/VCK-008-docs-tooling)
-- AC: 1, 3 and the RELEASE/required-file/index checks proven by tools/docs tests (105, incl. ~85 hostile fixtures) and scripts/docs-ci.test.mjs; CI `checks` job runs `node tools/docs/check-cli.mjs`
+- AC: 1, 3 and the RELEASE/required-file/index checks proven by tools/docs tests (17 hostile.test.mjs tests plus round2/round3, release-doc); AC4 (PR template + CI step) by scripts/docs-ci.test.mjs; CI `checks` job runs `node tools/docs/check-cli.mjs`
 - Decisions: plan docs/plans/VCK-008.md; R-008-1..11 (no new dependency, Node stdlib; check-cli.mjs is the only entry, no main-module heuristic; fence- and comment-aware parsing)
 - Bugs: none
-- Follow-ups: PR-B `make release` (index row shape `| x.y.z | <date> | <highlights, no '|'> | RELEASE-x.y.z.md |`; a draft copied from the template fails docs-check until its sections are filled); CLAUDE.md §3 comment still lists dead links/RELEASE formats (user's file, not edited); deferred checks: dead links, story-id existence, ADR link resolution, YAML/JSON parse; symlinked records outside VCK_ROOT are followed (reads only); `\|` escaped pipes in index rows unsupported
+- Follow-ups: PR-B `make release` (index row shape `| x.y.z | <date> | <highlights, no '|'> | RELEASE-x.y.z.md |`; a draft copied from the template fails docs-check until its sections are filled); CLAUDE.md §3 comment still lists dead links/RELEASE formats (user's file, not edited); deferred checks: dead links, story-id existence, ADR link resolution, YAML/JSON parse; bug index link target is not checked (text only); leading-zero version names rejected now (strict semver); symlinked records outside VCK_ROOT are followed (reads only); `\|` escaped pipes in index rows unsupported
 ### 2026-10-01 · VCK-004 Contracts pipeline · PLAT · PR #4 open (feat/VCK-004-contracts-pipeline, stacked on PR #3)
 - AC: 1–4 proven by tools/contracts tests (166+ incl. real oasdiff), scripts/ci.test.mjs and real GitHub runs on PR #4 (spec 24 s, generated 29 s with ubuntu/Node 20 output byte-identical to the macOS commit, breaking 21 s; security fixed after gitleaks flagged the fake token inlined in generated handlers); scratch PR #5 (closed): removing /health/ready made `breaking` FAIL ("requires the label 'contract-breaking'") and `generated` FAIL (drift), `spec` pass
 - Decisions: plan docs/plans/VCK-004.md; R-004-1..14 (merge #3 before #4; accepted orval-7 gaps; `make contracts` vs `make contracts-check`; narrow gitleaks allowlist; size exception; contract PRs regenerate output)

@@ -61,4 +61,4 @@ Shipped now (VCK-008): BUG records (fields; closed bugs need a root cause and a 
 lines, RELEASE files with every section of `RELEASE-template.md` (derived from the template at check time), required
 files present and non-empty, BUG and RELEASE index rows matching the files on disk. DEFERRED: dead links, story-id
 existence, ADR link resolution, YAML/JSON parse. Author rule: a required RELEASE section that is empty or still the
-template's own placeholder fails; write `None.` when nothing applies.
+template's own placeholder fails; write `None.` when nothing applies. Bad record file names (`bug-*`/`release-*` not matching the exact pattern) and unterminated code fences or HTML comments also fail.
