@@ -8,7 +8,7 @@ const notFound = vi.hoisted(() =>
 vi.mock("next/navigation", () => ({ notFound }));
 
 import { isDesignRouteEnabled } from "./%5Fdesign/gate";
-import DesignPage from "./%5Fdesign/page";
+import DesignPage from "./%5Fdesign/page.dev";
 
 afterEach(() => {
   vi.unstubAllEnvs();

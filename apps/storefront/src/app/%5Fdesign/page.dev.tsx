@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { createRequire } from "node:module";
 import { notFound } from "next/navigation";
 import { isDesignRouteEnabled } from "./gate";
 import { MotionSamples } from "./MotionSamples";
@@ -16,8 +16,8 @@ const BUTTONS: ReadonlyArray<readonly [string, string]> = [
 const SAMPLE = "Ưu đãi đặc biệt – Giảm 30% – Đồng hồ";
 
 function readColours(): Array<[string, string]> {
-  const css = readFileSync(join(process.cwd(), "../../packages/ui-kit/src/tokens.css"), "utf8");
-  return [...css.matchAll(/^\s*(--color-[a-z-]+):\s*(#[0-9A-Fa-f]{3,8});/gm)].flatMap((m) => (m[1] && m[2] ? [[m[1], m[2]] as [string, string]] : []));
+  const css = readFileSync(createRequire(`${process.cwd()}/`).resolve("@vck/ui-kit/tokens.css"), "utf8");
+  return [...css.matchAll(/^\s*(--color-[a-z0-9-]+):\s*(#[0-9A-Fa-f]{3,8});/gm)].flatMap((m) => (m[1] && m[2] ? [[m[1], m[2]] as [string, string]] : []));
 }
 
 export default function DesignPage() {
@@ -25,8 +25,8 @@ export default function DesignPage() {
   const colours = readColours();
   return (
     <main className="mx-auto max-w-5xl p-6">
-      <h1 className="text-h1 font-bold text-heading">Design review</h1>
-      <p lang="vi" className="mt-2" data-testid="vi-sample" style={{ fontWeight: 600 }}>
+      <h1 className="text-h1 font-bold text-heading">Kiểm tra thiết kế</h1>
+      <p lang="vi" className="mt-2 font-semibold" data-testid="vi-sample">
         {SAMPLE}
       </p>
 
@@ -74,7 +74,7 @@ export default function DesignPage() {
 
       <section aria-labelledby="motion" className="mt-8" style={{ marginBottom: "var(--space-3xl)" }}>
         <h2 id="motion" className="text-h3 font-semibold text-heading">Chuyển động</h2>
-        <div style={{ minHeight: "120vh" }} aria-hidden="true" />
+        <div className="min-h-screen" aria-hidden="true" />
         <MotionSamples />
       </section>
     </main>
