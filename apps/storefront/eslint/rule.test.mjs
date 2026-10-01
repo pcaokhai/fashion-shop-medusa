@@ -43,8 +43,21 @@ describe("vck/no-raw-values via ESLint [VCK-009-AC2]", () => {
     const code = '// eslint-disable-next-line vck/no-raw-values -- anchor\nexport const h = "#add";';
     expect(await ids(code)).not.toContain(RULE);
   });
-  it("never lints src/generated", async () => {
-    expect(await ids('export const x = "#c00";', "src/generated/x.tsx")).not.toContain(RULE);
+  it("reports at severity error (2), not warn", async () => {
+    const [r] = await eslint.lintText('export const x = "#c00";', { filePath: `${cwd}src/x.tsx` });
+    const m = r.messages.find((x) => x.ruleId === RULE);
+    expect(m?.severity).toBe(2);
+    expect(r.errorCount).toBeGreaterThan(0);
+    const cfg = await eslint.calculateConfigForFile(`${cwd}src/x.tsx`);
+    expect(cfg.rules[RULE][0]).toBe(2);
+  });
+  it("never lints src/generated (ignored by ESLint, no rule message)", async () => {
+    const file = `${cwd}src/generated/x.ts`;
+    expect(await eslint.isPathIgnored(file)).toBe(true);
+    const [r] = await eslint.lintText('export const x = "#c00";', { filePath: file });
+    expect(r.messages).toHaveLength(1);
+    expect(r.messages[0]).toMatchObject({ ruleId: null, severity: 1 });
+    expect(r.messages[0].message).toMatch(/ignore/i);
   });
   it("preserves root rules in the same run (no-explicit-any)", async () => {
     const got = await ids('export const a: any = "#c00";');
