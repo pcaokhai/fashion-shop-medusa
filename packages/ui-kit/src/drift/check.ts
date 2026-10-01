@@ -5,18 +5,21 @@ export interface ParsedTokens {
   /** Non-comment, non-whitespace CSS outside the @theme block */
   outside: string;
   tokens: Record<string, string>;
+  /** Declared as `@theme static` (all tokens emitted, not only used ones) */
+  isStatic: boolean;
 }
 
-/** Reads the single `@theme { ... }` block of tokens.css. Throws if there is none. */
+/** Reads the single `@theme static { ... }` block of tokens.css. Throws if there is none or it is not `static`. */
 export function parseTokensCss(css: string): ParsedTokens {
   const bare = css.replace(/\/\*[\s\S]*?\*\//g, "");
-  const m = /@theme\s*\{([\s\S]*?)\}/.exec(bare);
+  const m = /@theme\s*(static)?\s*\{([\s\S]*?)\}/.exec(bare);
   if (!m) throw new Error("tokens.css: no @theme block");
+  const isStatic = m[1] === "static";
   const tokens: Record<string, string> = {};
   let hasColorReset = false;
   let resetFirst = false;
   let first = true;
-  for (const decl of (m[1] as string).split(";")) {
+  for (const decl of (m[2] as string).split(";")) {
     const d = /^\s*(--[a-z0-9*-]+)\s*:\s*([\s\S]+?)\s*$/.exec(decl);
     if (!d) continue;
     const [name, value] = [d[1] as string, d[2] as string];
@@ -26,13 +29,14 @@ export function parseTokensCss(css: string): ParsedTokens {
     else tokens[name] = value;
   }
   const outside = (bare.slice(0, m.index) + bare.slice(m.index + m[0].length)).trim();
-  return { hasColorReset, resetFirst, outside, tokens };
+  return { hasColorReset, resetFirst, outside, tokens, isStatic };
 }
 
 /** Returns human-readable problems; empty = tokens.css matches `expected` exactly (hex case-insensitive). */
 export function checkTokens(css: string, expected: Record<string, string>): string[] {
-  const { hasColorReset, resetFirst, outside, tokens } = parseTokensCss(css);
+  const { hasColorReset, resetFirst, outside, tokens, isStatic } = parseTokensCss(css);
   const problems: string[] = [];
+  if (!isStatic) problems.push("@theme must be `@theme static` (unused tokens would not be emitted)");
   if (!hasColorReset) problems.push("--color-*: initial missing");
   else if (!resetFirst) problems.push("--color-*: initial must be the first declaration");
   if (outside) problems.push(`CSS outside @theme: ${outside.slice(0, 40)}`);

@@ -13,7 +13,10 @@
     "build": "tsc -p . --noEmit"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "4.3.3",
     "@types/node": "20.19.43",
+    "postcss": "8.5.23",
+    "tailwindcss": "4.3.3",
     "vitest": "4.1.11"
   }
 }

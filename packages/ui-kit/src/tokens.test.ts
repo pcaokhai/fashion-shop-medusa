@@ -19,7 +19,7 @@ const DERIVED = [
   "--color-cat-all-ink",
   "--color-surface-dark",
   "--color-on-surface-dark",
-  ...["caption", "small", "body", "lead", "h4", "h3", "h2", "h1", "display"].map((s) => `--text-${s}`),
+  ...["caption", "small", "body", "lead", "h4", "h3", "h2", "h1", "display"].flatMap((s) => [`--text-${s}`, `--text-${s}--line-height`]),
   "--leading-body",
   "--leading-heading",
   "--tracking-heading",
@@ -157,7 +157,7 @@ describe("tokens.css matches MASTER [VCK-009-AC2]", () => {
       expect(checkTokens(bad, expected).join("\n")).toMatch(/missing.*--color-card/);
     });
     it("fails when an unknown token is added", () => {
-      const bad = css.replace("@theme {", "@theme {\n  --color-sneaky: #123456;");
+      const bad = css.replace("@theme static {", "@theme static {\n  --color-sneaky: #123456;");
       expect(checkTokens(bad, expected).join("\n")).toMatch(/unknown.*--color-sneaky/);
     });
     it("fails when --color-*: initial is removed", () => {
