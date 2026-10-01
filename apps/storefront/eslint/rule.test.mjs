@@ -10,7 +10,7 @@ const eslint = new ESLint({
   overrideConfig: {
     files: ["**/*.tsx"],
     languageOptions: {
-      parserOptions: { projectService: { allowDefaultProject: ["apps/storefront/src/*.tsx", "apps/storefront/src/generated/*.tsx"], defaultProject: "tsconfig.base.json" } },
+      parserOptions: { projectService: { allowDefaultProject: ["apps/storefront/src/*.tsx", "apps/storefront/src/generated/*.tsx", "packages/ui-kit/src/*.tsx"], defaultProject: "tsconfig.base.json" } },
     },
   },
 });
@@ -69,4 +69,22 @@ describe("vck/no-raw-values via ESLint [VCK-009-AC2]", () => {
     expect(got).toContain("@typescript-eslint/no-explicit-any");
     expect(got).toContain(RULE);
   });
+});
+
+// [VCK-009-AC4] "m only": `motion.*` would drag the full feature bundle past LazyMotion strict (R-009-24).
+const lintAt = (cwd, code, file) =>
+  new ESLint({
+    cwd,
+    overrideConfigFile: fileURLToPath(new URL("../../../eslint.config.mjs", import.meta.url)),
+    overrideConfig: { files: ["**/*.tsx"], languageOptions: { parserOptions: { projectService: { allowDefaultProject: ["apps/storefront/src/*.tsx", "apps/storefront/src/generated/*.tsx", "packages/ui-kit/src/*.tsx"], defaultProject: "tsconfig.base.json" } } } },
+  }).lintText(code, { filePath: file });
+const NS = 'import { motion } from "motion/react";\nexport const A = motion.div;\n';
+const SMALL_M = 'import { m } from "motion/react";\nexport const A = m.div;\n';
+describe("no-restricted-imports bans the motion namespace [VCK-009-AC4]", () => {
+  const BAN = "no-restricted-imports";
+  const root = fileURLToPath(new URL("../../..", import.meta.url));
+  const ruleIds = async (code, file) => (await lintAt(root, code, `${root}${file}`))[0].messages.map((m) => m.ruleId);
+  it("in storefront", async () => expect(await ruleIds(NS, "apps/storefront/src/y.tsx")).toContain(BAN));
+  it("in ui-kit", async () => expect(await ruleIds(NS, "packages/ui-kit/src/y.tsx")).toContain(BAN));
+  it("still allows `m`", async () => expect(await ruleIds(SMALL_M, "packages/ui-kit/src/y.tsx")).not.toContain(BAN));
 });

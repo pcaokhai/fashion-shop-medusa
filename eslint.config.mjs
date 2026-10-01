@@ -25,4 +25,18 @@ export default tseslint.config(
       "no-restricted-imports": ["error", { patterns: ["**/apps/**", "@vck/backend", "@vck/storefront"] }],
     },
   },
+  {
+    // "m only" (R-009-24): `motion.*` pulls the full feature bundle past LazyMotion strict. Repeats the lane patterns
+    // for ui-kit because a later `no-restricted-imports` entry replaces the block above.
+    files: ["packages/ui-kit/**", "apps/storefront/**"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: ["**/apps/**", "@vck/backend", "@vck/storefront"],
+          paths: [{ name: "motion/react", importNames: ["motion"], message: "Use the `m` component with LazyMotion (R-009-24)." }],
+        },
+      ],
+    },
+  },
 );

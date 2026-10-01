@@ -1,5 +1,4 @@
 "use client";
-import { LazyMotion, domAnimation } from "motion/react";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 export interface MotionPrefs {
@@ -14,7 +13,7 @@ export const useMotionPrefs = (): MotionPrefs => useContext(MotionContext);
 
 const QUERY = "(prefers-reduced-motion: reduce)";
 
-/** Client leaf: loads the small `domAnimation` feature set once; only `m` components may render inside (strict). */
+/** Client leaf: reduced-motion preference only (OS or toggle). Context-only, so it pulls no motion JS into the layout. */
 export function MotionProvider({ children }: { children: ReactNode }) {
   const [os, setOs] = useState(false);
   const [toggle, setToggle] = useState(false);
@@ -28,11 +27,5 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(() => ({ reduced: os || toggle, setReducedMotion: setToggle }), [os, toggle]);
-  return (
-    <MotionContext.Provider value={value}>
-      <LazyMotion features={domAnimation} strict>
-        {children}
-      </LazyMotion>
-    </MotionContext.Provider>
-  );
+  return <MotionContext.Provider value={value}>{children}</MotionContext.Provider>;
 }

@@ -1,14 +1,21 @@
 "use client";
-import { Children, type ReactNode } from "react";
+import { Children, isValidElement, type ReactNode } from "react";
 import { stagger } from "../motion";
 import { Reveal } from "./Reveal";
 
-/** Reveals each child 50 ms after the previous; items past the 8th get no delay (docs/13 §4.2). */
+/** Delay for the i-th item: 50 ms steps, items past the 8th get none (docs/13 §4.2). */
+export const staggerDelay = (index: number): number => (index < stagger.max ? index * stagger.stepMs : 0);
+
+/**
+ * Reveals each child in turn inside a `div` grid. Each child gets a wrapper `div`, so it is not for `ul`/`ol` or for
+ * grid items that need `col-span`: there put `<Reveal delayMs={staggerDelay(i)}>` on the real items.
+ * ponytail: no `as` prop until the first `ul` consumer (VCK-006).
+ */
 export function Stagger({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <div className={className}>
       {Children.toArray(children).map((child, i) => (
-        <Reveal key={i} delayMs={i < stagger.max ? i * stagger.stepMs : 0}>
+        <Reveal key={isValidElement(child) && child.key !== null ? child.key : i} delayMs={staggerDelay(i)}>
           {child}
         </Reveal>
       ))}

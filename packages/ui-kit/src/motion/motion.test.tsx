@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { dur, ease, distance } from "../motion";
 import { MotionProvider, useMotionPrefs } from "./MotionProvider";
 import { Reveal } from "./Reveal";
-import { Stagger } from "./Stagger";
+import { Stagger, staggerDelay } from "./Stagger";
 
 // Probe: m.div renders the animation props as JSON so the tests can read them without a real animation engine.
 vi.mock("motion/react", async () => {
@@ -18,8 +18,9 @@ vi.mock("motion/react", async () => {
       "data-props": JSON.stringify({ initial, whileInView, viewport, transition }),
     }, children as never);
   return {
-    LazyMotion: ({ children }: { children: never }) => children,
-    domAnimation: {},
+    LazyMotion: ({ children, features, strict }: { children: never; features: { id: string }; strict?: boolean }) =>
+      createElement("section", { "data-lazy": "", "data-strict": String(strict === true), "data-features": features.id }, children),
+    domAnimation: { id: "domAnimation" },
     m: { div: probe },
   };
 });
@@ -32,6 +33,7 @@ beforeEach(() => {
   osReduced = false;
   rect = { top: 2000, bottom: 2100 };
   listeners.clear();
+  vi.stubGlobal("IntersectionObserver", class {});
   window.matchMedia = ((q: string) => ({
     media: q,
     get matches() {
@@ -44,6 +46,7 @@ beforeEach(() => {
 });
 afterEach(() => {
   cleanup();
+  vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
 
@@ -135,5 +138,70 @@ describe("reduced motion matrix (OS x toggle) [VCK-009-AC4]", () => {
       listeners.forEach((fn) => fn());
     });
     expect(probes(container)[0]?.el.dataset["motion"]).toBe("reduced");
+  });
+});
+
+describe("Reveal is self-contained and robust [VCK-009-AC4]", () => {
+  it("outside any MotionProvider it brings its own strict domAnimation LazyMotion (never stays hidden)", () => {
+    const { container } = render(<Reveal>x</Reveal>);
+    expect(container.querySelector("[data-lazy][data-strict='true'][data-features='domAnimation']")).not.toBeNull();
+    expect(first(container).el.dataset["motion"]).toBe("full");
+  });
+
+  it("without IntersectionObserver it never arms (content stays visible)", () => {
+    vi.stubGlobal("IntersectionObserver", undefined);
+    const { container } = render(<MotionProvider><Reveal>x</Reveal></MotionProvider>);
+    const { p } = first(container);
+    expect(p.initial).toBeUndefined();
+    expect(p.whileInView).toBeUndefined();
+  });
+
+  it("reveals once, at 20% coverage (docs/13 §4.3)", () => {
+    const { container } = render(<MotionProvider><Reveal>x</Reveal></MotionProvider>);
+    const viewport = (JSON.parse(first(container).el.dataset["props"] ?? "{}") as { viewport: unknown }).viewport;
+    expect(viewport).toEqual({ once: true, amount: 0.2 });
+  });
+
+  it("remounts an armed element when reduced motion flips (initial applies only on mount)", async () => {
+    const ui = (on: boolean) => (
+      <MotionProvider>
+        <Toggle on={on} />
+        <Reveal>x</Reveal>
+      </MotionProvider>
+    );
+    const { container, rerender } = render(ui(false));
+    const before = first(container).el;
+    rerender(ui(true));
+    await act(async () => {
+      await Promise.resolve();
+    });
+    const after = first(container);
+    expect(after.el).not.toBe(before);
+    expect(after.el.dataset["motion"]).toBe("reduced");
+  });
+
+  it("removes the matchMedia listener on unmount", () => {
+    const { unmount } = render(<MotionProvider><Reveal>x</Reveal></MotionProvider>);
+    expect(listeners.size).toBe(1);
+    unmount();
+    expect(listeners.size).toBe(0);
+  });
+});
+
+describe("Stagger helpers [VCK-009-AC4]", () => {
+  it("staggerDelay is 0,50..350 then 0", () => {
+    expect(Array.from({ length: 10 }, (_, i) => staggerDelay(i))).toEqual([0, 50, 100, 150, 200, 250, 300, 350, 0, 0]);
+  });
+
+  it("keeps child keys: a reordered child keeps its wrapper", () => {
+    const items = (ids: string[]) => (
+      <MotionProvider>
+        <Stagger>{ids.map((id) => <i key={id} data-id={id} />)}</Stagger>
+      </MotionProvider>
+    );
+    const { container, rerender } = render(items(["a", "b"]));
+    const wrapperA = container.querySelector("[data-id='a']")?.parentElement;
+    rerender(items(["b", "a"]));
+    expect(container.querySelector("[data-id='a']")?.parentElement).toBe(wrapperA);
   });
 });

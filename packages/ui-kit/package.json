@@ -2,6 +2,9 @@
   "name": "@vck/ui-kit",
   "version": "0.0.0",
   "private": true,
+  "sideEffects": [
+    "*.css"
+  ],
   "exports": {
     ".": "./src/index.ts",
     "./tokens.css": "./src/tokens.css"
@@ -11,6 +14,10 @@
     "typecheck": "tsc -p . --noEmit",
     "test": "vitest run",
     "build": "tsc -p . --noEmit"
+  },
+  "peerDependencies": {
+    "motion": "13.4.6",
+    "react": "19.3.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.3.3",

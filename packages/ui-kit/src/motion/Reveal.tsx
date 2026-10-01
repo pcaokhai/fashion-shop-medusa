@@ -1,5 +1,5 @@
 "use client";
-import { m } from "motion/react";
+import { LazyMotion, domAnimation, m } from "motion/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { dur, ease, distance } from "../motion";
 import { useMotionPrefs } from "./MotionProvider";
@@ -22,29 +22,38 @@ export function Reveal({ children, className, delayMs = 0 }: RevealProps) {
 
   useEffect(() => {
     const r = ref.current?.getBoundingClientRect();
+    // no IntersectionObserver (old webview, jsdom): motion 13 throws on arm, so stay visible
+    if (typeof IntersectionObserver === "undefined") return;
     setArmed(r !== undefined && !(r.bottom > 0 && r.top < window.innerHeight));
   }, []);
 
   const mode = reduced ? "reduced" : "full";
-  if (!armed) return <m.div ref={ref} className={className} data-motion={mode}>{children}</m.div>;
-
+  // LazyMotion lives here (not in MotionProvider) so routes without Reveal ship no motion JS (R-009-24); strict = `m` only.
   return (
-    // key: initial applies only on mount, so a reduced-motion flip must remount.
-    <m.div
-      key={mode}
-      ref={ref}
-      className={className}
-      data-motion={mode}
-      initial={reduced ? { opacity: 0 } : { opacity: 0, y: distance.reveal }}
-      whileInView={reduced ? { opacity: 1 } : { opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={
-        reduced
-          ? { duration: dur.instant / 1000, ease: [...ease.standard] }
-          : { duration: dur.expressive / 1000, ease: [...ease.enter], delay: delayMs / 1000 }
-      }
-    >
-      {children}
-    </m.div>
+    <LazyMotion features={domAnimation} strict>
+      {armed ? (
+        // key: initial applies only on mount, so a reduced-motion flip must remount.
+        <m.div
+          key={mode}
+          ref={ref}
+          className={className}
+          data-motion={mode}
+          initial={reduced ? { opacity: 0 } : { opacity: 0, y: distance.reveal }}
+          whileInView={reduced ? { opacity: 1 } : { opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={
+            reduced
+              ? { duration: dur.instant / 1000, ease: [...ease.standard] }
+              : { duration: dur.expressive / 1000, ease: [...ease.enter], delay: delayMs / 1000 }
+          }
+        >
+          {children}
+        </m.div>
+      ) : (
+        <m.div ref={ref} className={className} data-motion={mode}>
+          {children}
+        </m.div>
+      )}
+    </LazyMotion>
   );
 }
