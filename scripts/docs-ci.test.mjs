@@ -60,3 +60,23 @@ test('[VCK-008-AC4] real-repo smoke: check-cli.mjs exits 0 on this checkout', ()
   const ok = spawnSync(process.execPath, ['tools/docs/check-cli.mjs'], { cwd: root, env, encoding: 'utf8' });
   assert.equal(ok.status, 0, ok.stdout + ok.stderr);
 });
+
+test('[VCK-008-AC2] Makefile: .PHONY lists release; target has the usage guard and runs release-cli.mjs', () => {
+  const mk = text('Makefile');
+  assert.match(mk.match(/^\.PHONY:.*$/m)[0], /\brelease\b/);
+  assert.match(mk, /^release:\n\t@\[ -n "\$\$VERSION" \] \|\| \{ echo "usage: make release VERSION=x\.y\.z"; exit 1; \}\n\tnode tools\/docs\/release-cli\.mjs "\$\$VERSION"$/m);
+});
+
+test('[VCK-008-AC2] no workflow runs make release (R-008-12: drafts are local, human-run)', () => {
+  const files = readdirSync(wfDir);
+  assert.ok(files.length > 0);
+  for (const f of files) assert.doesNotMatch(text(`.github/workflows/${f}`), /release-cli|make\s+release|tools\/docs\/release/, f);
+});
+
+test('[VCK-008-AC2] make release without VERSION fails with the usage text', () => {
+  const env = { ...process.env };
+  delete env.VERSION;
+  const r = spawnSync('make', ['release'], { cwd: root, env, encoding: 'utf8' });
+  assert.notEqual(r.status, 0, r.stdout + r.stderr); // make reports the recipe's exit 1 as 2
+  assert.match(r.stdout + r.stderr, /usage: make release VERSION=x\.y\.z/);
+});

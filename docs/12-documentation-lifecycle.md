@@ -40,7 +40,7 @@ Single source of truth for "where are we" between sessions. Structure:
 - Workflow: systematic-debugging → write the failing regression test → fix → verification-before-completion.
 
 ## 4. RELEASE records (`docs/releases/`)
-- `make release VERSION=x.y.z` drafts `RELEASE-x.y.z.md` from Conventional Commits + Changesets; the tech lead completes it.
+- `make release VERSION=x.y.z` drafts `RELEASE-x.y.z.md` from Conventional Commits + Changesets; the tech lead completes it. The draft fails `make docs-check` until its prompt sections are edited (write `None.` if nothing applies).
 - Sections: summary · features (story ids, flags enabled) · bugs fixed (BUG ids) · integration changes (docs/03 edits,
   provider behaviour) · migrations (and rollback safety) · metrics (k6/Lighthouse/coverage deltas) · known issues ·
   upgrade/rollback steps · demo clip links.
