@@ -25,6 +25,10 @@ describe("globals.css [VCK-009-AC2]", () => {
     expect(b).toMatch(/transition-duration:\s*0\.01ms/);
   });
 
+  it("starts the body font chain with Be Vietnam Pro then --font-sans [VCK-009-AC3]", () => {
+    expect(block("body")).toMatch(/font-family:\s*var\(--font-be-vietnam-pro\),\s*var\(--font-sans\)/);
+  });
+
   it("has no raw colour or px values [VCK-009-AC2]", () => {
     expect(findRawValues(css.replace(/@media[^{]*/g, ""))).toEqual([]);
   });

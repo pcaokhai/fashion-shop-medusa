@@ -28,6 +28,10 @@ test("every sharp-libvips platform package and caniuse-lite has an exact, reason
   }
 });
 
+test("only caniuse-lite and @img/sharp-* may be excepted [VCK-009-AC3]", () => {
+  for (const e of exceptions) assert.ok(e.package === "caniuse-lite" || /^@img\/sharp-/.test(e.package), e.package);
+});
+
 test("no wildcard exceptions [VCK-009-AC3]", () => {
   for (const e of exceptions) assert.ok(!/[*?]/.test(e.package), e.package);
 });

@@ -21,7 +21,7 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 - Decisions: R-009-4, R-009-16 (owner decision: LGPL/CC-BY licence exceptions kept per package), R-009-17..22; typecheck = `next typegen && tsc`, next-env.d.ts gitignored; Turbopack ignores the font mock for woff2 files so the offline smoke uses `--webpack`; no `onlyBuiltDependencies` change (build needs none)
 - Dependencies: next@16.3.8, react@19.3.0, react-dom@19.3.0, tailwindcss@4.3.3, @tailwindcss/postcss@4.3.3, @types/react@19.3.0, @types/react-dom@19.3.0, @types/node@20.19.43 (storefront dev)
 - Bugs: none
-- Follow-ups: `docs:` PR to MASTER; e2e in CI later; VCK-006 handoff (replace `page.tsx`, tokens-only utilities, CDN `next/image` loader because sharp is removed)
+- Follow-ups: `docs:` PR to MASTER; e2e in CI later; VCK-006 handoff (replace `page.tsx`, tokens-only utilities, sharp kept (owner decision R-009-16); add THIRD-PARTY-NOTICES / client-delivery LGPL notice per R-009-16)
 ### 2026-10-02 · VCK-008 (PR-B of 2) make release · PLAT · merged abc26b6 (PR #9)
 - AC: AC2 proven by the PR-B share of the tools/docs suite (205 total incl. PR-A's) and scripts/docs-ci.test.mjs (no workflow runs `make release`; usage guard); dry run on `--no-hardlinks` clones of the real repo
 - Decisions: R-008-12..21 (draft meant to fail docs-check until edited; no `--force`; atomic three-file write; CLAUDE.md not edited). Size exception R-008-20: ≈1700 changed lines (≈545 code, ≈1070 test, ≈87 docs) over the 400 guideline, one cohesive CLI, splitting would leave a dead half
