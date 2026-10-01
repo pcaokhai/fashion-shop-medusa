@@ -105,7 +105,7 @@ function failing(fail) {
     if (fail(op, ++calls[op])) throw Object.assign(new Error("injected"), { code: "EIO" });
     return real(...a);
   };
-  return { writeFileSync: wrap("writeFileSync", writeFileSync), renameSync: wrap("renameSync", renameSync), rmSync };
+  return { writeFileSync: wrap("writeFileSync", writeFileSync), renameSync: wrap("renameSync", renameSync), chmodSync, rmSync };
 }
 
 for (const [name, op, n] of [["third temp write", "writeFileSync", 3], ["first rename", "renameSync", 1], ["second rename", "renameSync", 2], ["third rename", "renameSync", 3]]) {

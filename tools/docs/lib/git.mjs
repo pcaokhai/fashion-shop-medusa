@@ -10,7 +10,8 @@ const decoder = new TextDecoder("utf-8"); // invalid bytes become U+FFFD, never 
 /** Deterministic child env: C locale, no system config, no inherited repo redirection. */
 function childEnv() {
   const env = { ...process.env, LC_ALL: "C", GIT_CONFIG_NOSYSTEM: "1", GIT_OPTIONAL_LOCKS: "0", GIT_TERMINAL_PROMPT: "0" };
-  for (const k of ["GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_COMMON_DIR", "GIT_NAMESPACE"]) delete env[k];
+  const drop = ["GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_COMMON_DIR", "GIT_NAMESPACE", "GIT_CEILING_DIRECTORIES", "GIT_ALTERNATE_OBJECT_DIRECTORIES", "GIT_CONFIG_COUNT", "GIT_CONFIG_PARAMETERS"];
+  for (const k of Object.keys(env)) if (drop.includes(k) || /^GIT_CONFIG_(KEY|VALUE)_/.test(k)) delete env[k];
   return env;
 }
 
@@ -54,11 +55,12 @@ export function assertReleasable(root, version) {
 /** Commits in (sinceTag, HEAD], oldest first, merges excluded: { commits: [{ subject, body }], merges }. */
 export function readCommits(root, sinceTag) {
   const range = sinceTag ? [`${sinceTag}..HEAD`] : ["HEAD"];
-  const log = git(root, ["log", "--no-merges", "--reverse", "--format=%s%x1f%b%x1e", ...range, "--"]);
-  const commits = log.split("\x1e").map((r) => r.replace(/^\n/, "")).filter((r) => r !== "").map((r) => {
-    const [subject, ...body] = r.split("\x1f");
-    return { subject, body: body.join("\x1f") };
-  });
+  // NUL-delimited: git messages cannot contain NUL, so no message can forge a record or field boundary.
+  const log = git(root, ["-c", "log.showSignature=false", "log", "--no-show-signature", "--encoding=UTF-8", "--no-merges", "--reverse", "-z", "--format=%s%x00%b", ...range, "--"]);
+  const fields = log.split("\0");
+  fields.pop(); // text after the final terminator
+  const commits = [];
+  for (let i = 0; i + 1 < fields.length; i += 2) commits.push({ subject: fields[i], body: fields[i + 1] });
   const merges = Number(git(root, ["rev-list", "--merges", "--count", ...range, "--"]).trim());
   if (!Number.isInteger(merges)) throw new ReleaseError("git rev-list returned a non-numeric count");
   return { commits, merges };

@@ -2,7 +2,7 @@
 // Library: main (the CLI is release-cli.mjs; env: VCK_ROOT, VCK_DATE). Drafts RELEASE-x.y.z.md, a CHANGELOG block and an index row.
 // Order is fixed (R-008-6/16/18): validate args -> assert releasable -> read ALL inputs -> compute in memory -> refuse -> write atomically.
 // Never commits, tags, pushes or runs docs-check. Any problem prints `release: <reason>` and returns 1 with every file untouched.
-import { lstatSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { chmodSync, lstatSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readChangesets } from "./lib/changeset.mjs";
@@ -16,11 +16,12 @@ import { sections, trimBlank } from "./lib/sections.mjs";
 const VERSION = /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/;
 const TMP_SUFFIX = ".vck-tmp";
 const FILE_MODE = 0o644;
-const REAL_OPS = { writeFileSync, renameSync, rmSync };
+const REAL_OPS = { writeFileSync, chmodSync, renameSync, rmSync };
 
 /** yyyy-mm-dd that is a real calendar date. */
 function parseDate(d) {
-  const ok = /^\d{4}-\d{2}-\d{2}$/.test(d) && new Date(`${d}T00:00:00Z`).toISOString().slice(0, 10) === d;
+  const t = /^\d{4}-\d{2}-\d{2}$/.test(d) ? new Date(`${d}T00:00:00Z`) : new Date(NaN); // month 13 etc. is an Invalid Date
+  const ok = !Number.isNaN(t.getTime()) && t.toISOString().slice(0, 10) === d;
   if (!ok) throw new ReleaseError(`invalid VCK_DATE ${JSON.stringify(d)} (expected a real date, yyyy-mm-dd)`);
   return d;
 }
@@ -28,8 +29,10 @@ function parseDate(d) {
 function readRaw(root, rel) {
   let md;
   try {
+    if (lstatSync(join(root, rel)).isSymbolicLink()) throw new ReleaseError(`${rel}: is a symlink; refusing to replace it (use a regular file)`);
     md = readFileSync(join(root, rel), "utf8");
   } catch (e) {
+    if (e instanceof ReleaseError) throw e;
     throw new ReleaseError(`${rel}: cannot read file (${e.code ?? e.message})`);
   }
   if (md.trim() === "") throw new ReleaseError(`${rel}: empty file`);
@@ -102,9 +105,20 @@ export function buildRelease(root, version, date) {
 export function writeAll(root, files, ops = REAL_OPS) {
   const items = files.map((f) => ({ ...f, path: join(root, f.rel), tmp: join(root, f.rel) + TMP_SUFFIX }));
   const made = [];
-  const dropTemps = () => made.forEach((p) => ops.rmSync(p, { force: true }));
+  /** Removes our temp files; returns the ones that could not be removed. */
+  const dropTemps = () => made.filter((p) => {
+    try {
+      ops.rmSync(p, { force: true });
+      return false;
+    } catch {
+      return true;
+    }
+  });
+  const leftovers = (left) => (left.length > 0 ? `; leftover temp files, delete them by hand (and run git checkout on the release files if in doubt): ${left.join(", ")}` : "");
+  let current = "";
   try {
     for (const it of items) {
+      current = it.tmp;
       const mode = it.original === null ? FILE_MODE : statSync(it.path).mode & 0o777;
       try {
         ops.writeFileSync(it.tmp, it.content, { flag: "wx", mode });
@@ -113,14 +127,17 @@ export function writeAll(root, files, ops = REAL_OPS) {
         throw e;
       }
       made.push(it.tmp);
+      ops.chmodSync(it.tmp, mode); // the creation mode is filtered by umask; restore the exact one
     }
   } catch (e) {
-    dropTemps();
-    throw new ReleaseError(`cannot write temporary files (${e.code ?? e.message}); nothing was changed`);
+    const left = dropTemps();
+    const stale = e.code === "EEXIST" ? " (stale file from an earlier run? it was left untouched; delete it and retry)" : "";
+    throw new ReleaseError(`cannot write temporary file ${current} (${e.code ?? e.message})${stale}; no release file was changed${leftovers(left)}`);
   }
   const done = [];
   try {
     for (const it of items) {
+      current = it.path;
       ops.renameSync(it.tmp, it.path);
       done.push(it);
     }
@@ -134,9 +151,9 @@ export function writeAll(root, files, ops = REAL_OPS) {
         failed.push(it.rel);
       }
     }
-    dropTemps();
-    const tail = failed.length > 0 ? `; RESTORE FAILED for ${failed.join(", ")}: run git checkout and remove the new release file` : "; originals restored";
-    throw new ReleaseError(`cannot replace files (${e.code ?? e.message})${tail}`);
+    const left = dropTemps();
+    const tail = failed.length > 0 ? `; RESTORE FAILED for ${failed.join(", ")}: run git checkout on them and delete the new release file` : "; originals restored";
+    throw new ReleaseError(`cannot replace ${current} (${e.code ?? e.message})${tail}${leftovers(left)}`);
   }
 }
 
