@@ -4,11 +4,11 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 ## Now
 - Sprint: 0 — Repo, infra, CI, contracts, skeletons (docs/07 §3)
 - Goal: `make up && make dev` shows empty storefront and admin; contracts pipeline green
-- In progress: VCK-009 PR C2 (`/_design` review route) awaiting review
-- Next: VCK-006
+- In progress: none (VCK-009 and VCK-008 merged)
+- Next: VCK-005 (Medusa backend skeleton; preconditions in follow-ups) → VCK-006
 - Blocked: VNPay sandbox registration pending (R-02)
-- Open rulings: Node 20 LTS is EOL (2026-04-30) — decide ADR to move to Node 22 (would re-allow pnpm 11); CI checks are advisory: no branch protection on private free plan (R-003-16)
-- Review queue: VCK-009 C2
+- Open rulings: Node 20 LTS is EOL (2026-04-30) — decide ADR to move to Node 22 (would re-allow pnpm 11); CI checks are advisory: no branch protection on private free plan (R-003-16); motion budget: a route using Reveal costs ≈35–38 KB gz vs 25 KB in docs/13 §4.5 — re-scope or use CSS reveals (R-009-24)
+- Review queue: none
 
 ## Checkpoints
 | Slice | Date | Result | Evidence |
@@ -16,7 +16,7 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 
 ## Log
 <!-- newest first; one entry per merged story (docs/12 §2) -->
-### 2026-10-02 · VCK-009 (PR C2 of 4) /_design review route · WEB · PR open (feat/VCK-009-design-route)
+### 2026-10-02 · VCK-009 (PR C2 of 4) /_design review route · WEB · merged 73baf7c (PR #12)
 - AC: AC5 proven by src/app/design-gate.test.ts (`isDesignRouteEnabled` true for development/test, false for production/undefined/staging; page calls `notFound()` when disabled), mutation-proven (production enabled, notFound removed); AC3 visual: e2e/design.spec.ts after `document.fonts.ready` Be Vietnam Pro face loaded, unicodeRange has 1EA0, `document.fonts.check` true for the Vietnamese sample (real Google Fonts, network). Local Playwright (dev, reduced, prod projects): 10 passed in the final run on Node 24 (swatch count = tokens.css `--color-*` count, type/Button/Badge/Chip/motion specimens, Tab ring colour, reduced-motion samples `data-motion="reduced"` and no transform, production `/_design` 404, screenshots 375/768/1440 without horizontal overflow)
 - Decisions: R-009-25 (folder `%5Fdesign`: a plain `_design` is a Next private folder; real URL `/_design` tested); `/_design` is `page.dev.tsx`, present only under `next dev` (phase-based `pageExtensions`; production build has no route, chunk or manifest entry; `NODE_ENV=test` build/start and ISR revalidation all 404); script bytes (gzip -9) first-load JS = scripts in the built HTML incl. noModule polyfills: `/` 168.9 KB (<= 170), `/_design` 203.9 KB (scratch build with the route enabled; about +35 KB for Reveal, R-009-24, over the 25 KB budget); bytes Chrome downloads (e2e, cap 145 KB): `/` 130.6 KB, `/_design` 165.8 KB; Button/Badge/Chip are route-local token-styled specimens (no ui-kit API invented); `agentRules: false` in next.config.mjs stops `next dev` editing apps/storefront/CLAUDE.md (guard test in scripts/web-config.test.mjs)
 - Dependencies: @playwright/test@1.63.0 (Apache-2.0, storefront dev only; prod licence gate green); e2e is local-only, no CI job
@@ -47,7 +47,7 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 - Dependencies: vitest@4.1.11 (storefront tests); tailwindcss@4.3.3, @tailwindcss/postcss@4.3.3, postcss@8.5.23 (theme compile test), all MIT; dev-only transitive lightningcss is MPL-2.0 (CI licence gate covers --prod only, stays green)
 - Bugs: none
 - Follow-ups: B2, C1, C2; decide whether the licence gate should also cover dev dependencies (all-deps check currently fails on argparse Python-2.0, Unlicense deps, lightningcss MPL-2.0)
-### 2026-10-02 · VCK-009 (PR A of 3) skill + tokens · WEB · PR open (feat/VCK-009-design-system)
+### 2026-10-02 · VCK-009 (PR A of 3) skill + tokens · WEB · merged 95b953a (PR #7)
 - AC: AC1 (skill 2.15.0 vendored, hash pin in ADR-013, smoke + import checks in scripts/ui-skill.test.mjs) and AC2 first half (tokens.css + drift tests: 66 MASTER/docs13 tokens, 37 DERIVED, contrast table) proven
 - Decisions: plan docs/plans/VCK-009.md; R-009-1..13
 - Dependencies: vitest@4.1.11, @types/node@20.19.43
