@@ -47,7 +47,7 @@ Single source of truth for "where are we" between sessions. Structure:
 - `CHANGELOG.md` (Keep a Changelog format) gets a concise entry linking the RELEASE file.
 - Release checklist: flags of previous release removed; risk register reviewed; BUG files for this release closed or
   listed as known issues; `make docs-check` green; tag pushed.
-- Client delivery (any copy leaving the private repo): exclude .claude/skills/ui-ux-pro-max/ until ADR-013 records an upstream licence confirmation (package.json says MIT, README says CC-BY-NC-4.0).
+- Client delivery (any copy leaving the private repo): exclude .claude/skills/ui-ux-pro-max/ until ADR-013 records an upstream licence confirmation (package.json says MIT, README says CC-BY-NC-4.0). Also the sharp-libvips packages ship no LICENSE/NOTICE file, so deliver the Licensing table of the sharp-libvips README (LGPL-3.0-or-later plus bundled components, e.g. cairo MPL-1.1 and the AOM patent licence) and keep libvips replaceable (LGPL-3.0-or-later; prebuilt via next/sharp, docs/09 R-15).
 
 ## 5. ADRs (`docs/adr/`)
 Template `ADR-000-template.md`; ≤ ~30 lines; status Proposed → Accepted → Superseded by ADR-<nnn> (never delete);

@@ -4,6 +4,7 @@ import vck from "./eslint/raw-values.mjs";
 export default [
   ...root,
   { ignores: [".next/**", "next-env.d.ts"] },
+  { files: ["test/**/*.cjs"], languageOptions: { sourceType: "commonjs", globals: { module: "writable" } } },
   // node scripts under eslint/ (no @types/node / globals dependency needed for three globals)
   { files: ["eslint/**/*.mjs", "*.mjs"], languageOptions: { globals: { process: "readonly", console: "readonly", URL: "readonly" } } },
   {

@@ -4,11 +4,11 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 ## Now
 - Sprint: 0 — Repo, infra, CI, contracts, skeletons (docs/07 §3)
 - Goal: `make up && make dev` shows empty storefront and admin; contracts pipeline green
-- In progress: VCK-008 PR-B (make release) awaiting review
-- Next: VCK-009 B2, C1, C2 → VCK-006
+- In progress: VCK-009 PR B2 (Next scaffold + font + licence exceptions) awaiting review
+- Next: VCK-009 C1, C2 → VCK-006
 - Blocked: VNPay sandbox registration pending (R-02)
 - Open rulings: Node 20 LTS is EOL (2026-04-30) — decide ADR to move to Node 22 (would re-allow pnpm 11); CI checks are advisory: no branch protection on private free plan (R-003-16)
-- Review queue: VCK-008 PR-B
+- Review queue: VCK-009 B2
 
 ## Checkpoints
 | Slice | Date | Result | Evidence |
@@ -16,13 +16,19 @@ Source of truth for status between sessions. Format: docs/12 §2. Keep "Now" ≤
 
 ## Log
 <!-- newest first; one entry per merged story (docs/12 §2) -->
-### 2026-10-02 · VCK-008 (PR-B of 2) make release · PLAT · PR open (feat/VCK-008-make-release)
+### 2026-10-02 · VCK-009 (PR B2 of 4) Next scaffold + font + licence exceptions · WEB · PR open (feat/VCK-009-next-scaffold)
+- AC: AC3 proven by src/app/fonts.test.ts (weights 400-700, vietnamese+latin, swap, `--font-be-vietnam-pro`, `--font-sans` starts with Be Vietnam Pro, `lang="vi"`, unicode-range covers the sample string and rejects 漢) and AC2 by globals.test.ts (tailwind then tokens import, 2px `--color-ring` focus ring, reduced-motion block, no raw values); both mutation-proven. Build smoke green: `next build` (Turbopack, network) and offline `NEXT_FONT_GOOGLE_MOCKED_RESPONSES=$PWD/apps/storefront/test/font-mock.cjs next build --webpack`
+- Decisions: R-009-4, R-009-16 (owner decision: LGPL/CC-BY licence exceptions kept per package), R-009-17..22; typecheck = `next typegen && tsc`, next-env.d.ts gitignored; Turbopack ignores the font mock for woff2 files so the offline smoke uses `--webpack`; no `onlyBuiltDependencies` change (build needs none)
+- Dependencies: next@16.3.8, react@19.3.0, react-dom@19.3.0, tailwindcss@4.3.3, @tailwindcss/postcss@4.3.3, @types/react@19.3.0, @types/react-dom@19.3.0, @types/node@20.19.43 (storefront dev)
+- Bugs: none
+- Follow-ups: `docs:` PR to MASTER; e2e in CI later; VCK-006 handoff (replace `page.tsx`, tokens-only utilities, sharp kept (owner decision R-009-16); add THIRD-PARTY-NOTICES / client-delivery LGPL notice per R-009-16)
+### 2026-10-02 · VCK-008 (PR-B of 2) make release · PLAT · merged abc26b6 (PR #9)
 - AC: AC2 proven by the PR-B share of the tools/docs suite (205 total incl. PR-A's) and scripts/docs-ci.test.mjs (no workflow runs `make release`; usage guard); dry run on `--no-hardlinks` clones of the real repo
 - Decisions: R-008-12..21 (draft meant to fail docs-check until edited; no `--force`; atomic three-file write; CLAUDE.md not edited). Size exception R-008-20: ≈1700 changed lines (≈545 code, ≈1070 test, ≈87 docs) over the 400 guideline, one cohesive CLI, splitting would leave a dead half
 - Dependencies: none
 - Bugs: none
 - Follow-ups: hostile findings fixed in review (NUL-delimited log, wx guard, symlink/mode/date); `--no-show-signature` untested; gpg-signed-commit not exercised (ordering and untagged-previous-release now refused); `.changeset/` consumption manual; CLAUDE.md §3 comment wording (user item)
-### 2026-10-02 · VCK-009 (PR B1 of 4) lint + token hardening · WEB · PR open (feat/VCK-009-design-system-b)
+### 2026-10-02 · VCK-009 (PR B1 of 4) lint + token hardening · WEB · merged 0346568 (PR #8)
 - AC: AC2 second half proven: storefront lint rule `vck/no-raw-values` fails raw hex/colour functions and px values (apps/storefront/eslint/*, 137 tests, mutation-proven, severity guard) + `check-css.mjs`; tokens.css is `@theme static` with nine `--text-*--line-height` companions, proven by a real Tailwind 4.3.3 compile test (ui-kit 60 tests)
 - Decisions: plan docs/plans/VCK-009.md R-009-6, R-009-7, R-009-15 (4 PRs: B1 lint+tokens, B2 Next scaffold+font+licence exceptions, C1 motion, C2 /_design), R-009-16 (owner decision: keep sharp, per-package LGPL exceptions in B2)
 - Dependencies: vitest@4.1.11 (storefront tests); tailwindcss@4.3.3, @tailwindcss/postcss@4.3.3, postcss@8.5.23 (theme compile test), all MIT; dev-only transitive lightningcss is MPL-2.0 (CI licence gate covers --prod only, stays green)
