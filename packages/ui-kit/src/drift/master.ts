@@ -130,6 +130,8 @@ export function parseMotion(docs: string): Record<string, string> {
   return out;
 }
 
+const HEADING_STEPS = ["h4", "h3", "h2", "h1", "display"];
+
 /** Every token tokens.css must declare, with its exact expected value. */
 export function expectedTokens(m: Master, motion: Record<string, string>): Record<string, string> {
   const t: Record<string, string> = { ...m.colors };
@@ -140,7 +142,11 @@ export function expectedTokens(m: Master, motion: Record<string, string>): Recor
   t["--color-surface-dark"] = m.surfaceDark;
   // ponytail: on-surface-dark is not named in MASTER; it is the page background tone (same as the all-products ink).
   if (m.colors["--color-background"]) t["--color-on-surface-dark"] = m.colors["--color-background"];
-  for (const [k, v] of Object.entries(m.scale)) t[`--text-${k}`] = v;
+  for (const [k, v] of Object.entries(m.scale)) {
+    t[`--text-${k}`] = v;
+    // Tailwind's text-* utilities read --text-*--line-height; derived: body copy steps use body leading, h4+ heading leading.
+    t[`--text-${k}--line-height`] = `var(--leading-${HEADING_STEPS.includes(k) ? "heading" : "body"})`;
+  }
   t["--leading-body"] = m.leading.body;
   t["--leading-heading"] = m.leading.heading;
   t["--tracking-heading"] = m.tracking;
