@@ -25,6 +25,7 @@ test('[VCK-008-AC4] checks job runs docs-check exactly once, after install, with
   assert.ok(checks.indexOf(step) > checks.findIndex((s) => s.run === 'pnpm install --frozen-lockfile'));
   assert.notEqual(step['continue-on-error'], true);
   assert.equal(step.shell, undefined);
+  assert.equal(step.if, undefined, 'a step-level if can silently disable the gate');
   assert.ok(!step.run.includes('${{') && !/\|\|/.test(step.run));
   assert.equal(ci.jobs.checks['continue-on-error'], undefined);
 });
@@ -40,15 +41,17 @@ test('[VCK-008-AC4] Makefile: .PHONY lists docs-check and the target runs check-
   assert.match(mk, /^docs-check:\n\t+node tools\/docs\/check-cli\.mjs$/m);
 });
 
-test('[VCK-008-AC4] PR template mentions make docs-check and docs/12; every relative link resolves', () => {
+test('[VCK-008-AC4] PR template mentions make docs-check and docs/12; DoD items name existing repo paths', () => {
   const tpl = text('.github/pull_request_template.md');
   assert.match(tpl, /make docs-check/);
   assert.match(tpl, /docs\/12/);
-  const targets = [...tpl.matchAll(/\]\(([^)\s]+)\)/g)].map((m) => m[1]).filter((t) => !/^(https?:|#)/.test(t));
+  assert.doesNotMatch(tpl, /\]\([^)]*\)/, 'no markdown links: relative ones break in every GitHub render');
+  const sect = tpl.slice(tpl.indexOf('Docs updated'), tpl.indexOf('- [ ] UI:'));
+  const paths = [...sect.matchAll(/`([^`\s]+)`/g)].map((m) => m[1]).filter((t) => /[/.]/.test(t) && !t.startsWith('make'));
   for (const dep of ['docs/12-documentation-lifecycle.md', 'contracts/', 'docs/05-data-model.md', 'docs/adr/', 'docs/progress/PROGRESS.md', 'docs/bugs/', 'docs/releases/']) {
-    assert.ok(targets.includes(dep), `link to ${dep}`);
+    assert.ok(paths.includes(dep), `references ${dep}`);
   }
-  for (const t of targets) assert.ok(existsSync(resolve(root, t)), `broken link ${t}`);
+  for (const t of paths) assert.ok(existsSync(resolve(root, t)), `missing path ${t}`);
 });
 
 test('[VCK-008-AC4] real-repo smoke: check-cli.mjs exits 0 on this checkout', () => {

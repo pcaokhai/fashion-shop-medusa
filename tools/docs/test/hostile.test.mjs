@@ -64,7 +64,8 @@ test("[VCK-008-AC1] Severity/Status outside the header line never satisfy", () =
     assert.ok(one(md).length >= 1, md);
 });
 test("[VCK-008-AC1] duplicate or second header fails; missing title / empty file fails", () => {
-  assert.ok(one("# BUG-001 t\nSeverity: S2 · Status: OPEN · Status: CLOSED\n").length >= 1);
+  // isolated: filled root cause + regression id, so only the exactly-one-Status rule can fail this
+  assert.match(one(closed().replace("Status: CLOSED", "Status: CLOSED · Status: CLOSED")).join(), /exactly one valid 'Status/);
   assert.ok(one("# BUG-001 t\nSeverity: S2 · Severity: S1 · Status: OPEN\n").length >= 1);
   assert.ok(one("# BUG-001 t\nSeverity: S2 · Status: OPEN\nSeverity: S1 · Status: OPEN\n").length >= 1);
   assert.ok(one("Severity: S2 · Status: OPEN\n").length >= 1);

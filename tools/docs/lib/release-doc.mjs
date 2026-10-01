@@ -4,7 +4,7 @@ import { sections, trimBlank, unfencedLines, unterminated } from "./sections.mjs
 
 export const TEMPLATE = "RELEASE-template.md";
 export const RELEASE_DIR = "docs/releases";
-export const GOOD_NAME = /^RELEASE-(\d+\.\d+\.\d+)\.md$/;
+export const GOOD_NAME = /^RELEASE-((?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*))\.md$/;
 const LOOKS_LIKE_RELEASE = /^release-/i;
 export const REQUIRED_FILES = [
   "docs/bugs/README.md",

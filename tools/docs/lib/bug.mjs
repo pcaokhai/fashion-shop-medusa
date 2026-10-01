@@ -1,5 +1,6 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync } from "node:fs";
 import { join } from "node:path";
+import { readText } from "./release-doc.mjs";
 import { cleanLines, section, unfencedLines, unterminated } from "./sections.mjs";
 
 // Only this exact name is skipped. Any file named bug-*.md (any case) must be exactly BUG-<nnn>-<slug>.md.
@@ -49,6 +50,7 @@ export function checkBugs(root) {
   }
   const violations = [];
   let count = 0;
+  const byNumber = new Map();
   for (const name of names.filter((n) => LOOKS_LIKE_BUG.test(n) && n !== TEMPLATE).sort()) {
     const path = `${dir}/${name}`;
     const m = name.match(GOOD_NAME);
@@ -57,14 +59,14 @@ export function checkBugs(root) {
       continue;
     }
     count++;
-    let md;
-    try {
-      md = readFileSync(join(root, path), "utf8");
-    } catch (e) {
-      violations.push(`${path}: cannot read file (${e.code ?? e.message})`);
+    byNumber.set(m[1], [...(byNumber.get(m[1]) ?? []), name]);
+    const r = readText(root, path);
+    if (r.error) {
+      violations.push(`${path}: ${r.error}`);
       continue;
     }
-    for (const msg of checkBody(md, m[1])) violations.push(`${path}: ${msg}`);
+    for (const msg of checkBody(r.md, m[1])) violations.push(`${path}: ${msg}`);
   }
+  for (const [num, files] of byNumber) if (files.length > 1) violations.push(`${dir}: duplicate BUG-${num} (${files.join(", ")})`);
   return { violations, count };
 }

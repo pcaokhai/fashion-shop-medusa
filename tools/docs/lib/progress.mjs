@@ -1,5 +1,4 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { readText } from "./release-doc.mjs";
 import { sections, unterminated, trimBlank } from "./sections.mjs";
 
 export const NOW_LIMIT = 15;
@@ -7,12 +6,9 @@ const PATH = "docs/progress/PROGRESS.md";
 
 /** PROGRESS "## Now" block must exist once, be non-empty and at most 15 lines; returns { violations, lines }. */
 export function checkProgress(root) {
-  let md;
-  try {
-    md = readFileSync(join(root, PATH), "utf8");
-  } catch (e) {
-    return { violations: [`${PATH}: cannot read file (${e.code ?? e.message})`], lines: 0 };
-  }
+  const r = readText(root, PATH);
+  if (r.error) return { violations: [`${PATH}: ${r.error}`], lines: 0 };
+  const md = r.md;
   const open = unterminated(md);
   if (open) return { violations: [`${PATH}: unterminated ${open}`], lines: 0 };
   const blocks = sections(md, "## Now");
