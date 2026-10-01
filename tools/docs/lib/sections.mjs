@@ -85,3 +85,6 @@ export function trimBlank(lines) {
   while (b > a && lines[b - 1].trim() === "") b--;
   return lines.slice(a, b);
 }
+
+/** One entry per source line (same count as `md.split("\n")`): { line (comments stripped), fenced }. */
+export const rows = (md) => scan(md).rows;
