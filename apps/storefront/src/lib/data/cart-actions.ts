@@ -2,12 +2,18 @@
 import { revalidatePath } from "next/cache";
 import { data } from ".";
 
-const done = async <T>(p: Promise<T>) => {
-  const cart = await p;
+async function done<T>(p: Promise<T>): Promise<T> {
+  const result = await p;
   revalidatePath("/", "layout");
-  return cart;
-};
+  return result;
+}
 
-export const addToCart = (variantId: string, quantity = 1) => done(data.addToCart(variantId, quantity));
-export const updateLine = (lineId: string, quantity: number) => done(data.updateLine(lineId, quantity));
-export const removeLine = (lineId: string) => done(data.removeLine(lineId));
+export async function addToCart(variantId: string, quantity = 1) {
+  await done(data.addToCart(variantId, quantity));
+}
+export async function updateLine(lineId: string, quantity: number) {
+  await done(data.updateLine(lineId, quantity));
+}
+export async function removeLine(lineId: string) {
+  await done(data.removeLine(lineId));
+}
