@@ -1,21 +1,13 @@
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import { expect, type Page } from "@playwright/test";
 
-const MOCK = process.env.E2E_API_MODE === "mock";
-
-// ponytail: mock mode seeds the cookie cart (its documented storage); real mode walks the UI.
-// Drop the mock branch once WEB-1's listing/PDP are on main and green in mock mode.
+// Browse like a shopper: category → first product → add to cart. Resolves only once the add has finished
+// (toast shown), so the next navigation cannot race the server action and open an empty cart.
 export async function fillCart(page: Page) {
-  if (MOCK) {
-    const fixture = resolve(process.cwd(), "../../contracts/fixtures/medusa/products.json"); // playwright runs from apps/storefront
-    const variantId = (JSON.parse(readFileSync(fixture, "utf8")) as { products: { variants: { id: string }[] }[] }).products[0]?.variants[0]?.id ?? "";
-    await page.context().addCookies([{ name: "vck_mock_cart", value: encodeURIComponent(JSON.stringify([{ variantId, quantity: 1 }])), url: page.url() === "about:blank" ? (process.env.E2E_BASE_URL ?? "http://localhost:8000") : page.url() }]);
-    return;
-  }
   await page.goto("/c/all");
   await page.locator('a[href^="/p/"]').first().click();
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await page.getByRole("button", { name: /thêm vào giỏ/i }).click();
+  await expect(page.getByText("Đã thêm vào giỏ hàng")).toBeVisible();
 }
 
 export async function checkoutAsGuest(page: Page, payment: "cod" | "vnpay") {

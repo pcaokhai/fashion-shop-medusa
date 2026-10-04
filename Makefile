@@ -45,6 +45,6 @@ contracts-diff:
 # docs/12 §4 draft only: RELEASE-<v>.md + CHANGELOG block + index row; never commits or tags. Usage: make release VERSION=x.y.z
 # VERSION reaches the script through the environment ("$$VERSION"), never spliced into shell text; the script validates it.
 
-# Journeys against a running stack: make up + pnpm dev (storefront on 8000; override with E2E_BASE_URL). E2E_API_MODE=mock for mock mode.
+# Journeys against a running stack: make up + backend + storefront (real mode: NEXT_PUBLIC_API_MODE=real, port 8000 so the VNPay return URL lands). Override the target with E2E_BASE_URL.
 e2e:
 	pnpm --filter @vck/storefront test:e2e
