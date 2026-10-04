@@ -9,6 +9,7 @@ import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import {
   createApiKeysWorkflow,
   createShippingOptionsWorkflow,
+  createShippingProfilesWorkflow,
   createStockLocationsWorkflow,
   linkSalesChannelsToStockLocationWorkflow,
   createRegionsWorkflow,
@@ -24,7 +25,7 @@ const KEY_TITLE = "VCK Storefront"
 const LOCATION_NAME = "Kho TP.HCM"
 const FLAT_SHIPPING_VND = 30_000
 
-export default async function setupStore({ container }: ExecArgs) {
+export default async function setupStore({ container }: ExecArgs): Promise<string> {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
   const pricing = container.resolve(Modules.PRICING)
@@ -80,6 +81,7 @@ export default async function setupStore({ container }: ExecArgs) {
   await setupFulfillment(container, channelId)
 
   logger.info(`PUBLISHABLE_KEY=${key.token}`)
+  return key.token
 }
 
 async function setupFulfillment(container: ExecArgs["container"], channelId: string) {
@@ -96,9 +98,11 @@ async function setupFulfillment(container: ExecArgs["container"], channelId: str
   const location = result[0]
   if (!location) throw new Error("stock location missing")
 
-  const { data: profiles } = await query.graph({ entity: "shipping_profile", fields: ["id"] }) // created by a core migration
-  const profile = profiles[0]
-  if (!profile) throw new Error("shipping profile missing (run db:migrate first)")
+  // a core migration script creates the default profile on a real DB; fresh test databases only have the schema
+  const { data: profiles } = await query.graph({ entity: "shipping_profile", fields: ["id"] })
+  const profile =
+    profiles[0] ?? (await createShippingProfilesWorkflow(container).run({ input: { data: [{ name: "Default Shipping Profile", type: "default" }] } })).result[0]
+  if (!profile) throw new Error("shipping profile missing")
 
   const set = await fulfillment.createFulfillmentSets({
     name: "Giao hàng toàn quốc",
