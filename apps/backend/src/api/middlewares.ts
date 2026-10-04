@@ -1,4 +1,6 @@
 import { defineMiddlewares, type MedusaNextFunction, type MedusaRequest, type MedusaResponse } from "@medusajs/framework/http"
+import { sendProblem } from "../lib/problem"
+import { isWardOf } from "../lib/vn-address"
 
 type ErrorBody = { type?: string; code?: string; message?: string } | null
 
@@ -16,6 +18,21 @@ function stockoutIs409(_req: MedusaRequest, res: MedusaResponse, next: MedusaNex
   next()
 }
 
+type Address = { country_code?: string; province?: string; city?: string }
+
+// The storefront sends province = province code and city = ward code (2-tier address); reject pairs that do not exist.
+function validateCartAddress(req: MedusaRequest, res: MedusaResponse, next: MedusaNextFunction) {
+  const address = (req.body as { shipping_address?: Address } | undefined)?.shipping_address
+  if (!address || (address.country_code && address.country_code.toLowerCase() !== "vn")) return next()
+  if (isWardOf(address.province, address.city)) return next()
+  return sendProblem(res, 400, "Province and ward must be a valid 2-tier pair", [
+    { field: "shipping_address.city", message: "ward code does not belong to the province code" },
+  ])
+}
+
 export default defineMiddlewares({
-  routes: [{ matcher: "/store/carts/*", method: ["POST"], middlewares: [stockoutIs409] }],
+  routes: [
+    { matcher: "/store/carts/*", method: ["POST"], middlewares: [stockoutIs409] },
+    { matcher: "/store/carts/:id", method: ["POST"], middlewares: [validateCartAddress] },
+  ],
 })

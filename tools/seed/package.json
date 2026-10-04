@@ -10,10 +10,12 @@
     "build": "tsc -p . --noEmit",
     "assets": "node --experimental-strip-types src/gen-assets.ts",
     "record-fixtures": "node --experimental-strip-types src/record-fixtures.ts",
-    "verify": "node --experimental-strip-types src/verify.ts"
+    "verify": "node --experimental-strip-types src/verify.ts",
+    "address-data": "node --experimental-strip-types src/gen-vn-address.ts"
   },
   "devDependencies": {
     "@types/node": "20.19.43",
-    "sharp": "0.35.5"
+    "sharp": "0.35.5",
+    "vietnam-address-database": "1.0.0"
   }
 }
