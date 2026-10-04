@@ -21,10 +21,15 @@ module.exports = defineConfig({
   admin: {
     disable: process.env.DISABLE_MEDUSA_ADMIN === "true",
   },
-  modules: redisUrl
-    ? [
-        { resolve: "@medusajs/medusa/event-bus-redis", options: { redisUrl } },
-        { resolve: "@medusajs/medusa/workflow-engine-redis", options: { redis: { redisUrl } } },
-      ]
-    : [],
+  modules: [
+    // pp_vnpay_vnpay next to the built-in pp_system_default (COD)
+    { resolve: "@medusajs/medusa/payment", options: { providers: [{ resolve: "./src/modules/vnpay", id: "vnpay" }] } },
+    { resolve: "./src/modules/vnpay-ipn" },
+    ...(redisUrl
+      ? [
+          { resolve: "@medusajs/medusa/event-bus-redis", options: { redisUrl } },
+          { resolve: "@medusajs/medusa/workflow-engine-redis", options: { redis: { redisUrl } } },
+        ]
+      : []),
+  ],
 })

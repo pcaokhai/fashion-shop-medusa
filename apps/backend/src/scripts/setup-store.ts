@@ -16,10 +16,12 @@ import {
   createSalesChannelsWorkflow,
   createTaxRegionsWorkflow,
   linkSalesChannelsToApiKeyWorkflow,
+  updateRegionsWorkflow,
   updateStoresWorkflow,
 } from "@medusajs/medusa/core-flows"
 
 const REGION_ID = "reg_vn"
+const PAYMENT_PROVIDERS = ["pp_system_default", "pp_vnpay_vnpay"] // COD (manual) + VNPay
 const CHANNEL_NAME = "VCK Web"
 const KEY_TITLE = "VCK Storefront"
 const LOCATION_NAME = "Kho TP.HCM"
@@ -57,9 +59,11 @@ export default async function setupStore({ container }: ExecArgs): Promise<strin
   const { data: regions } = await query.graph({ entity: "region", fields: ["id"], filters: { id: REGION_ID } })
   if (!regions.length) {
     // the module accepts a fixed id, the workflow's literal type just does not list it; a variable skips the excess-property check
-    const regionInput = { id: REGION_ID, name: "Việt Nam", currency_code: "vnd", countries: ["vn"], payment_providers: ["pp_system_default"] }
+    const regionInput = { id: REGION_ID, name: "Việt Nam", currency_code: "vnd", countries: ["vn"], payment_providers: PAYMENT_PROVIDERS }
     await createRegionsWorkflow(container).run({ input: { regions: [regionInput] } })
     await createTaxRegionsWorkflow(container).run({ input: [{ country_code: "vn", provider_id: "tp_system" }] })
+  } else {
+    await updateRegionsWorkflow(container).run({ input: { selector: { id: REGION_ID }, update: { payment_providers: PAYMENT_PROVIDERS } } })
   }
 
   const prefs = await pricing.listPricePreferences({ attribute: "region_id", value: REGION_ID })

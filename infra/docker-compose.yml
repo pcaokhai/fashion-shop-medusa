@@ -86,9 +86,11 @@ services:
   vnpay-sim:
     image: node:20.20.2-alpine
     command: ["node", "/sim/server.mjs"]
-    environment: { PORT: "9100" }
+    # the sim calls the backend IPN on the host (backend-server runs outside compose)
+    environment: { PORT: "9100", IPN_URL: "http://host.docker.internal:9000/hooks/vnpay/ipn" }
+    extra_hosts: ["host.docker.internal:host-gateway"]
     ports: ["127.0.0.1:${VNPAY_SIM_PORT:-9100}:9100"]
-    volumes: ["../tools/sims/vnpay/server.mjs:/sim/server.mjs:ro"]
+    volumes: ["../tools/sims/vnpay:/sim:ro"]
     healthcheck:
       <<: *health
       test: ["CMD", "wget", "-qO-", "http://localhost:9100/health"]
