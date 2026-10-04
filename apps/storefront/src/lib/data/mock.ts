@@ -4,7 +4,7 @@ import products from "../../../../../contracts/fixtures/medusa/products.json";
 import categories from "../../../../../contracts/fixtures/medusa/categories.json";
 import regions from "../../../../../contracts/fixtures/medusa/regions.json";
 import emptyCart from "../../../../../contracts/fixtures/medusa/carts.json";
-import type { Cart, Category, DataLayer, Product, ProductQuery, Region } from "./types";
+import { matches, type Cart, Category, DataLayer, Product, ProductQuery, Region } from "./types";
 
 const CART_COOKIE = "vck_mock_cart";
 type Line = { variantId: string; quantity: number };
@@ -48,9 +48,10 @@ const change = async (fn: (lines: Line[]) => Line[]) => {
 };
 
 export const mock: DataLayer = {
-  listProducts({ category, q, sort = "newest", limit = 20, offset = 0 }: ProductQuery = {}) {
+  listProducts(query: ProductQuery = {}) {
+    const { category, q, sort = "newest", limit = 20, offset = 0 } = query;
     const needle = q ? fold(q) : "";
-    let list = all.filter((p) => (!category || p.categories?.some((c) => c.handle === category)) && (!needle || fold(p.title).includes(needle)));
+    let list = all.filter((p) => (!category || p.categories?.some((c) => c.handle === category)) && (!needle || fold(p.title).includes(needle)) && matches(p, query));
     if (sort === "price-asc") list = [...list].sort((a, b) => price(a) - price(b));
     if (sort === "price-desc") list = [...list].sort((a, b) => price(b) - price(a));
     return Promise.resolve({ products: list.slice(offset, offset + limit), count: list.length });

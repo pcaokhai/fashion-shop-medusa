@@ -1,6 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
-import type { Cart, Category, DataLayer, Product, ProductQuery, Region } from "./types";
+import { matches, type Cart, Category, DataLayer, Product, ProductQuery, Region } from "./types";
 
 // Derived from the official Medusa Next.js starter's data layer (MIT): cart cookie + Store API calls. Logic only, not its look.
 const BASE = process.env.MEDUSA_BACKEND_URL ?? "http://localhost:9000";
@@ -39,7 +39,11 @@ const fetchCart = async (id: string) => (await store<{ cart: Cart }>(`/carts/${i
 const sortParam = { newest: "-created_at", "price-asc": "variants.calculated_price", "price-desc": "-variants.calculated_price" } as const;
 
 export const real: DataLayer = {
-  async listProducts({ category, q, sort = "newest", limit = 20, offset = 0 }: ProductQuery = {}) {
+  async listProducts(query: ProductQuery = {}) {
+    const { category, q, sort = "newest" } = query;
+    const filtered = query.onSale || query.inStock || query.maxPrice !== undefined;
+    const limit = filtered ? 100 : (query.limit ?? 20);
+    const offset = filtered ? 0 : (query.offset ?? 0);
     const p = new URLSearchParams({ region_id: REGION_ID, fields: PRODUCT_FIELDS, limit: String(limit), offset: String(offset), order: sortParam[sort] });
     if (q) p.set("q", q);
     if (category) {
@@ -49,7 +53,10 @@ export const real: DataLayer = {
       p.append("category_id[]", id);
     }
     const { products, count } = await store<{ products: Product[]; count: number }>(`/products?${p}`);
-    return { products, count };
+    if (!filtered) return { products, count };
+    const kept = products.filter((p) => matches(p, query));
+    const from = query.offset ?? 0;
+    return { products: kept.slice(from, from + (query.limit ?? 20)), count: kept.length };
   },
   async getProduct(handle) {
     const { products } = await store<{ products: Product[] }>(`/products?handle=${encodeURIComponent(handle)}&region_id=${REGION_ID}&fields=${PRODUCT_FIELDS}`);

@@ -12,7 +12,7 @@ const USP = [
 ];
 
 export default async function HomePage() {
-  const [categories, { products }] = await Promise.all([data.listCategories(), data.listProducts({ limit: 8 })]);
+  const [categories, { products }, fresh] = await Promise.all([data.listCategories(), data.listProducts({ limit: 8 }), data.listProducts({ sort: "price-desc", limit: 8, offset: 8 })]);
 
   return (
     <>
@@ -57,6 +57,16 @@ export default async function HomePage() {
         <h2 id="best-heading" className="text-h3 font-bold text-heading">Bán chạy</h2>
         <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-3 md:gap-x-4 lg:grid-cols-4">
           {products.map((p) => <ProductCard key={p.id} product={p} />)}
+        </div>
+      </section>
+
+      <section aria-labelledby="new-heading" className="mx-auto mt-10 max-w-[var(--layout-max)] px-4 md:mt-16 md:px-6">
+        <div className="flex items-end justify-between">
+          <h2 id="new-heading" className="text-h3 font-bold text-heading">Hàng mới về</h2>
+          <Link href="/c/all" className="text-small font-medium text-primary hover:underline">Xem tất cả →</Link>
+        </div>
+        <div className="-mx-4 mt-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:gap-4 md:px-0">
+          {fresh.products.map((p) => <div key={p.id} className="w-40 shrink-0 snap-start md:w-56"><ProductCard product={p} /></div>)}
         </div>
       </section>
     </>
