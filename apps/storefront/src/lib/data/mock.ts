@@ -4,13 +4,12 @@ import products from "../../../../../contracts/fixtures/medusa/products.json";
 import categories from "../../../../../contracts/fixtures/medusa/categories.json";
 import regions from "../../../../../contracts/fixtures/medusa/regions.json";
 import emptyCart from "../../../../../contracts/fixtures/medusa/carts.json";
-import { matches, type Cart, Category, DataLayer, Product, ProductQuery, Region } from "./types";
+import { applyQuery, type Cart, Category, DataLayer, Product, ProductQuery, Region } from "./types";
 
 export const CART_COOKIE = "vck_mock_cart";
 type Line = { variantId: string; quantity: number };
 
 const all = products.products as unknown as Product[];
-const price = (p: Product) => p.variants?.[0]?.calculated_price?.calculated_amount ?? 0;
 
 export const readLines = async (): Promise<Line[]> => {
   try {
@@ -49,12 +48,8 @@ const change = async (fn: (lines: Line[]) => Line[]) => {
 
 export const mock: DataLayer = {
   listProducts(query: ProductQuery = {}) {
-    const { category, q, sort = "newest", limit = 20, offset = 0 } = query;
-    const needle = q ? fold(q) : "";
-    let list = all.filter((p) => (!category || p.categories?.some((c) => c.handle === category)) && (!needle || fold(p.title).includes(needle)) && matches(p, query));
-    if (sort === "price-asc") list = [...list].sort((a, b) => price(a) - price(b));
-    if (sort === "price-desc") list = [...list].sort((a, b) => price(b) - price(a));
-    return Promise.resolve({ products: list.slice(offset, offset + limit), count: list.length });
+    const { category } = query;
+    return Promise.resolve(applyQuery(all.filter((p) => !category || p.categories?.some((c) => c.handle === category)), query));
   },
   getProduct(handle) {
     return Promise.resolve(all.find((p) => p.handle === handle) ?? null);
@@ -74,6 +69,3 @@ export const mock: DataLayer = {
   updateLine: (lineId, quantity) => change((ls) => ls.map((l) => (`line_${l.variantId}` === lineId ? { ...l, quantity } : l))),
   removeLine: (lineId) => change((ls) => ls.filter((l) => `line_${l.variantId}` !== lineId)),
 };
-
-// Accent-insensitive match, same intent as the real search (`phở` = `pho`).
-export const fold = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").toLowerCase();

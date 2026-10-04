@@ -1,6 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
-import { matches, type Cart, Category, DataLayer, Product, ProductQuery, Region } from "./types";
+import { applyQuery, type Cart, type Category, type DataLayer, type Product, type ProductQuery, type Region } from "./types";
 
 // Derived from the official Medusa Next.js starter's data layer (MIT): cart cookie + Store API calls. Logic only, not its look.
 const BASE = process.env.MEDUSA_BACKEND_URL ?? "http://localhost:9000";
@@ -21,7 +21,7 @@ export async function store<T>(path: string, init: RequestInit = {}): Promise<T>
 }
 
 const CART_FIELDS = "*items,*items.variant";
-const PRODUCT_FIELDS = "*variants.calculated_price,+variants.inventory_quantity,*categories,*images";
+const PRODUCT_FIELDS = "*variants.calculated_price,+variants.inventory_quantity,*categories,*images,+metadata";
 
 export const cartId = async () => (await cookies()).get(CART_COOKIE)?.value;
 const setCartId = async (id: string) => (await cookies()).set(CART_COOKIE, id, { path: "/", maxAge: 60 * 60 * 24 * 7, sameSite: "lax" });
@@ -36,34 +36,57 @@ async function ensureCart(): Promise<string> {
 
 export const fetchCart = async (id: string) => (await store<{ cart: Cart }>(`/carts/${id}?fields=${CART_FIELDS}`)).cart;
 
-const sortParam = { newest: "-created_at", "price-asc": "variants.calculated_price", "price-desc": "-variants.calculated_price" } as const;
+const PAGE = 100;
+const CATALOGUE_TTL_MS = 30_000;
+const catalogue = new Map<string, { at: number; products: Promise<Product[]> }>();
+
+async function categoryId(handle: string): Promise<string | undefined> {
+  const { product_categories } = await store<{ product_categories: Category[] }>(`/product-categories?handle=${encodeURIComponent(handle)}`);
+  return product_categories[0]?.id;
+}
+
+/** Every product of a category (or the whole store), paged server-side and cached for 30 s. ponytail: fine to ~1000 products; B2 (Meilisearch /store/search) replaces it. */
+function loadAll(catId?: string): Promise<Product[]> {
+  const key = catId ?? "all";
+  const hit = catalogue.get(key);
+  if (hit && Date.now() - hit.at < CATALOGUE_TTL_MS) return hit.products;
+  const products = (async () => {
+    const out: Product[] = [];
+    for (let offset = 0; ; offset += PAGE) {
+      const p = new URLSearchParams({ region_id: REGION_ID, fields: PRODUCT_FIELDS, limit: String(PAGE), offset: String(offset), order: "-created_at" });
+      if (catId) p.append("category_id[]", catId);
+      const page = await store<{ products: Product[]; count: number }>(`/products?${p}`);
+      out.push(...page.products);
+      if (out.length >= page.count || page.products.length === 0) return out;
+    }
+  })();
+  products.catch(() => catalogue.delete(key));
+  catalogue.set(key, { at: Date.now(), products });
+  return products;
+}
 
 export const real: DataLayer = {
   async listProducts(query: ProductQuery = {}) {
-    const { category, q, sort = "newest" } = query;
-    const filtered = query.onSale || query.inStock || query.maxPrice !== undefined;
-    const limit = filtered ? 100 : (query.limit ?? 20);
-    const offset = filtered ? 0 : (query.offset ?? 0);
-    const p = new URLSearchParams({ region_id: REGION_ID, fields: PRODUCT_FIELDS, limit: String(limit), offset: String(offset), order: sortParam[sort] });
-    if (q) p.set("q", q);
+    const { category, sort = "newest" } = query;
+    let catId: string | undefined;
     if (category) {
-      const { product_categories } = await store<{ product_categories: Category[] }>(`/product-categories?handle=${encodeURIComponent(category)}`);
-      const id = product_categories[0]?.id;
-      if (!id) return { products: [], count: 0 };
-      p.append("category_id[]", id);
+      catId = await categoryId(category);
+      if (!catId) return { products: [], count: 0 };
     }
+    // Medusa pages natively only for plain newest-first browsing; search, filters and price sort run over the full list.
+    const plain = !query.q && !query.onSale && !query.inStock && query.maxPrice === undefined && sort === "newest";
+    if (!plain) return applyQuery(await loadAll(catId), query);
+    const p = new URLSearchParams({ region_id: REGION_ID, fields: PRODUCT_FIELDS, limit: String(query.limit ?? 20), offset: String(query.offset ?? 0), order: "-created_at" });
+    if (catId) p.append("category_id[]", catId);
     const { products, count } = await store<{ products: Product[]; count: number }>(`/products?${p}`);
-    if (!filtered) return { products, count };
-    const kept = products.filter((p) => matches(p, query));
-    const from = query.offset ?? 0;
-    return { products: kept.slice(from, from + (query.limit ?? 20)), count: kept.length };
+    return { products, count };
   },
   async getProduct(handle) {
     const { products } = await store<{ products: Product[] }>(`/products?handle=${encodeURIComponent(handle)}&region_id=${REGION_ID}&fields=${PRODUCT_FIELDS}`);
     return products[0] ?? null;
   },
   async listCategories() {
-    return (await store<{ product_categories: Category[] }>("/product-categories?limit=100&include_descendants_tree=true")).product_categories;
+    return (await store<{ product_categories: Category[] }>("/product-categories?limit=100&fields=id,name,handle,description,parent_category_id,rank")).product_categories;
   },
   async getRegion() {
     return (await store<{ region: Region }>(`/regions/${REGION_ID}`)).region;

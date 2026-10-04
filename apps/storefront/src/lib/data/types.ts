@@ -36,13 +36,26 @@ export interface DataLayer {
 }
 
 const unit = (p: Product) => p.variants?.[0]?.calculated_price;
+const priceOf = (p: Product) => unit(p)?.calculated_amount ?? 0;
 
-/** Filters shared by both modes. ponytail: real mode applies them in memory over a 100-item window, move to Meilisearch facets (B2) if it matters. */
-export function matches(p: Product, { onSale, inStock, maxPrice }: ProductQuery): boolean {
+/** Accent-insensitive fold, same intent as the real search (`phở` = `pho`). */
+export const fold = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").toLowerCase();
+
+function matches(p: Product, { q, onSale, inStock, maxPrice }: ProductQuery): boolean {
   const price = unit(p);
-  const now = price?.calculated_amount ?? 0;
+  const now = priceOf(p);
+  if (q && !fold(p.title).includes(fold(q))) return false;
   if (onSale && !((price?.original_amount ?? now) > now)) return false;
   if (inStock && !p.variants?.some((v) => (v.inventory_quantity ?? 0) > 0)) return false;
   if (maxPrice !== undefined && now > maxPrice) return false;
   return true;
+}
+
+/** Filter, sort and page a full product list. Shared by mock and real mode (Medusa's Store API cannot filter or sort by price). */
+export function applyQuery(all: Product[], query: ProductQuery): ProductPage {
+  const { sort = "newest", limit = 20, offset = 0 } = query;
+  const list = all.filter((p) => matches(p, query));
+  if (sort === "price-asc") list.sort((a, b) => priceOf(a) - priceOf(b));
+  if (sort === "price-desc") list.sort((a, b) => priceOf(b) - priceOf(a));
+  return { products: list.slice(offset, offset + limit), count: list.length };
 }

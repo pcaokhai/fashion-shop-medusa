@@ -2,11 +2,12 @@ import Link from "next/link";
 import { Search, ShoppingBag } from "lucide-react";
 import { data } from "@/lib/data";
 import { SITE } from "@/lib/site";
+import { CartSheet } from "@/components/cart/CartSheet";
 import { MobileMenu } from "./MobileMenu";
 
 export async function Header() {
   const [categories, cart] = await Promise.all([data.listCategories(), data.getCart()]);
-  const links = [...categories.map((c) => ({ href: `/c/${c.handle}`, label: c.name })), { href: "/c/all", label: "Tất cả sản phẩm" }];
+  const links = [...categories.filter((c) => !c.parent_category_id).map((c) => ({ href: `/c/${c.handle}`, label: c.name })), { href: "/c/all", label: "Tất cả sản phẩm" }];
   const count = cart?.items?.reduce((n, i) => n + i.quantity, 0) ?? 0;
   const iconBtn = "relative inline-flex size-11 cursor-pointer items-center justify-center rounded-md hover:bg-muted";
 
@@ -31,12 +32,14 @@ export async function Header() {
           <Link href="/search" aria-label="Tìm kiếm" className={`${iconBtn} md:hidden`}>
             <Search />
           </Link>
-          <Link href="/cart" aria-label={`Giỏ hàng, ${count} sản phẩm`} className={iconBtn}>
-            <ShoppingBag />
-            {count > 0 && (
-              <span className="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full bg-cta text-caption font-semibold text-on-primary">{count}</span>
-            )}
-          </Link>
+          <CartSheet cart={cart}>
+            <button type="button" aria-label={`Giỏ hàng, ${count} sản phẩm`} className={iconBtn}>
+              <ShoppingBag />
+              {count > 0 && (
+                <span className="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full bg-cta text-caption font-semibold text-on-primary">{count}</span>
+              )}
+            </button>
+          </CartSheet>
         </div>
       </div>
     </header>

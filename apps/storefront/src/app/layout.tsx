@@ -3,8 +3,6 @@ import type { ReactNode } from "react";
 import { beVietnamPro } from "./fonts";
 import { MotionProvider } from "@vck/ui-kit";
 import { DemoBanner } from "@/components/shell/DemoBanner";
-import { Footer } from "@/components/shell/Footer";
-import { Header } from "@/components/shell/Header";
 import { Toaster } from "@/components/ui/sonner";
 import { DEMO_BANNER, SITE } from "@/lib/site";
 import "./globals.css";
@@ -21,9 +19,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="flex min-h-dvh flex-col">
         <MotionProvider>
           {DEMO_BANNER && <DemoBanner />}
-          <Header />
-          <main className="flex-1 pb-10 md:pb-22">{children}</main>
-          <Footer />
+          {children}
           <Toaster position="bottom-center" />
         </MotionProvider>
       </body>
