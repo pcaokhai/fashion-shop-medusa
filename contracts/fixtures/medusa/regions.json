@@ -1,0 +1,27 @@
+{
+  "regions": [
+    {
+      "id": "reg_vn",
+      "name": "Việt Nam",
+      "currency_code": "vnd",
+      "automatic_taxes": false,
+      "countries": [
+        {
+          "iso_2": "vn",
+          "name": "Vietnam",
+          "display_name": "Vietnam"
+        }
+      ],
+      "payment_providers": [
+        {
+          "id": "pp_system_default"
+        }
+      ],
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z"
+    }
+  ],
+  "count": 1,
+  "offset": 0,
+  "limit": 10
+}

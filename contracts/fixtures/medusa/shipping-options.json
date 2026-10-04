@@ -1,0 +1,15 @@
+{
+  "shipping_options": [
+    {
+      "id": "so_flat",
+      "name": "Giao hàng tiêu chuẩn (2–4 ngày)",
+      "price_type": "flat",
+      "amount": 30000,
+      "calculated_price": {
+        "calculated_amount": 30000
+      },
+      "service_zone_id": "sz_vn",
+      "shipping_option_type_id": "sotype_std"
+    }
+  ]
+}

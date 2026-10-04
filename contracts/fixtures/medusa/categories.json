@@ -1,0 +1,92 @@
+{
+  "product_categories": [
+    {
+      "id": "pcat_ao",
+      "name": "Áo",
+      "handle": "ao",
+      "description": "Áo thiết kế cho nhịp sống thành phố.",
+      "rank": 0,
+      "parent_category_id": null,
+      "parent_category": null,
+      "category_children": [],
+      "metadata": {
+        "tint": "ao",
+        "count": 4
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "pcat_quan",
+      "name": "Quần",
+      "handle": "quan",
+      "description": "Quần thiết kế cho nhịp sống thành phố.",
+      "rank": 1,
+      "parent_category_id": null,
+      "parent_category": null,
+      "category_children": [],
+      "metadata": {
+        "tint": "quan",
+        "count": 4
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "pcat_vay",
+      "name": "Váy & đầm",
+      "handle": "vay",
+      "description": "Váy & đầm thiết kế cho nhịp sống thành phố.",
+      "rank": 2,
+      "parent_category_id": null,
+      "parent_category": null,
+      "category_children": [],
+      "metadata": {
+        "tint": "vay",
+        "count": 4
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "pcat_giay",
+      "name": "Giày dép",
+      "handle": "giay",
+      "description": "Giày dép thiết kế cho nhịp sống thành phố.",
+      "rank": 3,
+      "parent_category_id": null,
+      "parent_category": null,
+      "category_children": [],
+      "metadata": {
+        "tint": "giay",
+        "count": 4
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "pcat_phu-kien",
+      "name": "Phụ kiện",
+      "handle": "phu-kien",
+      "description": "Phụ kiện thiết kế cho nhịp sống thành phố.",
+      "rank": 4,
+      "parent_category_id": null,
+      "parent_category": null,
+      "category_children": [],
+      "metadata": {
+        "tint": "phukien",
+        "count": 4
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    }
+  ],
+  "count": 5,
+  "offset": 0,
+  "limit": 100
+}

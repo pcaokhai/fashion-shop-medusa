@@ -1,7 +1,27 @@
 @import "tailwindcss";
 @import "@vck/ui-kit/tokens.css";
 
+/* shadcn semantic names mapped onto MASTER tokens. `accent` stays MASTER's orange; hover surfaces use `muted`. */
+@theme inline {
+  --color-primary-foreground: var(--color-on-primary);
+  --color-secondary: var(--color-primary-tint);
+  --color-secondary-foreground: var(--color-heading);
+  --color-popover: var(--color-card);
+  --color-popover-foreground: var(--color-foreground);
+  --color-input: var(--color-border);
+  --radius: var(--radius-md);
+}
+
+:root {
+  --popover: var(--color-card);
+  --popover-foreground: var(--color-foreground);
+  --border: var(--color-border);
+  --radius: var(--radius-md);
+}
+
 body {
+  background: var(--color-background);
+  color: var(--color-foreground);
   font-family: var(--font-be-vietnam-pro), var(--font-sans);
 }
 

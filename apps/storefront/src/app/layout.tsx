@@ -2,18 +2,29 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { beVietnamPro } from "./fonts";
 import { MotionProvider } from "@vck/ui-kit";
+import { DemoBanner } from "@/components/shell/DemoBanner";
+import { Footer } from "@/components/shell/Footer";
+import { Header } from "@/components/shell/Header";
+import { Toaster } from "@/components/ui/sonner";
+import { DEMO_BANNER, SITE } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "VN Commerce Kit",
+  title: { default: `${SITE.name} · ${SITE.tagline}`, template: `%s · ${SITE.name}` },
   description: "Cửa hàng trực tuyến cho thị trường Việt Nam.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="vi" className={beVietnamPro.variable}>
-      <body>
-        <MotionProvider>{children}</MotionProvider>
+      <body className="flex min-h-dvh flex-col">
+        <MotionProvider>
+          {DEMO_BANNER && <DemoBanner />}
+          <Header />
+          <main className="flex-1 pb-10 md:pb-22">{children}</main>
+          <Footer />
+          <Toaster position="bottom-center" />
+        </MotionProvider>
       </body>
     </html>
   );

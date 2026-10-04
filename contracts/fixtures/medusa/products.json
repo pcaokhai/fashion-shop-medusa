@@ -1,0 +1,3003 @@
+{
+  "products": [
+    {
+      "id": "prod_ao-1",
+      "title": "Áo thun cotton cổ tròn",
+      "handle": "ao-1",
+      "subtitle": null,
+      "description": "Áo thun cotton cổ tròn: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/ao-1-1.svg",
+      "images": [
+        {
+          "id": "img_ao-1_1",
+          "url": "/mock/ao-1-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_ao-1_2",
+          "url": "/mock/ao-1-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_ao",
+          "name": "Áo",
+          "handle": "ao"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_ao-1",
+          "title": "Kích thước",
+          "product_id": "prod_ao-1",
+          "values": [
+            {
+              "id": "optv_ao-1_S",
+              "value": "S"
+            },
+            {
+              "id": "optv_ao-1_M",
+              "value": "M"
+            },
+            {
+              "id": "optv_ao-1_L",
+              "value": "L"
+            },
+            {
+              "id": "optv_ao-1_XL",
+              "value": "XL"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_ao-1_S",
+          "title": "S",
+          "sku": "AO-1-S",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 3,
+          "options": [
+            {
+              "id": "optv_ao-1_S",
+              "value": "S",
+              "option_id": "opt_ao-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 120000,
+            "original_amount": 150000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_ao-1_M",
+          "title": "M",
+          "sku": "AO-1-M",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 7,
+          "options": [
+            {
+              "id": "optv_ao-1_M",
+              "value": "M",
+              "option_id": "opt_ao-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 120000,
+            "original_amount": 150000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_ao-1_L",
+          "title": "L",
+          "sku": "AO-1-L",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 11,
+          "options": [
+            {
+              "id": "optv_ao-1_L",
+              "value": "L",
+              "option_id": "opt_ao-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 120000,
+            "original_amount": 150000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_ao-1_XL",
+          "title": "XL",
+          "sku": "AO-1-XL",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_ao-1_XL",
+              "value": "XL",
+              "option_id": "opt_ao-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 120000,
+            "original_amount": 150000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4,
+        "sold": 40,
+        "is_new": false
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_ao-2",
+      "title": "Áo sơ mi linen tay dài",
+      "handle": "ao-2",
+      "subtitle": null,
+      "description": "Áo sơ mi linen tay dài: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/ao-2-1.svg",
+      "images": [
+        {
+          "id": "img_ao-2_1",
+          "url": "/mock/ao-2-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_ao-2_2",
+          "url": "/mock/ao-2-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_ao",
+          "name": "Áo",
+          "handle": "ao"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_ao-2",
+          "title": "Kích thước",
+          "product_id": "prod_ao-2",
+          "values": [
+            {
+              "id": "optv_ao-2_S",
+              "value": "S"
+            },
+            {
+              "id": "optv_ao-2_M",
+              "value": "M"
+            },
+            {
+              "id": "optv_ao-2_L",
+              "value": "L"
+            },
+            {
+              "id": "optv_ao-2_XL",
+              "value": "XL"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_ao-2_S",
+          "title": "S",
+          "sku": "AO-2-S",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 7,
+          "options": [
+            {
+              "id": "optv_ao-2_S",
+              "value": "S",
+              "option_id": "opt_ao-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 187000,
+            "original_amount": 187000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_ao-2_M",
+          "title": "M",
+          "sku": "AO-2-M",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 11,
+          "options": [
+            {
+              "id": "optv_ao-2_M",
+              "value": "M",
+              "option_id": "opt_ao-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 187000,
+            "original_amount": 187000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_ao-2_L",
+          "title": "L",
+          "sku": "AO-2-L",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_ao-2_L",
+              "value": "L",
+              "option_id": "opt_ao-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 187000,
+            "original_amount": 187000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_ao-2_XL",
+          "title": "XL",
+          "sku": "AO-2-XL",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 0,
+          "options": [
+            {
+              "id": "optv_ao-2_XL",
+              "value": "XL",
+              "option_id": "opt_ao-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 187000,
+            "original_amount": 187000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.1,
+        "sold": 51,
+        "is_new": false
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_ao-3",
+      "title": "Áo polo piqué basic",
+      "handle": "ao-3",
+      "subtitle": null,
+      "description": "Áo polo piqué basic: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/ao-3-1.svg",
+      "images": [
+        {
+          "id": "img_ao-3_1",
+          "url": "/mock/ao-3-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_ao-3_2",
+          "url": "/mock/ao-3-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_ao",
+          "name": "Áo",
+          "handle": "ao"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_ao-3",
+          "title": "Kích thước",
+          "product_id": "prod_ao-3",
+          "values": [
+            {
+              "id": "optv_ao-3_S",
+              "value": "S"
+            },
+            {
+              "id": "optv_ao-3_M",
+              "value": "M"
+            },
+            {
+              "id": "optv_ao-3_L",
+              "value": "L"
+            },
+            {
+              "id": "optv_ao-3_XL",
+              "value": "XL"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_ao-3_S",
+          "title": "S",
+          "sku": "AO-3-S",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 11,
+          "options": [
+            {
+              "id": "optv_ao-3_S",
+              "value": "S",
+              "option_id": "opt_ao-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 224000,
+            "original_amount": 224000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_ao-3_M",
+          "title": "M",
+          "sku": "AO-3-M",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_ao-3_M",
+              "value": "M",
+              "option_id": "opt_ao-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 224000,
+            "original_amount": 224000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_ao-3_L",
+          "title": "L",
+          "sku": "AO-3-L",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 19,
+          "options": [
+            {
+              "id": "optv_ao-3_L",
+              "value": "L",
+              "option_id": "opt_ao-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 224000,
+            "original_amount": 224000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_ao-3_XL",
+          "title": "XL",
+          "sku": "AO-3-XL",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 3,
+          "options": [
+            {
+              "id": "optv_ao-3_XL",
+              "value": "XL",
+              "option_id": "opt_ao-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 224000,
+            "original_amount": 224000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.2,
+        "sold": 62,
+        "is_new": false
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_ao-4",
+      "title": "Áo khoác gió nhẹ",
+      "handle": "ao-4",
+      "subtitle": null,
+      "description": "Áo khoác gió nhẹ: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/ao-4-1.svg",
+      "images": [
+        {
+          "id": "img_ao-4_1",
+          "url": "/mock/ao-4-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_ao-4_2",
+          "url": "/mock/ao-4-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_ao",
+          "name": "Áo",
+          "handle": "ao"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_ao-4",
+          "title": "Kích thước",
+          "product_id": "prod_ao-4",
+          "values": [
+            {
+              "id": "optv_ao-4_S",
+              "value": "S"
+            },
+            {
+              "id": "optv_ao-4_M",
+              "value": "M"
+            },
+            {
+              "id": "optv_ao-4_L",
+              "value": "L"
+            },
+            {
+              "id": "optv_ao-4_XL",
+              "value": "XL"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_ao-4_S",
+          "title": "S",
+          "sku": "AO-4-S",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_ao-4_S",
+              "value": "S",
+              "option_id": "opt_ao-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 209000,
+            "original_amount": 261000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_ao-4_M",
+          "title": "M",
+          "sku": "AO-4-M",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 19,
+          "options": [
+            {
+              "id": "optv_ao-4_M",
+              "value": "M",
+              "option_id": "opt_ao-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 209000,
+            "original_amount": 261000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_ao-4_L",
+          "title": "L",
+          "sku": "AO-4-L",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 3,
+          "options": [
+            {
+              "id": "optv_ao-4_L",
+              "value": "L",
+              "option_id": "opt_ao-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 209000,
+            "original_amount": 261000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_ao-4_XL",
+          "title": "XL",
+          "sku": "AO-4-XL",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 7,
+          "options": [
+            {
+              "id": "optv_ao-4_XL",
+              "value": "XL",
+              "option_id": "opt_ao-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 209000,
+            "original_amount": 261000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.3,
+        "sold": 73,
+        "is_new": true
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_quan-1",
+      "title": "Quần jeans ống suông",
+      "handle": "quan-1",
+      "subtitle": null,
+      "description": "Quần jeans ống suông: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/quan-1-1.svg",
+      "images": [
+        {
+          "id": "img_quan-1_1",
+          "url": "/mock/quan-1-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_quan-1_2",
+          "url": "/mock/quan-1-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_quan",
+          "name": "Quần",
+          "handle": "quan"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_quan-1",
+          "title": "Kích thước",
+          "product_id": "prod_quan-1",
+          "values": [
+            {
+              "id": "optv_quan-1_S",
+              "value": "S"
+            },
+            {
+              "id": "optv_quan-1_M",
+              "value": "M"
+            },
+            {
+              "id": "optv_quan-1_L",
+              "value": "L"
+            },
+            {
+              "id": "optv_quan-1_XL",
+              "value": "XL"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_quan-1_S",
+          "title": "S",
+          "sku": "QUAN-1-S",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 3,
+          "options": [
+            {
+              "id": "optv_quan-1_S",
+              "value": "S",
+              "option_id": "opt_quan-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 238000,
+            "original_amount": 298000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_quan-1_M",
+          "title": "M",
+          "sku": "QUAN-1-M",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 7,
+          "options": [
+            {
+              "id": "optv_quan-1_M",
+              "value": "M",
+              "option_id": "opt_quan-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 238000,
+            "original_amount": 298000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_quan-1_L",
+          "title": "L",
+          "sku": "QUAN-1-L",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 11,
+          "options": [
+            {
+              "id": "optv_quan-1_L",
+              "value": "L",
+              "option_id": "opt_quan-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 238000,
+            "original_amount": 298000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_quan-1_XL",
+          "title": "XL",
+          "sku": "QUAN-1-XL",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_quan-1_XL",
+              "value": "XL",
+              "option_id": "opt_quan-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 238000,
+            "original_amount": 298000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.1,
+        "sold": 63,
+        "is_new": false
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_quan-2",
+      "title": "Quần short kaki",
+      "handle": "quan-2",
+      "subtitle": null,
+      "description": "Quần short kaki: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/quan-2-1.svg",
+      "images": [
+        {
+          "id": "img_quan-2_1",
+          "url": "/mock/quan-2-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_quan-2_2",
+          "url": "/mock/quan-2-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_quan",
+          "name": "Quần",
+          "handle": "quan"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_quan-2",
+          "title": "Kích thước",
+          "product_id": "prod_quan-2",
+          "values": [
+            {
+              "id": "optv_quan-2_S",
+              "value": "S"
+            },
+            {
+              "id": "optv_quan-2_M",
+              "value": "M"
+            },
+            {
+              "id": "optv_quan-2_L",
+              "value": "L"
+            },
+            {
+              "id": "optv_quan-2_XL",
+              "value": "XL"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_quan-2_S",
+          "title": "S",
+          "sku": "QUAN-2-S",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 7,
+          "options": [
+            {
+              "id": "optv_quan-2_S",
+              "value": "S",
+              "option_id": "opt_quan-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 335000,
+            "original_amount": 335000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_quan-2_M",
+          "title": "M",
+          "sku": "QUAN-2-M",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 11,
+          "options": [
+            {
+              "id": "optv_quan-2_M",
+              "value": "M",
+              "option_id": "opt_quan-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 335000,
+            "original_amount": 335000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_quan-2_L",
+          "title": "L",
+          "sku": "QUAN-2-L",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_quan-2_L",
+              "value": "L",
+              "option_id": "opt_quan-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 335000,
+            "original_amount": 335000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_quan-2_XL",
+          "title": "XL",
+          "sku": "QUAN-2-XL",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 0,
+          "options": [
+            {
+              "id": "optv_quan-2_XL",
+              "value": "XL",
+              "option_id": "opt_quan-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 335000,
+            "original_amount": 335000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.2,
+        "sold": 74,
+        "is_new": false
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_quan-3",
+      "title": "Quần tây slim-fit",
+      "handle": "quan-3",
+      "subtitle": null,
+      "description": "Quần tây slim-fit: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/quan-3-1.svg",
+      "images": [
+        {
+          "id": "img_quan-3_1",
+          "url": "/mock/quan-3-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_quan-3_2",
+          "url": "/mock/quan-3-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_quan",
+          "name": "Quần",
+          "handle": "quan"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_quan-3",
+          "title": "Kích thước",
+          "product_id": "prod_quan-3",
+          "values": [
+            {
+              "id": "optv_quan-3_S",
+              "value": "S"
+            },
+            {
+              "id": "optv_quan-3_M",
+              "value": "M"
+            },
+            {
+              "id": "optv_quan-3_L",
+              "value": "L"
+            },
+            {
+              "id": "optv_quan-3_XL",
+              "value": "XL"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_quan-3_S",
+          "title": "S",
+          "sku": "QUAN-3-S",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 11,
+          "options": [
+            {
+              "id": "optv_quan-3_S",
+              "value": "S",
+              "option_id": "opt_quan-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 372000,
+            "original_amount": 372000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_quan-3_M",
+          "title": "M",
+          "sku": "QUAN-3-M",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_quan-3_M",
+              "value": "M",
+              "option_id": "opt_quan-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 372000,
+            "original_amount": 372000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_quan-3_L",
+          "title": "L",
+          "sku": "QUAN-3-L",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 19,
+          "options": [
+            {
+              "id": "optv_quan-3_L",
+              "value": "L",
+              "option_id": "opt_quan-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 372000,
+            "original_amount": 372000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_quan-3_XL",
+          "title": "XL",
+          "sku": "QUAN-3-XL",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 3,
+          "options": [
+            {
+              "id": "optv_quan-3_XL",
+              "value": "XL",
+              "option_id": "opt_quan-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 372000,
+            "original_amount": 372000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.3,
+        "sold": 85,
+        "is_new": false
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_quan-4",
+      "title": "Quần jogger nỉ",
+      "handle": "quan-4",
+      "subtitle": null,
+      "description": "Quần jogger nỉ: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/quan-4-1.svg",
+      "images": [
+        {
+          "id": "img_quan-4_1",
+          "url": "/mock/quan-4-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_quan-4_2",
+          "url": "/mock/quan-4-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_quan",
+          "name": "Quần",
+          "handle": "quan"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_quan-4",
+          "title": "Kích thước",
+          "product_id": "prod_quan-4",
+          "values": [
+            {
+              "id": "optv_quan-4_S",
+              "value": "S"
+            },
+            {
+              "id": "optv_quan-4_M",
+              "value": "M"
+            },
+            {
+              "id": "optv_quan-4_L",
+              "value": "L"
+            },
+            {
+              "id": "optv_quan-4_XL",
+              "value": "XL"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_quan-4_S",
+          "title": "S",
+          "sku": "QUAN-4-S",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_quan-4_S",
+              "value": "S",
+              "option_id": "opt_quan-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 327000,
+            "original_amount": 409000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_quan-4_M",
+          "title": "M",
+          "sku": "QUAN-4-M",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 19,
+          "options": [
+            {
+              "id": "optv_quan-4_M",
+              "value": "M",
+              "option_id": "opt_quan-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 327000,
+            "original_amount": 409000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_quan-4_L",
+          "title": "L",
+          "sku": "QUAN-4-L",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 3,
+          "options": [
+            {
+              "id": "optv_quan-4_L",
+              "value": "L",
+              "option_id": "opt_quan-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 327000,
+            "original_amount": 409000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_quan-4_XL",
+          "title": "XL",
+          "sku": "QUAN-4-XL",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 7,
+          "options": [
+            {
+              "id": "optv_quan-4_XL",
+              "value": "XL",
+              "option_id": "opt_quan-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 327000,
+            "original_amount": 409000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.4,
+        "sold": 96,
+        "is_new": true
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_vay-1",
+      "title": "Váy midi hoa nhí",
+      "handle": "vay-1",
+      "subtitle": null,
+      "description": "Váy midi hoa nhí: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/vay-1-1.svg",
+      "images": [
+        {
+          "id": "img_vay-1_1",
+          "url": "/mock/vay-1-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_vay-1_2",
+          "url": "/mock/vay-1-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_vay",
+          "name": "Váy & đầm",
+          "handle": "vay"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_vay-1",
+          "title": "Kích thước",
+          "product_id": "prod_vay-1",
+          "values": [
+            {
+              "id": "optv_vay-1_S",
+              "value": "S"
+            },
+            {
+              "id": "optv_vay-1_M",
+              "value": "M"
+            },
+            {
+              "id": "optv_vay-1_L",
+              "value": "L"
+            },
+            {
+              "id": "optv_vay-1_XL",
+              "value": "XL"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_vay-1_S",
+          "title": "S",
+          "sku": "VAY-1-S",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 3,
+          "options": [
+            {
+              "id": "optv_vay-1_S",
+              "value": "S",
+              "option_id": "opt_vay-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 357000,
+            "original_amount": 446000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_vay-1_M",
+          "title": "M",
+          "sku": "VAY-1-M",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 7,
+          "options": [
+            {
+              "id": "optv_vay-1_M",
+              "value": "M",
+              "option_id": "opt_vay-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 357000,
+            "original_amount": 446000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_vay-1_L",
+          "title": "L",
+          "sku": "VAY-1-L",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 11,
+          "options": [
+            {
+              "id": "optv_vay-1_L",
+              "value": "L",
+              "option_id": "opt_vay-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 357000,
+            "original_amount": 446000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_vay-1_XL",
+          "title": "XL",
+          "sku": "VAY-1-XL",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_vay-1_XL",
+              "value": "XL",
+              "option_id": "opt_vay-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 357000,
+            "original_amount": 446000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.2,
+        "sold": 86,
+        "is_new": false
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_vay-2",
+      "title": "Đầm suông cổ vuông",
+      "handle": "vay-2",
+      "subtitle": null,
+      "description": "Đầm suông cổ vuông: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/vay-2-1.svg",
+      "images": [
+        {
+          "id": "img_vay-2_1",
+          "url": "/mock/vay-2-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_vay-2_2",
+          "url": "/mock/vay-2-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_vay",
+          "name": "Váy & đầm",
+          "handle": "vay"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_vay-2",
+          "title": "Kích thước",
+          "product_id": "prod_vay-2",
+          "values": [
+            {
+              "id": "optv_vay-2_S",
+              "value": "S"
+            },
+            {
+              "id": "optv_vay-2_M",
+              "value": "M"
+            },
+            {
+              "id": "optv_vay-2_L",
+              "value": "L"
+            },
+            {
+              "id": "optv_vay-2_XL",
+              "value": "XL"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_vay-2_S",
+          "title": "S",
+          "sku": "VAY-2-S",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 7,
+          "options": [
+            {
+              "id": "optv_vay-2_S",
+              "value": "S",
+              "option_id": "opt_vay-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 483000,
+            "original_amount": 483000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_vay-2_M",
+          "title": "M",
+          "sku": "VAY-2-M",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 11,
+          "options": [
+            {
+              "id": "optv_vay-2_M",
+              "value": "M",
+              "option_id": "opt_vay-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 483000,
+            "original_amount": 483000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_vay-2_L",
+          "title": "L",
+          "sku": "VAY-2-L",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_vay-2_L",
+              "value": "L",
+              "option_id": "opt_vay-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 483000,
+            "original_amount": 483000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_vay-2_XL",
+          "title": "XL",
+          "sku": "VAY-2-XL",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 0,
+          "options": [
+            {
+              "id": "optv_vay-2_XL",
+              "value": "XL",
+              "option_id": "opt_vay-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 483000,
+            "original_amount": 483000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.3,
+        "sold": 97,
+        "is_new": false
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_vay-3",
+      "title": "Chân váy chữ A",
+      "handle": "vay-3",
+      "subtitle": null,
+      "description": "Chân váy chữ A: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/vay-3-1.svg",
+      "images": [
+        {
+          "id": "img_vay-3_1",
+          "url": "/mock/vay-3-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_vay-3_2",
+          "url": "/mock/vay-3-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_vay",
+          "name": "Váy & đầm",
+          "handle": "vay"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_vay-3",
+          "title": "Kích thước",
+          "product_id": "prod_vay-3",
+          "values": [
+            {
+              "id": "optv_vay-3_S",
+              "value": "S"
+            },
+            {
+              "id": "optv_vay-3_M",
+              "value": "M"
+            },
+            {
+              "id": "optv_vay-3_L",
+              "value": "L"
+            },
+            {
+              "id": "optv_vay-3_XL",
+              "value": "XL"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_vay-3_S",
+          "title": "S",
+          "sku": "VAY-3-S",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 11,
+          "options": [
+            {
+              "id": "optv_vay-3_S",
+              "value": "S",
+              "option_id": "opt_vay-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 520000,
+            "original_amount": 520000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_vay-3_M",
+          "title": "M",
+          "sku": "VAY-3-M",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_vay-3_M",
+              "value": "M",
+              "option_id": "opt_vay-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 520000,
+            "original_amount": 520000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_vay-3_L",
+          "title": "L",
+          "sku": "VAY-3-L",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 19,
+          "options": [
+            {
+              "id": "optv_vay-3_L",
+              "value": "L",
+              "option_id": "opt_vay-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 520000,
+            "original_amount": 520000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_vay-3_XL",
+          "title": "XL",
+          "sku": "VAY-3-XL",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 3,
+          "options": [
+            {
+              "id": "optv_vay-3_XL",
+              "value": "XL",
+              "option_id": "opt_vay-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 520000,
+            "original_amount": 520000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.4,
+        "sold": 108,
+        "is_new": false
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_vay-4",
+      "title": "Đầm wrap lưng thun",
+      "handle": "vay-4",
+      "subtitle": null,
+      "description": "Đầm wrap lưng thun: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/vay-4-1.svg",
+      "images": [
+        {
+          "id": "img_vay-4_1",
+          "url": "/mock/vay-4-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_vay-4_2",
+          "url": "/mock/vay-4-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_vay",
+          "name": "Váy & đầm",
+          "handle": "vay"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_vay-4",
+          "title": "Kích thước",
+          "product_id": "prod_vay-4",
+          "values": [
+            {
+              "id": "optv_vay-4_S",
+              "value": "S"
+            },
+            {
+              "id": "optv_vay-4_M",
+              "value": "M"
+            },
+            {
+              "id": "optv_vay-4_L",
+              "value": "L"
+            },
+            {
+              "id": "optv_vay-4_XL",
+              "value": "XL"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_vay-4_S",
+          "title": "S",
+          "sku": "VAY-4-S",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_vay-4_S",
+              "value": "S",
+              "option_id": "opt_vay-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 126000,
+            "original_amount": 157000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_vay-4_M",
+          "title": "M",
+          "sku": "VAY-4-M",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 19,
+          "options": [
+            {
+              "id": "optv_vay-4_M",
+              "value": "M",
+              "option_id": "opt_vay-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 126000,
+            "original_amount": 157000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_vay-4_L",
+          "title": "L",
+          "sku": "VAY-4-L",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 3,
+          "options": [
+            {
+              "id": "optv_vay-4_L",
+              "value": "L",
+              "option_id": "opt_vay-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 126000,
+            "original_amount": 157000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_vay-4_XL",
+          "title": "XL",
+          "sku": "VAY-4-XL",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 7,
+          "options": [
+            {
+              "id": "optv_vay-4_XL",
+              "value": "XL",
+              "option_id": "opt_vay-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 126000,
+            "original_amount": 157000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.5,
+        "sold": 119,
+        "is_new": true
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_giay-1",
+      "title": "Giày sneaker da trơn",
+      "handle": "giay-1",
+      "subtitle": null,
+      "description": "Giày sneaker da trơn: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/giay-1-1.svg",
+      "images": [
+        {
+          "id": "img_giay-1_1",
+          "url": "/mock/giay-1-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_giay-1_2",
+          "url": "/mock/giay-1-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_giay",
+          "name": "Giày dép",
+          "handle": "giay"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_giay-1",
+          "title": "Kích thước",
+          "product_id": "prod_giay-1",
+          "values": [
+            {
+              "id": "optv_giay-1_38",
+              "value": "38"
+            },
+            {
+              "id": "optv_giay-1_39",
+              "value": "39"
+            },
+            {
+              "id": "optv_giay-1_40",
+              "value": "40"
+            },
+            {
+              "id": "optv_giay-1_41",
+              "value": "41"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_giay-1_38",
+          "title": "38",
+          "sku": "GIAY-1-38",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 3,
+          "options": [
+            {
+              "id": "optv_giay-1_38",
+              "value": "38",
+              "option_id": "opt_giay-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 155000,
+            "original_amount": 194000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_giay-1_39",
+          "title": "39",
+          "sku": "GIAY-1-39",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 7,
+          "options": [
+            {
+              "id": "optv_giay-1_39",
+              "value": "39",
+              "option_id": "opt_giay-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 155000,
+            "original_amount": 194000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_giay-1_40",
+          "title": "40",
+          "sku": "GIAY-1-40",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 11,
+          "options": [
+            {
+              "id": "optv_giay-1_40",
+              "value": "40",
+              "option_id": "opt_giay-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 155000,
+            "original_amount": 194000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_giay-1_41",
+          "title": "41",
+          "sku": "GIAY-1-41",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_giay-1_41",
+              "value": "41",
+              "option_id": "opt_giay-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 155000,
+            "original_amount": 194000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.3,
+        "sold": 109,
+        "is_new": false
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_giay-2",
+      "title": "Sandal quai ngang",
+      "handle": "giay-2",
+      "subtitle": null,
+      "description": "Sandal quai ngang: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/giay-2-1.svg",
+      "images": [
+        {
+          "id": "img_giay-2_1",
+          "url": "/mock/giay-2-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_giay-2_2",
+          "url": "/mock/giay-2-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_giay",
+          "name": "Giày dép",
+          "handle": "giay"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_giay-2",
+          "title": "Kích thước",
+          "product_id": "prod_giay-2",
+          "values": [
+            {
+              "id": "optv_giay-2_38",
+              "value": "38"
+            },
+            {
+              "id": "optv_giay-2_39",
+              "value": "39"
+            },
+            {
+              "id": "optv_giay-2_40",
+              "value": "40"
+            },
+            {
+              "id": "optv_giay-2_41",
+              "value": "41"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_giay-2_38",
+          "title": "38",
+          "sku": "GIAY-2-38",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 7,
+          "options": [
+            {
+              "id": "optv_giay-2_38",
+              "value": "38",
+              "option_id": "opt_giay-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 231000,
+            "original_amount": 231000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_giay-2_39",
+          "title": "39",
+          "sku": "GIAY-2-39",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 11,
+          "options": [
+            {
+              "id": "optv_giay-2_39",
+              "value": "39",
+              "option_id": "opt_giay-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 231000,
+            "original_amount": 231000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_giay-2_40",
+          "title": "40",
+          "sku": "GIAY-2-40",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_giay-2_40",
+              "value": "40",
+              "option_id": "opt_giay-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 231000,
+            "original_amount": 231000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_giay-2_41",
+          "title": "41",
+          "sku": "GIAY-2-41",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 0,
+          "options": [
+            {
+              "id": "optv_giay-2_41",
+              "value": "41",
+              "option_id": "opt_giay-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 231000,
+            "original_amount": 231000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.4,
+        "sold": 120,
+        "is_new": false
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_giay-3",
+      "title": "Giày lười da bò",
+      "handle": "giay-3",
+      "subtitle": null,
+      "description": "Giày lười da bò: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/giay-3-1.svg",
+      "images": [
+        {
+          "id": "img_giay-3_1",
+          "url": "/mock/giay-3-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_giay-3_2",
+          "url": "/mock/giay-3-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_giay",
+          "name": "Giày dép",
+          "handle": "giay"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_giay-3",
+          "title": "Kích thước",
+          "product_id": "prod_giay-3",
+          "values": [
+            {
+              "id": "optv_giay-3_38",
+              "value": "38"
+            },
+            {
+              "id": "optv_giay-3_39",
+              "value": "39"
+            },
+            {
+              "id": "optv_giay-3_40",
+              "value": "40"
+            },
+            {
+              "id": "optv_giay-3_41",
+              "value": "41"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_giay-3_38",
+          "title": "38",
+          "sku": "GIAY-3-38",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 11,
+          "options": [
+            {
+              "id": "optv_giay-3_38",
+              "value": "38",
+              "option_id": "opt_giay-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 268000,
+            "original_amount": 268000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_giay-3_39",
+          "title": "39",
+          "sku": "GIAY-3-39",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_giay-3_39",
+              "value": "39",
+              "option_id": "opt_giay-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 268000,
+            "original_amount": 268000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_giay-3_40",
+          "title": "40",
+          "sku": "GIAY-3-40",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 19,
+          "options": [
+            {
+              "id": "optv_giay-3_40",
+              "value": "40",
+              "option_id": "opt_giay-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 268000,
+            "original_amount": 268000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        },
+        {
+          "id": "variant_giay-3_41",
+          "title": "41",
+          "sku": "GIAY-3-41",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 3,
+          "options": [
+            {
+              "id": "optv_giay-3_41",
+              "value": "41",
+              "option_id": "opt_giay-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 268000,
+            "original_amount": 268000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.5,
+        "sold": 131,
+        "is_new": false
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_giay-4",
+      "title": "Dép đế bệt",
+      "handle": "giay-4",
+      "subtitle": null,
+      "description": "Dép đế bệt: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/giay-4-1.svg",
+      "images": [
+        {
+          "id": "img_giay-4_1",
+          "url": "/mock/giay-4-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_giay-4_2",
+          "url": "/mock/giay-4-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_giay",
+          "name": "Giày dép",
+          "handle": "giay"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_giay-4",
+          "title": "Kích thước",
+          "product_id": "prod_giay-4",
+          "values": [
+            {
+              "id": "optv_giay-4_38",
+              "value": "38"
+            },
+            {
+              "id": "optv_giay-4_39",
+              "value": "39"
+            },
+            {
+              "id": "optv_giay-4_40",
+              "value": "40"
+            },
+            {
+              "id": "optv_giay-4_41",
+              "value": "41"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_giay-4_38",
+          "title": "38",
+          "sku": "GIAY-4-38",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_giay-4_38",
+              "value": "38",
+              "option_id": "opt_giay-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 244000,
+            "original_amount": 305000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_giay-4_39",
+          "title": "39",
+          "sku": "GIAY-4-39",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 19,
+          "options": [
+            {
+              "id": "optv_giay-4_39",
+              "value": "39",
+              "option_id": "opt_giay-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 244000,
+            "original_amount": 305000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_giay-4_40",
+          "title": "40",
+          "sku": "GIAY-4-40",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 3,
+          "options": [
+            {
+              "id": "optv_giay-4_40",
+              "value": "40",
+              "option_id": "opt_giay-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 244000,
+            "original_amount": 305000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        },
+        {
+          "id": "variant_giay-4_41",
+          "title": "41",
+          "sku": "GIAY-4-41",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 7,
+          "options": [
+            {
+              "id": "optv_giay-4_41",
+              "value": "41",
+              "option_id": "opt_giay-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 244000,
+            "original_amount": 305000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.6,
+        "sold": 142,
+        "is_new": true
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_phu-kien-1",
+      "title": "Túi tote canvas",
+      "handle": "phu-kien-1",
+      "subtitle": null,
+      "description": "Túi tote canvas: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/phu-kien-1-1.svg",
+      "images": [
+        {
+          "id": "img_phu-kien-1_1",
+          "url": "/mock/phu-kien-1-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_phu-kien-1_2",
+          "url": "/mock/phu-kien-1-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_phu-kien",
+          "name": "Phụ kiện",
+          "handle": "phu-kien"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_phu-kien-1",
+          "title": "Kích thước",
+          "product_id": "prod_phu-kien-1",
+          "values": [
+            {
+              "id": "optv_phu-kien-1_Free",
+              "value": "Free"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_phu-kien-1_Free",
+          "title": "Free",
+          "sku": "PHU-KIEN-1-FREE",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 3,
+          "options": [
+            {
+              "id": "optv_phu-kien-1_Free",
+              "value": "Free",
+              "option_id": "opt_phu-kien-1"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 274000,
+            "original_amount": 342000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.4,
+        "sold": 132,
+        "is_new": false
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_phu-kien-2",
+      "title": "Mũ lưỡi trai cotton",
+      "handle": "phu-kien-2",
+      "subtitle": null,
+      "description": "Mũ lưỡi trai cotton: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/phu-kien-2-1.svg",
+      "images": [
+        {
+          "id": "img_phu-kien-2_1",
+          "url": "/mock/phu-kien-2-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_phu-kien-2_2",
+          "url": "/mock/phu-kien-2-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_phu-kien",
+          "name": "Phụ kiện",
+          "handle": "phu-kien"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_phu-kien-2",
+          "title": "Kích thước",
+          "product_id": "prod_phu-kien-2",
+          "values": [
+            {
+              "id": "optv_phu-kien-2_Free",
+              "value": "Free"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_phu-kien-2_Free",
+          "title": "Free",
+          "sku": "PHU-KIEN-2-FREE",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 7,
+          "options": [
+            {
+              "id": "optv_phu-kien-2_Free",
+              "value": "Free",
+              "option_id": "opt_phu-kien-2"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 379000,
+            "original_amount": 379000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.5,
+        "sold": 143,
+        "is_new": false
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_phu-kien-3",
+      "title": "Thắt lưng da bò",
+      "handle": "phu-kien-3",
+      "subtitle": null,
+      "description": "Thắt lưng da bò: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/phu-kien-3-1.svg",
+      "images": [
+        {
+          "id": "img_phu-kien-3_1",
+          "url": "/mock/phu-kien-3-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_phu-kien-3_2",
+          "url": "/mock/phu-kien-3-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_phu-kien",
+          "name": "Phụ kiện",
+          "handle": "phu-kien"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_phu-kien-3",
+          "title": "Kích thước",
+          "product_id": "prod_phu-kien-3",
+          "values": [
+            {
+              "id": "optv_phu-kien-3_Free",
+              "value": "Free"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_phu-kien-3_Free",
+          "title": "Free",
+          "sku": "PHU-KIEN-3-FREE",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 11,
+          "options": [
+            {
+              "id": "optv_phu-kien-3_Free",
+              "value": "Free",
+              "option_id": "opt_phu-kien-3"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 416000,
+            "original_amount": 416000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": null
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.6,
+        "sold": 154,
+        "is_new": false
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    },
+    {
+      "id": "prod_phu-kien-4",
+      "title": "Khăn lụa vuông",
+      "handle": "phu-kien-4",
+      "subtitle": null,
+      "description": "Khăn lụa vuông: chất liệu thoáng, form gọn, dễ phối hằng ngày. Sản phẩm mẫu cho bản demo.",
+      "is_giftcard": false,
+      "status": "published",
+      "thumbnail": "/mock/phu-kien-4-1.svg",
+      "images": [
+        {
+          "id": "img_phu-kien-4_1",
+          "url": "/mock/phu-kien-4-1.svg",
+          "rank": 0
+        },
+        {
+          "id": "img_phu-kien-4_2",
+          "url": "/mock/phu-kien-4-2.svg",
+          "rank": 1
+        }
+      ],
+      "categories": [
+        {
+          "id": "pcat_phu-kien",
+          "name": "Phụ kiện",
+          "handle": "phu-kien"
+        }
+      ],
+      "collection_id": null,
+      "type_id": null,
+      "weight": null,
+      "length": null,
+      "height": null,
+      "width": null,
+      "origin_country": null,
+      "hs_code": null,
+      "mid_code": null,
+      "material": null,
+      "options": [
+        {
+          "id": "opt_phu-kien-4",
+          "title": "Kích thước",
+          "product_id": "prod_phu-kien-4",
+          "values": [
+            {
+              "id": "optv_phu-kien-4_Free",
+              "value": "Free"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "variant_phu-kien-4_Free",
+          "title": "Free",
+          "sku": "PHU-KIEN-4-FREE",
+          "manage_inventory": true,
+          "allow_backorder": false,
+          "inventory_quantity": 15,
+          "options": [
+            {
+              "id": "optv_phu-kien-4_Free",
+              "value": "Free",
+              "option_id": "opt_phu-kien-4"
+            }
+          ],
+          "calculated_price": {
+            "calculated_amount": 362000,
+            "original_amount": 453000,
+            "currency_code": "vnd",
+            "calculated_price": {
+              "price_list_type": "sale"
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "rating": 4.7,
+        "sold": 165,
+        "is_new": true
+      },
+      "created_at": "2026-10-01T00:00:00.000Z",
+      "updated_at": "2026-10-01T00:00:00.000Z",
+      "deleted_at": null
+    }
+  ],
+  "count": 20,
+  "offset": 0,
+  "limit": 100
+}
