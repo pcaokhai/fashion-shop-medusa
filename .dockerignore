@@ -1,0 +1,14 @@
+**/node_modules
+**/.next
+**/.medusa
+**/.turbo
+**/.env
+**/.env.*
+!**/.env.example
+.git
+.shots
+docs
+design-system
+apps/storefront
+tools/seed/out
+!apps/storefront/package.json

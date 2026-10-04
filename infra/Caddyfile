@@ -1,0 +1,5 @@
+# Automatic HTTPS (Let's Encrypt). {$API_DOMAIN} comes from .env.prod. Locally use API_DOMAIN=api.localhost (Caddy's internal CA).
+{$API_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy backend-server:9000
+}

@@ -9,7 +9,7 @@ const BATCH = 100
 const FIELDS = [
   "id", "handle", "title", "description", "thumbnail", "created_at", "metadata",
   "categories.id", "categories.name", "options.title", "options.values.value",
-  "variants.calculated_price", "variants.inventory_items.inventory.location_levels.stocked_quantity",
+  "variants.calculated_price.*", "variants.inventory_items.inventory.location_levels.stocked_quantity",
   "variants.inventory_items.inventory.location_levels.reserved_quantity",
 ]
 
@@ -24,7 +24,7 @@ export async function indexProducts(container: MedusaContainer, ids?: string[]):
       fields: FIELDS,
       filters: { status: "published", ...(ids ? { id: ids } : {}) },
       pagination: { skip: offset, take: BATCH },
-      context: { variants: { calculated_price: QueryContext({ currency_code: "vnd" }) } },
+      context: { variants: { calculated_price: QueryContext({ region_id: "reg_vn", currency_code: "vnd" }) } },
     })
     await search.upsert((data as unknown as ProductRow[]).map(toSearchDoc))
     indexed += data.length

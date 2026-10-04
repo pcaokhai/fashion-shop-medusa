@@ -82,6 +82,14 @@ export default async function setupStore({ container }: ExecArgs): Promise<strin
   if (!key) throw new Error("publishable key missing")
   await linkSalesChannelsToApiKeyWorkflow(container).run({ input: { id: key.id, add: [channelId] } })
 
+  // Optional fixed key, so the storefront env survives a database reset (publishable keys are not secrets, they ship to browsers).
+  const fixed = process.env.PUBLISHABLE_KEY
+  if (fixed && fixed !== key.token) {
+    if (!/^pk_[a-f0-9]{64}$/.test(fixed)) throw new Error("PUBLISHABLE_KEY must look like pk_ + 64 hex characters")
+    await container.resolve(ContainerRegistrationKeys.PG_CONNECTION).raw("update api_key set token = ? where id = ?", [fixed, key.id])
+    key = { id: key.id, token: fixed }
+  }
+
   await setupFulfillment(container, channelId)
 
   logger.info(`PUBLISHABLE_KEY=${key.token}`)

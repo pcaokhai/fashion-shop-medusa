@@ -1,0 +1,102 @@
+# VCK demo stack on one VPS: Medusa server + worker, Postgres, Redis, Meilisearch, Caddy (HTTPS). The storefront is hosted elsewhere
+# (Vercel / Cloudflare Pages). Product photos live on the `static` volume (Medusa local file provider), shared by server and worker.
+# Run:  docker compose -f infra/compose.prod.yaml --env-file .env.prod up -d --build      (see infra/README.md)
+name: vck-prod
+
+x-env: &env
+  NODE_ENV: production
+  DATABASE_URL: postgres://${POSTGRES_USER:-vck}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-vck}?sslmode=disable # in-network, Medusa would otherwise try TLS in production
+  REDIS_URL: redis://redis:6379
+  MEILI_HOST: http://meilisearch:7700
+  SMTP_HOST: ${SMTP_HOST:-mailpit}
+  ADMIN_CORS: https://${API_DOMAIN}
+  AUTH_CORS: https://${API_DOMAIN},${STORE_ORIGIN}
+  STORE_CORS: ${STORE_ORIGIN}
+  BACKEND_URL: https://${API_DOMAIN}
+
+x-backend: &backend
+  build: { context: .., dockerfile: apps/backend/Dockerfile }
+  image: vck-backend:local
+  env_file: ../.env.prod
+  environment: *env
+  volumes: [static:/app/apps/backend/static]
+  restart: unless-stopped
+  depends_on:
+    postgres: { condition: service_healthy }
+    redis: { condition: service_healthy }
+    meilisearch: { condition: service_healthy }
+
+services:
+  postgres:
+    image: postgres:16.15-alpine3.24
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-vck}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-vck}
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-vck} -d ${POSTGRES_DB:-vck}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7.4.11-alpine3.21
+    restart: unless-stopped
+    healthcheck: { test: ["CMD", "redis-cli", "ping"], interval: 5s, timeout: 5s, retries: 10 }
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.54.2
+    environment: { MEILI_ENV: production, MEILI_MASTER_KEY: "${MEILI_MASTER_KEY}" }
+    volumes: [meili-data:/meili_data]
+    restart: unless-stopped
+    healthcheck: { test: ["CMD", "curl", "-fsS", "http://localhost:7700/health"], interval: 5s, timeout: 5s, retries: 10 }
+
+  # one-shot: migrations, store setup, admin user, catalogue seed (all idempotent). `docker compose run --rm init`
+  init:
+    <<: *backend
+    restart: "no"
+    profiles: [tools]
+    entrypoint: ["sh", "-c"]
+    command:
+      - >
+        npx medusa db:migrate &&
+        npx medusa exec ./src/scripts/setup-store.ts &&
+        (npx medusa user -e "$$MEDUSA_ADMIN_EMAIL" -p "$$MEDUSA_ADMIN_PASSWORD" || true) &&
+        npx medusa exec ./src/scripts/seed.ts "$${SEED_COUNT:-60}"
+
+  backend-server:
+    <<: *backend
+    environment: { <<: *env, MEDUSA_WORKER_MODE: server }
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:9000/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+  backend-worker:
+    <<: *backend
+    environment: { <<: *env, MEDUSA_WORKER_MODE: worker, DISABLE_MEDUSA_ADMIN: "true" }
+
+  # demo mail catcher (rule 14: emails go to Mailpit in the demo); UI on 127.0.0.1:8025, reach it over an ssh tunnel
+  mailpit:
+    image: axllent/mailpit:v1.31.3
+    ports: ["127.0.0.1:${MAILPIT_UI_PORT:-8025}:8025"]
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2.10-alpine
+    ports: ["80:80", "443:443"]
+    environment: { API_DOMAIN: "${API_DOMAIN}" }
+    volumes: [./Caddyfile:/etc/caddy/Caddyfile:ro, caddy-data:/data, caddy-config:/config]
+    restart: unless-stopped
+    depends_on: [backend-server]
+
+volumes:
+  postgres-data:
+  meili-data:
+  static:
+  caddy-data:
+  caddy-config:

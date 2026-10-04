@@ -1,4 +1,4 @@
-.PHONY: up down backend-setup seed seed-verify search-reindex record-fixtures contracts contracts-check contracts-diff e2e
+.PHONY: up down backend-setup seed seed-verify search-reindex record-fixtures demo-reset backup restore-check contracts contracts-check contracts-diff e2e
 
 # A root .env is passed explicitly: compose's project dir is infra/, so it would otherwise be ignored.
 COMPOSE := docker compose -f infra/docker-compose.yml $(if $(wildcard .env),--env-file .env)
@@ -27,6 +27,16 @@ seed-verify:
 # Re-record contracts/fixtures/medusa/ from the running, seeded backend (pnpm dev).
 record-fixtures:
 	pnpm --filter @vck/seed run record-fixtures
+
+# Demo server (infra/compose.prod.yaml + .env.prod, see infra/README.md)
+demo-reset:
+	infra/scripts/demo-reset.sh
+
+backup:
+	infra/scripts/backup.sh
+
+restore-check:
+	infra/scripts/restore-check.sh
 
 # `make contracts` regenerates (lint + compile + vectors + generate; exit 0 when the checks pass).
 # `make contracts-check` = regenerate, then fail if generated output or golden vectors differ from what is committed
