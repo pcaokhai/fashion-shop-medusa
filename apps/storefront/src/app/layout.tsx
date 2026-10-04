@@ -12,6 +12,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: { default: `${SITE.name} · ${SITE.tagline}`, template: `%s · ${SITE.name}` },
   description: "Cửa hàng trực tuyến cho thị trường Việt Nam.",
+  robots: process.env.NEXT_PUBLIC_INDEXABLE === "1" ? undefined : { index: false, follow: false },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
