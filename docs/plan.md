@@ -52,15 +52,16 @@ Format: id · lane · what · verify. Operations: contracts/openapi.yaml; pages:
 ### Launch (order = customer value first)
 - [x] **B1a** · BE · Mini catalogue (base: the scaffold's `seed.ts` via `npx medusa exec`) so WEB can go real early: 3-level categories, 60 products with variants, VND prices, images from `tools/seed/assets/`; `make seed` idempotent; **`make record-fixtures`** replaces W0's hand-written Medusa fixtures with recorded ones. Verify: Store API lists products by category; `pnpm --filter storefront typecheck` passes.
 - [x] **B3** · BE · Checkout COD: cart → flat-rate shipping → COD (manual payment provider) → order; reserved inventory against oversell; confirmation email (Mailpit); `make e2e` COD journey. Verify: two concurrent checkouts of the last unit produce one order.
-- [x] **B5** · BE · VN address: 2-tier province/ward dataset (source + licence in the commit message), `/store/vn-address/*`, address validation on the cart. Verify: 63 provinces load; checkout accepts a province + ward.
+- [x] **B5** · BE · VN address: 2-tier province/ward dataset (source + licence in the commit message), `/store/vn-address/*`, address validation on the cart. Verify: 34 provinces + 3,321 wards load; checkout accepts a province + ward.
 - [x] **B4** · BE · VNPay: payment provider (create URL, return signature for display only), `/hooks/vnpay/ipn` (signature, idempotent on TxnRef + vnp_TransactionNo, settles via workflow); golden vectors + simulator tests; sandbox credentials from env. Verify: §6 tests; the simulator settles an order only through the IPN. **Stop; Khai reads the diff before push.**
-- [ ] **B2** · BE · Search: Meilisearch via the Medusa search module, accent-insensitive (`phở` = `pho`), facets category/price/availability, `/store/search` per contract. Verify: 10-query relevance check in the report.
+- [x] **B2** · BE · Search: Meilisearch via the Medusa search module, accent-insensitive (`phở` = `pho`), facets category/price/availability, `/store/search` per contract. Verify: 10-query relevance check in the report.
 - [ ] **B1b** · BE · Full seed: 900 products, ≥ 60 licensed photos reused with resized variants, `tools/seed/ASSETS.md` (sources + licences); `make seed` < 10 min. Verify: counts via `make seed-verify`.
 - [x] **W1** · WEB-1 · Home + category listing (hero, category tiles, featured rails, facets in a Drawer on mobile, sort, pagination, skeletons, empty state) per home.md and product-listing.md; real mode after B1a. Verify: QA loop at 375/1440 against `refs/home-*.png` and `refs/product-listing-*.png`.
-- [x] **W2** · WEB-1 · Product page (Carousel gallery, variant picker, price, add to cart with Motion feedback, related) per product-detail.md; search (Command palette + results page) per search.md after B2. Verify: QA loop against `refs/product-detail-*.png`; real mode.
+- [x] **W2** · WEB-1 · Product page (Carousel gallery, variant picker, price, add to cart with Motion feedback, related) per product-detail.md; search (results page) per search.md after B2. Verify: QA loop against `refs/product-detail-*.png`; real mode.
 - [x] **W3** · WEB-2 · Cart Sheet + guest checkout (single page: contact, province/ward Combobox, flat shipping, COD or VNPay) per checkout.md; VNPay return shows "đang xác nhận" and polls until the backend says paid; confirmation page; `e2e/cod.spec.ts` and `e2e/vnpay-sim.spec.ts` (Playwright config already targets a running stack; add the `make e2e` target). Verify: `make e2e`; QA loop against `refs/checkout-*.png`.
 - [ ] **W4** · WEB-2 · After Gate 1 only: account lite (login, register, orders from the starter data layer, restyled) and a branded 404. Verify: QA loop.
 - [x] **W5** · WEB-1 · Polish pass over all P0 pages: spacing, motion consistency, copy review, favicon/OG, Lighthouse mobile ≥ 90 (numbers in the report), reduced-motion check.
+- [ ] **W6** · WEB-1 · After Gate 1: real-mode bug-bash of every P0 page against the `refs/*.png` (real data, 375 and 1440 px); fix visible defects. Verify: QA loop report per page.
 
 ### Demo gate
 - [ ] **D1** · BE · Deploy: `infra/compose.prod.yaml` (backend server + worker, postgres, redis, meilisearch, minio, Caddy HTTPS), `.env.prod.example`, `make demo-reset` (reseed + wipe orders nightly), backup script to S3-compatible storage with a restore check; README: fresh-VPS steps and a cloudflared tunnel recipe so the VNPay sandbox can reach the IPN from a laptop [verify the sandbox IPN setting]. Verify: `/health/ready` 200 over HTTPS; sandbox IPN reaches the server.
@@ -69,6 +70,7 @@ Format: id · lane · what · verify. Operations: contracts/openapi.yaml; pages:
 
 ### Fast-follow (pull in order after the demo)
 - [ ] **F1** · BE · querydr reconciliation for pending payments + VNPay refund; **F2** · BE · guest order lookup (code + phone, rate limited) + WEB page.
+- [ ] **F1b** · BE · Order-first VNPay flow: create the order before the redirect, hold stock 30 min, auto-cancel unpaid (closes the paid-but-out-of-stock gap of the IPN-creates-order flow).
 - [ ] **F3** · BE · legacy 3-tier address mapping; **F4** · BE · GHN quote + waybill + tracking, WEB shipping step.
 - [ ] **F5** · BE · VietQR; **F6** · extract `medusa-vnpay-vck` and `medusa-vn-address-vck` to packages/; **F7** · ADM KPI, CSV, packing slips; **F8** · /about case study, flash sale, reviews, SEO, ZNS.
 

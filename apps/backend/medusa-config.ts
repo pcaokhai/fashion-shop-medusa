@@ -25,6 +25,10 @@ module.exports = defineConfig({
     // pp_vnpay_vnpay next to the built-in pp_system_default (COD)
     { resolve: "@medusajs/medusa/payment", options: { providers: [{ resolve: "./src/modules/vnpay", id: "vnpay" }] } },
     { resolve: "./src/modules/vnpay-ipn" },
+    {
+      resolve: "./src/modules/meilisearch",
+      options: { host: process.env.MEILI_HOST ?? "http://localhost:7700", apiKey: process.env.MEILI_MASTER_KEY ?? "dev-only-meili-key", indexName: "products" },
+    },
     ...(redisUrl
       ? [
           { resolve: "@medusajs/medusa/event-bus-redis", options: { redisUrl } },

@@ -41,6 +41,7 @@ medusaIntegrationTestRunner({
         const { pay } = await pending()
         expect(pay.vnp_Amount).toBe("13000000") // 100.000 item + 30.000 shipping
         expect(verifySignature(pay, SECRET)).toBe(true)
+        expect(pay.vnp_OrderInfo).toMatch(/^[A-Za-z0-9 ]+$/)
         expect(pay.vnp_TxnRef).toMatch(/^VCK[0-9A-Z]{20,}$/)
       })
 

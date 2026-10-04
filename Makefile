@@ -1,4 +1,4 @@
-.PHONY: up down backend-setup seed seed-verify record-fixtures contracts contracts-check contracts-diff e2e
+.PHONY: up down backend-setup seed seed-verify search-reindex record-fixtures contracts contracts-check contracts-diff e2e
 
 # A root .env is passed explicitly: compose's project dir is infra/, so it would otherwise be ignored.
 COMPOSE := docker compose -f infra/docker-compose.yml $(if $(wildcard .env),--env-file .env)
@@ -17,6 +17,9 @@ backend-setup:
 COUNT ?= 60
 seed:
 	cd apps/backend && npx medusa exec ./src/scripts/seed.ts $(COUNT)
+
+search-reindex:
+	cd apps/backend && npx medusa exec ./src/scripts/reindex-search.ts
 
 seed-verify:
 	pnpm --filter @vck/seed run verify $(COUNT)

@@ -14,6 +14,7 @@ import {
   createProductsWorkflow,
   uploadFilesWorkflow,
 } from "@medusajs/medusa/core-flows"
+import { indexProducts } from "../lib/search-index"
 import { buildCategories, buildProducts, slug, type ProductSpec } from "./seed/catalog"
 
 const REGION_ID = "reg_vn"
@@ -132,5 +133,6 @@ export default async function seed({ container, args }: ExecArgs) {
       input: { price_lists_data: [{ title: "Khuyến mãi demo", description: "Giảm 20% một số sản phẩm", status: "active", prices: saleVariantPrices }] },
     })
   }
+  logger.info(`search: indexed ${await indexProducts(container)} products`)
   logger.info(`seed: done, REGION=${REGION_ID}, ${todo.length} products, ${saleVariantPrices.length} sale prices`)
 }
