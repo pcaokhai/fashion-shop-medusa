@@ -6,13 +6,13 @@ import regions from "../../../../../contracts/fixtures/medusa/regions.json";
 import emptyCart from "../../../../../contracts/fixtures/medusa/carts.json";
 import { matches, type Cart, Category, DataLayer, Product, ProductQuery, Region } from "./types";
 
-const CART_COOKIE = "vck_mock_cart";
+export const CART_COOKIE = "vck_mock_cart";
 type Line = { variantId: string; quantity: number };
 
 const all = products.products as unknown as Product[];
 const price = (p: Product) => p.variants?.[0]?.calculated_price?.calculated_amount ?? 0;
 
-const readLines = async (): Promise<Line[]> => {
+export const readLines = async (): Promise<Line[]> => {
   try {
     return JSON.parse((await cookies()).get(CART_COOKIE)?.value ?? "[]") as Line[];
   } catch {

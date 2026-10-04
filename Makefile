@@ -1,4 +1,4 @@
-.PHONY: up down backend-setup contracts contracts-check contracts-diff
+.PHONY: up down backend-setup contracts contracts-check contracts-diff e2e
 
 # A root .env is passed explicitly: compose's project dir is infra/, so it would otherwise be ignored.
 COMPOSE := docker compose -f infra/docker-compose.yml $(if $(wildcard .env),--env-file .env)
@@ -32,3 +32,7 @@ contracts-diff:
 
 # docs/12 §4 draft only: RELEASE-<v>.md + CHANGELOG block + index row; never commits or tags. Usage: make release VERSION=x.y.z
 # VERSION reaches the script through the environment ("$$VERSION"), never spliced into shell text; the script validates it.
+
+# Journeys against a running stack: make up + pnpm dev (storefront on 8000; override with E2E_BASE_URL). E2E_API_MODE=mock for mock mode.
+e2e:
+	pnpm --filter @vck/storefront test:e2e

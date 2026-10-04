@@ -5,11 +5,11 @@ import { matches, type Cart, Category, DataLayer, Product, ProductQuery, Region 
 // Derived from the official Medusa Next.js starter's data layer (MIT): cart cookie + Store API calls. Logic only, not its look.
 const BASE = process.env.MEDUSA_BACKEND_URL ?? "http://localhost:9000";
 const KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY ?? "";
-const CART_COOKIE = "_medusa_cart_id";
+export const CART_COOKIE = "_medusa_cart_id";
 const REGION_ID = process.env.NEXT_PUBLIC_REGION_ID ?? "reg_vn";
 const TIMEOUT_MS = 5000; // CLAUDE.md rule 7
 
-async function store<T>(path: string, init: RequestInit = {}): Promise<T> {
+export async function store<T>(path: string, init: RequestInit = {}): Promise<T> {
   const res = await fetch(`${BASE}/store${path}`, {
     ...init,
     headers: { "content-type": "application/json", "x-publishable-api-key": KEY, ...init.headers },
@@ -23,7 +23,7 @@ async function store<T>(path: string, init: RequestInit = {}): Promise<T> {
 const CART_FIELDS = "*items,*items.variant";
 const PRODUCT_FIELDS = "*variants.calculated_price,+variants.inventory_quantity,*categories,*images";
 
-const cartId = async () => (await cookies()).get(CART_COOKIE)?.value;
+export const cartId = async () => (await cookies()).get(CART_COOKIE)?.value;
 const setCartId = async (id: string) => (await cookies()).set(CART_COOKIE, id, { path: "/", maxAge: 60 * 60 * 24 * 7, sameSite: "lax" });
 
 async function ensureCart(): Promise<string> {
@@ -34,7 +34,7 @@ async function ensureCart(): Promise<string> {
   return cart.id;
 }
 
-const fetchCart = async (id: string) => (await store<{ cart: Cart }>(`/carts/${id}?fields=${CART_FIELDS}`)).cart;
+export const fetchCart = async (id: string) => (await store<{ cart: Cart }>(`/carts/${id}?fields=${CART_FIELDS}`)).cart;
 
 const sortParam = { newest: "-created_at", "price-asc": "variants.calculated_price", "price-desc": "-variants.calculated_price" } as const;
 
