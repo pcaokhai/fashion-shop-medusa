@@ -2,7 +2,7 @@ import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["**/dist/**", "**/.turbo/**", "**/node_modules/**", "eslint.config.mjs", "scripts/**", "**/generated/**"] },
+  { ignores: ["**/dist/**", "**/.medusa/**", "apps/backend/*.{ts,js}", "apps/backend/integration-tests/**", "**/.turbo/**", "**/node_modules/**", "eslint.config.mjs", "scripts/**", "**/generated/**"] },
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {

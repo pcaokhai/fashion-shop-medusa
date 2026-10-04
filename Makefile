@@ -1,4 +1,4 @@
-.PHONY: up down contracts contracts-check contracts-diff
+.PHONY: up down backend-setup contracts contracts-check contracts-diff
 
 # A root .env is passed explicitly: compose's project dir is infra/, so it would otherwise be ignored.
 COMPOSE := docker compose -f infra/docker-compose.yml $(if $(wildcard .env),--env-file .env)
@@ -8,6 +8,10 @@ up:
 
 down:
 	$(COMPOSE) down $(if $(filter 1,$(v)),-v)
+
+# First run after `make up`: migrate, VN region/channel/publishable key (idempotent), dev admin from apps/backend/.env.
+backend-setup:
+	cd apps/backend && set -a && . ./.env && set +a && npx medusa db:migrate && npx medusa exec ./src/scripts/setup-store.ts && npx medusa user -e "$$MEDUSA_ADMIN_EMAIL" -p "$$MEDUSA_ADMIN_PASSWORD" || true
 
 # `make contracts` regenerates (lint + compile + vectors + generate; exit 0 when the checks pass).
 # `make contracts-check` = regenerate, then fail if generated output or golden vectors differ from what is committed
