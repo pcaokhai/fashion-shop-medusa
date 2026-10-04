@@ -1,4 +1,4 @@
-.PHONY: up down backend-setup contracts contracts-check contracts-diff e2e
+.PHONY: up down backend-setup seed seed-verify record-fixtures contracts contracts-check contracts-diff e2e
 
 # A root .env is passed explicitly: compose's project dir is infra/, so it would otherwise be ignored.
 COMPOSE := docker compose -f infra/docker-compose.yml $(if $(wildcard .env),--env-file .env)
@@ -12,6 +12,18 @@ down:
 # First run after `make up`: migrate, VN region/channel/publishable key (idempotent), dev admin from apps/backend/.env.
 backend-setup:
 	cd apps/backend && set -a && . ./.env && set +a && npx medusa db:migrate && npx medusa exec ./src/scripts/setup-store.ts && npx medusa user -e "$$MEDUSA_ADMIN_EMAIL" -p "$$MEDUSA_ADMIN_PASSWORD" || true
+
+# Catalogue seed, idempotent. COUNT=60 mini (B1a), COUNT=900 full (B1b). Needs `make backend-setup` first.
+COUNT ?= 60
+seed:
+	cd apps/backend && npx medusa exec ./src/scripts/seed.ts $(COUNT)
+
+seed-verify:
+	pnpm --filter @vck/seed run verify $(COUNT)
+
+# Re-record contracts/fixtures/medusa/ from the running, seeded backend (pnpm dev).
+record-fixtures:
+	pnpm --filter @vck/seed run record-fixtures
 
 # `make contracts` regenerates (lint + compile + vectors + generate; exit 0 when the checks pass).
 # `make contracts-check` = regenerate, then fail if generated output or golden vectors differ from what is committed

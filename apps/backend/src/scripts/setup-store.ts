@@ -1,12 +1,16 @@
 /**
  * B0: VN store basics, idempotent. `npx medusa exec ./src/scripts/setup-store.ts`
- * Region reg_vn (VND, tax inclusive), one sales channel, one publishable key linked to it.
+ * Region reg_vn (VND, tax inclusive), one sales channel, one publishable key linked to it,
+ * one stock location with a VN service zone and a flat-rate shipping option (30.000 ₫).
  * Prints the key as `PUBLISHABLE_KEY=pk_...` for the storefront env.
  */
 import type { ExecArgs } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import {
   createApiKeysWorkflow,
+  createShippingOptionsWorkflow,
+  createStockLocationsWorkflow,
+  linkSalesChannelsToStockLocationWorkflow,
   createRegionsWorkflow,
   createSalesChannelsWorkflow,
   createTaxRegionsWorkflow,
@@ -17,6 +21,8 @@ import {
 const REGION_ID = "reg_vn"
 const CHANNEL_NAME = "VCK Web"
 const KEY_TITLE = "VCK Storefront"
+const LOCATION_NAME = "Kho TP.HCM"
+const FLAT_SHIPPING_VND = 30_000
 
 export default async function setupStore({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
@@ -71,5 +77,59 @@ export default async function setupStore({ container }: ExecArgs) {
   if (!key) throw new Error("publishable key missing")
   await linkSalesChannelsToApiKeyWorkflow(container).run({ input: { id: key.id, add: [channelId] } })
 
+  await setupFulfillment(container, channelId)
+
   logger.info(`PUBLISHABLE_KEY=${key.token}`)
+}
+
+async function setupFulfillment(container: ExecArgs["container"], channelId: string) {
+  const query = container.resolve(ContainerRegistrationKeys.QUERY)
+  const link = container.resolve(ContainerRegistrationKeys.LINK)
+  const fulfillment = container.resolve(Modules.FULFILLMENT)
+
+  const { data: locations } = await query.graph({ entity: "stock_location", fields: ["id"], filters: { name: LOCATION_NAME } })
+  if (locations.length) return
+
+  const { result } = await createStockLocationsWorkflow(container).run({
+    input: { locations: [{ name: LOCATION_NAME, address: { city: "TP. Hồ Chí Minh", country_code: "VN", address_1: "Địa chỉ kho mẫu" } }] },
+  })
+  const location = result[0]
+  if (!location) throw new Error("stock location missing")
+
+  const { data: profiles } = await query.graph({ entity: "shipping_profile", fields: ["id"] }) // created by a core migration
+  const profile = profiles[0]
+  if (!profile) throw new Error("shipping profile missing (run db:migrate first)")
+
+  const set = await fulfillment.createFulfillmentSets({
+    name: "Giao hàng toàn quốc",
+    type: "shipping",
+    service_zones: [{ name: "Việt Nam", geo_zones: [{ country_code: "vn", type: "country" }] }],
+  })
+  const zone = set.service_zones[0]
+  if (!zone) throw new Error("service zone missing")
+
+  await link.create({ [Modules.STOCK_LOCATION]: { stock_location_id: location.id }, [Modules.FULFILLMENT]: { fulfillment_provider_id: "manual_manual" } })
+  await link.create({ [Modules.STOCK_LOCATION]: { stock_location_id: location.id }, [Modules.FULFILLMENT]: { fulfillment_set_id: set.id } })
+  await linkSalesChannelsToStockLocationWorkflow(container).run({ input: { id: location.id, add: [channelId] } })
+
+  await createShippingOptionsWorkflow(container).run({
+    input: [
+      {
+        name: "Giao hàng tiêu chuẩn",
+        price_type: "flat",
+        provider_id: "manual_manual",
+        service_zone_id: zone.id,
+        shipping_profile_id: profile.id,
+        type: { label: "Tiêu chuẩn", description: "Giao trong 2-4 ngày.", code: "standard" },
+        prices: [
+          { currency_code: "vnd", amount: FLAT_SHIPPING_VND },
+          { region_id: REGION_ID, amount: FLAT_SHIPPING_VND },
+        ],
+        rules: [
+          { attribute: "enabled_in_store", value: "true", operator: "eq" },
+          { attribute: "is_return", value: "false", operator: "eq" },
+        ],
+      },
+    ],
+  })
 }

@@ -4,24 +4,27 @@
       "id": "reg_vn",
       "name": "Việt Nam",
       "currency_code": "vnd",
-      "automatic_taxes": false,
+      "created_at": "2026-10-04T02:11:29.504Z",
+      "updated_at": "2026-10-04T02:11:29.504Z",
+      "deleted_at": null,
+      "metadata": null,
       "countries": [
         {
           "iso_2": "vn",
-          "name": "Vietnam",
-          "display_name": "Vietnam"
+          "iso_3": "vnm",
+          "num_code": "704",
+          "name": "VIET NAM",
+          "display_name": "Viet Nam",
+          "region_id": "reg_vn",
+          "metadata": null,
+          "created_at": "2026-10-04T02:11:26.664Z",
+          "updated_at": "2026-10-04T02:11:29.504Z",
+          "deleted_at": null
         }
-      ],
-      "payment_providers": [
-        {
-          "id": "pp_system_default"
-        }
-      ],
-      "created_at": "2026-10-01T00:00:00.000Z",
-      "updated_at": "2026-10-01T00:00:00.000Z"
+      ]
     }
   ],
   "count": 1,
   "offset": 0,
-  "limit": 10
+  "limit": 50
 }
