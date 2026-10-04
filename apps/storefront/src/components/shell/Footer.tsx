@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SITE } from "@/lib/site";
+import { FooterColumn } from "./FooterColumn";
 
 const COLS = [
   { title: "Hỗ trợ", links: ["Hướng dẫn chọn size", "Chính sách đổi trả 7 ngày", "Giao hàng & thanh toán", "Liên hệ"] },
@@ -21,8 +22,7 @@ export function Footer() {
           </address>
         </div>
         {COLS.map((c) => (
-          <details key={c.title} className="group border-t border-on-surface-dark/20 py-3 md:border-0 md:py-0" open>
-            <summary className="flex min-h-10 cursor-pointer list-none items-center font-semibold md:pointer-events-none">{c.title}</summary>
+          <FooterColumn key={c.title} title={c.title}>
             <ul className="mt-1 space-y-1 text-small opacity-80">
               {c.links.map((l) => (
                 <li key={l}>
@@ -30,7 +30,7 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </details>
+          </FooterColumn>
         ))}
       </div>
       <div className="border-t border-on-surface-dark/20 px-4 py-4 text-center text-caption opacity-70">© 2026 {SITE.name}. Đã thông báo Bộ Công Thương.</div>
