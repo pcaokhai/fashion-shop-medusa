@@ -7,13 +7,6 @@ import config from "../apps/storefront/next.config.mjs";
 
 const root = new URL("../", import.meta.url);
 
-test("/_design (page.dev.tsx) is a page only in the dev-server phase [R-009-25]", () => {
-  assert.ok(config(PHASE_DEVELOPMENT_SERVER).pageExtensions.includes("dev.tsx"));
-  for (const phase of [PHASE_PRODUCTION_BUILD, PHASE_PRODUCTION_SERVER, "phase-export", "phase-test"]) {
-    assert.ok(!config(phase).pageExtensions.some((e) => e.includes("dev")), phase);
-  }
-});
-
 test("next agentRules is disabled so `next dev` never edits tracked rulebooks", () => {
   assert.equal(config(PHASE_DEVELOPMENT_SERVER).agentRules, false);
 });

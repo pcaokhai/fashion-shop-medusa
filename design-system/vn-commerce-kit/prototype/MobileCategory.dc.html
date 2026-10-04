@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Danh mục mobile — VCK Shop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0;background:#FAFAF9;color:#1C1917;font-family:"Be Vietnam Pro","Noto Sans",system-ui,sans-serif}
+a{color:#047857}a:hover{color:#065F46}
+*{box-sizing:border-box}
+button{font-family:inherit;cursor:pointer}
+summary::-webkit-details-marker{display:none}
+:focus-visible{outline:2px solid #047857;outline-offset:2px}
+.scroller{scrollbar-width:none}.scroller>*{flex-shrink:0}.scroller::-webkit-scrollbar{display:none}
+.snap{display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}.snap::-webkit-scrollbar{display:none}
+.iconbtn{width:44px;height:44px;border-radius:22px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;color:#1C1917;position:relative;text-decoration:none;flex-shrink:0}
+.iconbtn:hover{color:#1C1917}
+.badge{position:absolute;top:2px;right:0;min-width:18px;height:18px;border-radius:9px;background:#C2410C;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.bumpA{animation:bumpA 420ms cubic-bezier(.2,0,0,1)}.bumpB{animation:bumpB 420ms cubic-bezier(.2,0,0,1)}
+@keyframes bumpA{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+@keyframes bumpB{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+.story{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:6px;width:72px;flex-shrink:0;padding:0;font-size:12px;font-weight:600;color:#1C1917}
+.story .ring{width:64px;height:64px;border-radius:32px;padding:3px;background:#E7E5E4;transition:background 220ms}
+.story.on .ring{background:conic-gradient(#047857,#EA580C,#047857)}
+.story .in{width:100%;height:100%;border-radius:50%;border:2px solid #FAFAF9;display:flex;align-items:center;justify-content:center}
+.story.on{font-weight:800}
+.vbtn{width:44px;height:44px;border-radius:12px;border:1.5px solid #E7E5E4;background:#fff;display:flex;align-items:center;justify-content:center;color:#57534E}
+.vbtn.on{border-color:#1C1917;color:#1C1917}
+.act{height:36px;padding:0 10px 0 12px;border-radius:999px;border:0;background:#ECFDF5;color:#064E3B;font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0}
+.pimg{position:relative;border-radius:16px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.plink{text-decoration:none;color:#1C1917;display:block}.plink:hover{color:#1C1917}
+.heart{position:absolute;top:6px;right:6px;width:40px;height:40px;border-radius:20px;border:0;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;color:#1C1917}
+.heart.on{color:#B91C1C}
+.popA svg{animation:popA 480ms cubic-bezier(.2,0,0,1)}.popB svg{animation:popB 480ms cubic-bezier(.2,0,0,1)}
+@keyframes popA{0%{transform:scale(1)}35%{transform:scale(1.35)}100%{transform:scale(1)}}
+@keyframes popB{0%{transform:scale(1)}35%{transform:scale(1.35)}100%{transform:scale(1)}}
+.addbtn{height:40px;padding:0 12px;border-radius:10px;border:0;background:#1C1917;color:#fff;font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.addbtn:active{background:#C2410C}
+.gridA{animation:gridA 300ms cubic-bezier(.05,.7,.1,1)}.gridB{animation:gridB 300ms cubic-bezier(.05,.7,.1,1)}
+@keyframes gridA{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes gridB{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.dock{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);z-index:40;display:flex;background:#1C1917;border-radius:999px;box-shadow:0 12px 28px -6px rgba(28,25,23,.5);overflow:hidden}
+.dock button{height:48px;padding:0 20px;border:0;background:transparent;color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px}
+.dock button+button{border-left:1px solid #44403C}
+.dock .n{min-width:20px;height:20px;border-radius:10px;background:#EA580C;color:#1C1917;font-size:12px;display:inline-flex;align-items:center;justify-content:center;padding:0 6px}
+.panel{position:absolute;inset:0;z-index:80;background:#FAFAF9;transform:translateX(100%);transition:transform 360ms cubic-bezier(.05,.7,.1,1);display:flex;flex-direction:column}
+.panel.on{transform:none}
+.acc{border-bottom:1px solid #E7E5E4}
+.acc summary{min-height:56px;display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:16px;cursor:pointer;list-style:none}
+.acc summary .chev{transition:transform 220ms cubic-bezier(.2,0,0,1)}
+.acc[open] summary .chev{transform:rotate(180deg)}
+.fchip{height:44px;min-width:52px;padding:0 14px;border-radius:12px;border:1.5px solid #E7E5E4;background:#fff;font-size:15px;font-weight:600;color:#1C1917;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.fchip.on{background:#ECFDF5;border-color:#047857;color:#064E3B}
+.scrim{position:absolute;inset:0;background:rgba(28,25,23,.45);opacity:0;pointer-events:none;transition:opacity 320ms;z-index:70}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;z-index:80;transform:translateY(105%);transition:transform 380ms cubic-bezier(.05,.7,.1,1);box-shadow:0 -16px 40px -8px rgba(28,25,23,.25)}
+.sheet.on{transform:none}
+.grab{width:40px;height:5px;border-radius:3px;background:#D6D3D1;margin:10px auto 4px}
+.rowopt{width:100%;min-height:52px;border:0;background:transparent;display:flex;align-items:center;justify-content:space-between;font-size:16px;color:#1C1917;text-align:left;padding:0}
+.rowopt.on{font-weight:800;color:#047857}
+.btn-cta{height:52px;padding:0 20px;border-radius:14px;border:0;background:#C2410C;color:#fff;font-weight:700;font-size:16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform 100ms}
+.btn-cta:active{transform:scale(.97)}
+.btn-ghost{height:52px;padding:0 18px;border-radius:14px;border:1.5px solid #1C1917;background:#fff;color:#1C1917;font-weight:700;font-size:15px}
+.btn-outline{height:48px;padding:0 24px;border-radius:12px;border:1.5px solid #1C1917;background:transparent;color:#1C1917;font-weight:700;font-size:15px}
+.toast{position:absolute;left:16px;right:16px;bottom:84px;transform:translateY(24px);opacity:0;background:#1C1917;color:#fff;border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:center;font-size:14px;transition:transform 220ms cubic-bezier(.05,.7,.1,1),opacity 220ms;z-index:60;pointer-events:none}
+.toast.on{transform:none;opacity:1}
+.rm *{animation:none !important;transition:none !important}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+<style data-vck-motion="v2">
+/* VCK motion layer v2 — docs/13 §4.6. Transform/opacity only; progressive (no support = static, fully visible). */
+:root{--dur-instant:100ms;--dur-fast:160ms;--dur-base:220ms;--dur-slow:320ms;--dur-expressive:480ms;--ease-std:cubic-bezier(.2,0,0,1);--ease-enter:cubic-bezier(.05,.7,.1,1);--ease-exit:cubic-bezier(.3,0,.8,.15)}
+/* MI-30 press + hover feedback (zero-specificity so page rules still win) */
+:where(.btn,.btn-cta,.btn-dark,.btn-out,.btn-outline,.btn-danger,.chip,.pill,.fbtn,.pg,.seg button,.tab,.nv,.nav,.mnav,.demo,.todo,.choice,.story,.sub,.tpl,.pnav,.rank,.sg,.rowopt,.mrow){transition:background-color var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast),box-shadow var(--dur-fast),transform var(--dur-instant) var(--ease-std)}
+:where(.btn,.btn-cta,.btn-dark,.btn-out,.btn-outline,.btn-danger,.chip,.pill,.fbtn,.pg,.demo,.choice,.story,.sub,.tpl,.mnav):active:not([aria-disabled=true]){transform:scale(.97)}
+:where(.card):is(a,button):hover{box-shadow:0 10px 28px -14px rgba(28,25,23,.28)}
+/* MI-31 staggered list enter (runs on mount) */
+.stg>*{animation:vckStg var(--dur-slow) var(--ease-enter) both}
+.stg>*:nth-child(2){animation-delay:40ms}.stg>*:nth-child(3){animation-delay:80ms}.stg>*:nth-child(4){animation-delay:120ms}.stg>*:nth-child(5){animation-delay:160ms}.stg>*:nth-child(6){animation-delay:200ms}.stg>*:nth-child(7){animation-delay:240ms}.stg>*:nth-child(n+8){animation-delay:280ms}
+@keyframes vckStg{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* back-to-top + reading progress default hidden state when scroll timelines are unsupported */
+.to-top{display:none}
+@media (prefers-reduced-motion: no-preference){
+@supports (animation-timeline: view()){
+  /* MI-25 scroll reveal: starts as the element enters, done at 20% coverage */
+  .sr-up{animation:vckUp linear both;animation-timeline:view();animation-range:entry 0% cover 20%}
+  .sr-fade{animation:vckFade linear both;animation-timeline:view();animation-range:entry 0% cover 20%}
+  .sr-scale{animation:vckScale linear both;animation-timeline:view();animation-range:entry 0% cover 25%}
+  .sr-left{animation:vckLeft linear both;animation-timeline:view();animation-range:entry 0% cover 22%}
+  .sr-right{animation:vckRight linear both;animation-timeline:view();animation-range:entry 0% cover 22%}
+  .sr-stg>*{animation:vckUp linear both;animation-timeline:view();animation-range:entry 0% cover 18%}
+  .sr-stg>*:nth-child(2){animation-range:entry 5% cover 22%}.sr-stg>*:nth-child(3){animation-range:entry 10% cover 26%}.sr-stg>*:nth-child(4){animation-range:entry 15% cover 30%}
+  /* MI-29 parallax: decorative layers only, never the LCP image */
+  .plx{animation:vckPlx linear both;animation-timeline:view();animation-range:cover}
+  .plx-slow{animation:vckPlxS linear both;animation-timeline:view();animation-range:cover}
+  /* MI-32 bar fill on view (stock / share bars) — scaleX */
+  .fill-x{transform-origin:0 50%;animation:vckFill linear both;animation-timeline:view();animation-range:entry 10% cover 30%}
+  /* MI-26 header elevation on scroll (desktop document scroll) */
+  .hdr-scroll{animation:vckHdr linear both;animation-timeline:scroll(root);animation-range:0 120px}
+  .hdr-scroll .hdr-logo{transform-origin:0 50%;animation:vckLogo linear both;animation-timeline:scroll(root);animation-range:0 120px}
+  /* MI-27 back-to-top + MI-28 reading progress (document scroll) */
+  .to-top{display:flex;animation:vckTop linear both;animation-timeline:scroll(root);animation-range:300px 700px}
+  .read-progress{transform-origin:0 50%;animation:vckGrow linear both;animation-timeline:scroll(root)}
+}
+@supports (timeline-scope: --pg){
+  /* Mobile frames: the inner scroller publishes --pg; siblings outside it read it */
+  .pg-scope{timeline-scope:--pg}
+  .pg-src{scroll-timeline:--pg block}
+  .hdr-m{animation:vckHdrM linear both;animation-timeline:--pg;animation-range:0 90px}
+  .to-top.m{display:flex;animation:vckTop linear both;animation-timeline:--pg;animation-range:280px 600px}
+  .read-progress.m{animation:vckGrow linear both;animation-timeline:--pg}
+}
+}
+@keyframes vckUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes vckFade{from{opacity:0}to{opacity:1}}
+@keyframes vckScale{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+@keyframes vckLeft{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+@keyframes vckRight{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes vckPlx{from{transform:translateY(-40px)}to{transform:translateY(40px)}}
+@keyframes vckPlxS{from{transform:translateY(24px) rotate(0deg)}to{transform:translateY(-24px) rotate(12deg)}}
+@keyframes vckFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes vckHdr{from{box-shadow:0 0 0 rgba(28,25,23,0);background-color:rgba(250,250,249,.94)}to{box-shadow:0 8px 24px -14px rgba(28,25,23,.35);background-color:rgba(255,255,255,.98)}}
+@keyframes vckLogo{to{transform:scale(.9)}}
+@keyframes vckHdrM{to{box-shadow:0 8px 20px -12px rgba(28,25,23,.35);background-color:rgba(255,255,255,.98)}}
+@keyframes vckTop{from{opacity:0;transform:translateY(16px) scale(.9);visibility:hidden}to{opacity:1;transform:none;visibility:visible}}
+@keyframes vckGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.to-top{position:fixed;right:24px;bottom:24px;z-index:45;width:48px;height:48px;border-radius:24px;border:0;background:#1C1917;color:#fff;align-items:center;justify-content:center;box-shadow:0 10px 24px -8px rgba(28,25,23,.45);text-decoration:none}
+.to-top:hover{background:#047857;color:#fff}
+.to-top.m{position:absolute;right:16px;bottom:88px;width:44px;height:44px;border-radius:22px}
+.read-progress{position:fixed;left:0;right:0;top:0;height:3px;background:#047857;z-index:60;transform:scaleX(0)}
+.read-progress.m{position:absolute}
+.rm .to-top,.rm .read-progress{animation:none !important}
+</style>
+
+</helmet>
+<div class="{{rootClass}} pg-scope" style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #FAFAF9; font-family: 'Be Vietnam Pro','Noto Sans',system-ui,sans-serif; color: #1C1917"><a class="to-top m" href="#top" aria-label="Lên đầu trang"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"></path></svg></a>
+<div class="scroller pg-src" style="position: absolute; inset: 0; overflow-y: auto; display: flex; flex-direction: column"><span id="top" aria-hidden="true" style="display: block; height: 0"></span>
+
+<header class="hdr-m" style="position: sticky; top: 0; z-index: 30; height: 56px; background: rgba(250,250,249,.96); backdrop-filter: blur(8px); display: flex; align-items: center; padding: 0 6px; gap: 2px; border-bottom: 1px solid #E7E5E4">
+<a class="iconbtn" href="MobileHome.dc.html" aria-label="Quay lại trang chủ"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+<div style="flex-grow: 1; min-width: 0"><h1 style="margin: 0; font-size: 17px; font-weight: 800; letter-spacing: -0.01em; color: #064E3B">{{catTitle}}</h1><div style="font-size: 12px; color: #57534E" aria-live="polite">{{total}} sản phẩm</div></div>
+<a class="iconbtn" href="MobileSearch.dc.html" aria-label="Tìm kiếm"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg></a>
+<button class="iconbtn" type="button" aria-label="Giỏ hàng, {{cartCount}} sản phẩm"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg><sc-if value="{{hasCart}}" hint-placeholder-val="{{ false }}"><span class="badge {{bumpClass}}">{{cartCount}}</span></sc-if></button>
+</header>
+
+<nav aria-label="Danh mục" class="snap" style="gap: 6px; padding: 14px 12px 6px">
+<sc-for list="{{stories}}" as="c" hint-placeholder-count="6"><button class="{{c.cls}}" type="button" aria-pressed="{{c.sel}}" onClick="{{c.pick}}"><span class="ring"><span class="in" style="background: {{c.bg}}"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="{{c.fg}}" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="{{c.icon}}"></path></svg></span></span>{{c.label}}</button></sc-for>
+</nav>
+
+<a href="MobileFlashSale.dc.html" style="margin: 8px 16px 0; border-radius: 18px; background: #1C1917; color: #fff; padding: 16px 18px; display: flex; align-items: center; gap: 12px; text-decoration: none; position: relative; overflow: hidden">
+<span style="position: absolute; right: -24px; top: -24px; width: 96px; height: 96px; border-radius: 48px; background: #EA580C"></span>
+<span style="position: relative; flex-grow: 1"><span style="display: block; font-size: 11px; font-weight: 800; letter-spacing: .08em; color: #FDBA74">FLASH SALE</span><span style="display: block; font-weight: 800; font-size: 17px; margin-top: 2px">Giảm đến [X]% hôm nay</span></span>
+<span style="position: relative; font-weight: 700; font-size: 13px; color: #1C1917; background: #fff; border-radius: 10px; padding: 8px 10px">Xem →</span>
+</a>
+
+<div style="display: flex; align-items: center; gap: 8px; padding: 16px 16px 4px">
+<sc-if value="{{hasActive}}" hint-placeholder-val="{{ false }}"><div class="snap" style="gap: 6px; flex-grow: 1; min-width: 0"><sc-for list="{{activeChips}}" as="a" hint-placeholder-count="2"><button class="act" type="button" onClick="{{a.remove}}" aria-label="Bỏ lọc {{a.label}}">{{a.label}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></sc-for></div></sc-if>
+<sc-if value="{{noActive}}" hint-placeholder-val="{{ true }}"><span style="flex-grow: 1; font-size: 13px; color: #57534E">Sắp xếp: <b style="color: #1C1917">{{sortLabel}}</b></span></sc-if>
+<div role="group" aria-label="Kiểu hiển thị" style="display: flex; gap: 6px; flex-shrink: 0">
+<button class="{{vGrid}}" type="button" aria-label="Dạng lưới" aria-pressed="{{vGridSel}}" onClick="{{setGrid}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"></rect><rect x="13" y="4" width="7" height="7" rx="1.5"></rect><rect x="4" y="13" width="7" height="7" rx="1.5"></rect><rect x="13" y="13" width="7" height="7" rx="1.5"></rect></svg></button>
+<button class="{{vList}}" type="button" aria-label="Dạng danh sách" aria-pressed="{{vListSel}}" onClick="{{setList}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.3"></rect><rect x="4" y="14" width="6" height="6" rx="1.3"></rect><path d="M13 6h7M13 9h4M13 16h7M13 19h4"></path></svg></button>
+</div>
+</div>
+
+<section aria-label="Danh sách sản phẩm" style="padding: 10px 16px 0">
+<sc-if value="{{isGrid}}" hint-placeholder-val="{{ true }}">
+<div class="{{gridClass}} stg" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 10px; row-gap: 20px">
+<sc-for list="{{visible}}" as="p" hint-placeholder-count="6">
+<div style="position: relative">
+<a class="plink" href="MobileProduct.dc.html">
+<span class="pimg" style="height: 222px; background: {{p.tone}}"><svg width="58%" height="58%" viewBox="0 0 32 32" fill="none" stroke="#1C1917" stroke-opacity=".75" stroke-width="1" stroke-linejoin="round" aria-hidden="true"><path d="{{p.icon}}"></path></svg>
+<sc-if value="{{p.hasBadge}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; left: 8px; top: 8px; background: {{p.badgeBg}}; color: #fff; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px">{{p.badge}}</span></sc-if>
+<sc-if value="{{p.soldOut}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; inset: 0; background: rgba(250,250,249,.7); display: flex; align-items: center; justify-content: center"><span style="background: #1C1917; color: #fff; font-weight: 700; font-size: 12px; padding: 5px 10px; border-radius: 999px">Hết hàng</span></span></sc-if></span>
+<span style="display: flex; flex-direction: column; gap: 3px; padding-top: 8px">
+<span style="font-size: 11px; color: #57534E; font-weight: 600; text-transform: uppercase; letter-spacing: .04em">{{p.catName}}</span>
+<span style="font-size: 13px; font-weight: 600; line-height: 1.35; height: 35px; overflow: hidden">{{p.name}}</span>
+<span style="display: flex; align-items: baseline; gap: 6px"><span style="font-weight: 800; font-size: 15px; color: {{p.priceColor}}; font-variant-numeric: tabular-nums">{{p.priceLabel}}</span><sc-if value="{{p.onSale}}" hint-placeholder-val="{{ false }}"><s style="font-size: 11px; color: #57534E">{{p.origLabel}}</s></sc-if></span>
+</span>
+</a>
+<button class="{{p.heartCls}}" type="button" aria-pressed="{{p.wished}}" aria-label="Yêu thích {{p.name}}" onClick="{{p.toggleWish}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="{{p.heartFill}}" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"></path></svg></button>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{isList}}" hint-placeholder-val="{{ false }}">
+<div class="{{gridClass}}" style="display: flex; flex-direction: column; gap: 12px">
+<sc-for list="{{visible}}" as="p" hint-placeholder-count="4">
+<div style="display: flex; gap: 12px; background: #fff; border: 1px solid #E7E5E4; border-radius: 18px; padding: 10px; position: relative">
+<a class="plink" href="MobileProduct.dc.html" style="flex-shrink: 0"><span class="pimg" style="width: 112px; height: 140px; background: {{p.tone}}"><svg width="60%" height="60%" viewBox="0 0 32 32" fill="none" stroke="#1C1917" stroke-opacity=".75" stroke-width="1.1" stroke-linejoin="round" aria-hidden="true"><path d="{{p.icon}}"></path></svg><sc-if value="{{p.hasBadge}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; left: 6px; top: 6px; background: {{p.badgeBg}}; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 999px">{{p.badge}}</span></sc-if></span></a>
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding-right: 36px">
+<span style="font-size: 11px; color: #57534E; font-weight: 600; text-transform: uppercase; letter-spacing: .04em">{{p.catName}}</span>
+<a class="plink" href="MobileProduct.dc.html" style="font-size: 14px; font-weight: 600; line-height: 1.35">{{p.name}}</a>
+<span style="font-size: 12px; color: #57534E">★ {{p.rating}} · Đã bán {{p.soldLabel}}</span>
+<span style="display: flex; gap: 3px; margin-top: 2px"><sc-for list="{{p.dots}}" as="d" hint-placeholder-count="3"><span style="width: 12px; height: 12px; border-radius: 6px; background: {{d.hex}}; border: 1px solid rgba(28,25,23,.2)"></span></sc-for></span>
+<div style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 6px"><span style="display: flex; flex-direction: column"><span style="font-weight: 800; font-size: 16px; color: {{p.priceColor}}; font-variant-numeric: tabular-nums">{{p.priceLabel}}</span><sc-if value="{{p.onSale}}" hint-placeholder-val="{{ false }}"><s style="font-size: 11px; color: #57534E">{{p.origLabel}}</s></sc-if></span>
+<sc-if value="{{p.canBuy}}" hint-placeholder-val="{{ true }}"><button class="addbtn" type="button" onClick="{{p.add}}" aria-label="Thêm {{p.name}} vào giỏ">+ Giỏ</button></sc-if></div>
+</div>
+<button class="{{p.heartCls}}" type="button" aria-pressed="{{p.wished}}" aria-label="Yêu thích {{p.name}}" onClick="{{p.toggleWish}}" style="top: 8px; right: 6px; background: transparent"><svg width="18" height="18" viewBox="0 0 24 24" fill="{{p.heartFill}}" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"></path></svg></button>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{noResults}}" hint-placeholder-val="{{ false }}"><div style="padding: 40px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px"><h2 style="margin: 0; font-size: 18px">Không có sản phẩm phù hợp</h2><p style="margin: 0; color: #57534E; font-size: 14px">Thử bỏ bớt bộ lọc để xem thêm.</p><button class="btn-outline" type="button" onClick="{{clearAll}}">Xoá tất cả bộ lọc</button></div></sc-if>
+<sc-if value="{{hasMore}}" hint-placeholder-val="{{ true }}"><div style="margin-top: 22px; display: flex; flex-direction: column; align-items: center; gap: 8px"><div style="width: 140px; height: 4px; border-radius: 2px; background: #E7E5E4; overflow: hidden"><i style="display: block; height: 100%; background: #047857; width: {{shownPct}}"></i></div><span style="font-size: 12px; color: #57534E">{{shownCount}} / {{total}}</span><button class="btn-outline" type="button" onClick="{{loadMore}}" style="width: 100%">Xem thêm {{moreCount}} sản phẩm</button></div></sc-if>
+</section>
+
+<div aria-hidden="true" style="height: 40px; flex-shrink: 0"></div>
+<footer aria-label="Chân trang" style="background: #1C1917; color: #D6D3D1; margin-top: auto; flex-shrink: 0; padding: 28px 16px 32px; display: flex; flex-direction: column; gap: 16px; font-size: 14px">
+<a href="MobileHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #ffffff; font-weight: 800; font-size: 20px"><span style="width: 30px; height: 30px; border-radius: 9px; background: #047857; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px">V</span>VCK Shop</a>
+<details style="border-top: 1px solid #292524"><summary style="min-height: 48px; display: flex; align-items: center; justify-content: space-between; color: #fff; font-weight: 700; cursor: pointer; list-style: none">Hỗ trợ khách hàng<span aria-hidden="true">+</span></summary>
+<div style="display: flex; flex-direction: column; padding-bottom: 8px"><a href="MobilePolicy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Chính sách đổi trả</a><a href="MobilePolicy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Vận chuyển &amp; giao hàng</a><a href="MobilePolicy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Hướng dẫn chọn size</a><a href="MobileTrack.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Tra cứu đơn hàng</a></div></details>
+<details style="border-top: 1px solid #292524; border-bottom: 1px solid #292524"><summary style="min-height: 48px; display: flex; align-items: center; justify-content: space-between; color: #fff; font-weight: 700; cursor: pointer; list-style: none">Về chúng tôi<span aria-hidden="true">+</span></summary>
+<div style="display: flex; flex-direction: column; padding-bottom: 8px"><a href="MobileAbout.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Câu chuyện thương hiệu</a><a href="MobilePolicy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Chính sách bảo mật</a><a href="MobilePolicy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Điều khoản sử dụng</a></div></details>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><span style="border: 1px solid #44403C; border-radius: 8px; padding: 5px 9px; font-weight: 700; color: #fff; font-size: 12px">VNPay</span><span style="border: 1px solid #44403C; border-radius: 8px; padding: 5px 9px; font-weight: 700; color: #fff; font-size: 12px">VietQR</span><span style="border: 1px solid #44403C; border-radius: 8px; padding: 5px 9px; font-weight: 700; color: #fff; font-size: 12px">COD</span><span style="border: 1px solid #44403C; border-radius: 8px; padding: 5px 9px; font-weight: 700; color: #fff; font-size: 12px">GHN</span></div>
+<div style="font-size: 12px; line-height: 1.7; color: #A8A29E">[Tên doanh nghiệp] · MST [mã số thuế]<br>Hotline [số hotline]<br>© 2026 VCK Shop · Bản demo portfolio</div>
+</footer>
+
+<div style="height: 84px; background: #1C1917"></div>
+</div>
+
+<div class="dock" role="group" aria-label="Sắp xếp và lọc">
+<button type="button" onClick="{{openSort}}" aria-haspopup="dialog"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3"></path></svg>Sắp xếp</button>
+<button type="button" onClick="{{openFilter}}" aria-haspopup="dialog"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>Lọc<sc-if value="{{hasActive}}" hint-placeholder-val="{{ false }}"><span class="n">{{activeCount}}</span></sc-if></button>
+</div>
+
+<div class="{{toastClass}}" role="status" aria-live="polite"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6EE7B7" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><span>{{toastText}}</span></div>
+
+<div class="{{panelClass}}" role="dialog" aria-modal="true" aria-label="Bộ lọc">
+<div style="height: 56px; display: flex; align-items: center; padding: 0 6px; border-bottom: 1px solid #E7E5E4; gap: 4px; flex-shrink: 0"><button class="iconbtn" type="button" aria-label="Đóng bộ lọc" onClick="{{closeAll}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button><div style="flex-grow: 1; font-weight: 800; font-size: 18px">Bộ lọc</div><button type="button" onClick="{{resetDraft}}" style="border: 0; background: transparent; color: #047857; font-weight: 700; font-size: 14px; height: 44px; padding: 0 12px">Đặt lại</button></div>
+<div class="scroller" style="flex-grow: 1; overflow-y: auto; padding: 0 16px">
+<details class="acc" open="{{ true }}"><summary>Kích thước<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary><div style="display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 16px"><sc-for list="{{dSizes}}" as="o" hint-placeholder-count="8"><button class="{{o.cls}}" type="button" aria-pressed="{{o.sel}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div></details>
+<details class="acc" open="{{ true }}"><summary>Màu sắc<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary><div style="display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 16px"><sc-for list="{{dColors}}" as="c" hint-placeholder-count="5"><button class="{{c.cls}}" type="button" aria-pressed="{{c.sel}}" onClick="{{c.pick}}"><span style="width: 18px; height: 18px; border-radius: 9px; background: {{c.hex}}; border: 1px solid rgba(28,25,23,.2)"></span>{{c.name}}</button></sc-for></div></details>
+<details class="acc"><summary>Khoảng giá<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary><div style="display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 16px"><sc-for list="{{dPrices}}" as="o" hint-placeholder-count="4"><button class="{{o.cls}}" type="button" aria-pressed="{{o.sel}}" onClick="{{o.pick}}">{{o.label}}</button></sc-for></div></details>
+<details class="acc"><summary>Tình trạng<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></summary><div style="display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 16px"><button class="{{dSaleCls}}" type="button" aria-pressed="{{dSaleSel}}" onClick="{{toggleDSale}}">Đang giảm giá</button><button class="{{dStockCls}}" type="button" aria-pressed="{{dStockSel}}" onClick="{{toggleDStock}}">Còn hàng</button></div></details>
+</div>
+<div style="padding: 12px 16px 20px; border-top: 1px solid #E7E5E4; background: #fff; flex-shrink: 0"><button class="btn-cta" type="button" onClick="{{applyFilters}}" style="width: 100%">Xem {{draftCount}} sản phẩm</button></div>
+</div>
+
+<div class="{{scrimClass}}" onClick="{{closeAll}}"></div>
+<div class="{{sortClass}}" role="dialog" aria-modal="true" aria-label="Sắp xếp"><div class="grab" aria-hidden="true"></div>
+<div style="padding: 4px 20px 24px"><div style="font-weight: 800; font-size: 18px; margin-bottom: 4px">Sắp xếp theo</div>
+<div role="radiogroup" aria-label="Sắp xếp theo"><sc-for list="{{sortOpts}}" as="o" hint-placeholder-count="5"><button class="{{o.cls}}" type="button" role="radio" aria-checked="{{o.sel}}" onClick="{{o.pick}}">{{o.l}}<sc-if value="{{o.on}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if></button></sc-for></div></div></div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"reduceMotion":{"editor":"boolean","default":false,"section":"Chuyển động"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const e = { cat: 'all', sizes: [], colors: [], price: -1, sale: false, stock: false };
+    this.state = { f: { ...e }, d: { ...e }, sort: 'pop', shown: 10, view: 'grid', n: 0, sheet: null, wish: {}, pops: {}, cart: 0, toastOn: false, toastText: '' };
+  }
+  componentWillUnmount() { clearTimeout(this.tt); }
+  vnd(n) { return n.toLocaleString('vi-VN') + ' ₫'; }
+  buildProducts() {
+    if (this.P) return this.P;
+    const I = this.I = { tee: 'M9 5l5-2h4l5 2 5 5-3.5 3.5L22 12v16H10V12l-2.5 1.5L4 10z', pants: 'M10 4h12l2 24h-5l-3-15-3 15H8z', dress: 'M12 3h8l-1 6 5 19H8l5-19z', bag: 'M7 12h18l-1.6 15H8.6zM12 12V9a4 4 0 0 1 8 0v3', shoe: 'M3 22c0-3 2-6 4-6l5-4 3 3c3 2 8 2 12 3 2 .5 3 2 3 4v2H3z', cap: 'M5 20c0-6 5-11 11-11s11 5 11 11zM3 20h28' };
+    const C = this.COLORS = [{ k: 'den', name: 'Đen', hex: '#1C1917', tone: '#D6D3D1' }, { k: 'kem', name: 'Trắng kem', hex: '#F5F0E6', tone: '#F5F0E6' }, { k: 'reu', name: 'Xanh rêu', hex: '#3F5E4A', tone: '#D1E0D5' }, { k: 'be', name: 'Be', hex: '#D6C3A5', tone: '#EFE6D8' }, { k: 'xanh', name: 'Xanh dương', hex: '#3B82F6', tone: '#DBEAFE' }];
+    this.CATN = { ao: 'Áo', quan: 'Quần', vay: 'Váy & đầm', giay: 'Giày', phukien: 'Phụ kiện' };
+    const T = [['Áo thun', 'ao', 'tee', 189000], ['Áo sơ mi', 'ao', 'tee', 329000], ['Áo khoác', 'ao', 'tee', 529000], ['Quần jeans', 'quan', 'pants', 459000], ['Quần short', 'quan', 'pants', 229000], ['Quần kaki', 'quan', 'pants', 389000], ['Đầm midi', 'vay', 'dress', 489000], ['Chân váy', 'vay', 'dress', 299000], ['Túi tote', 'phukien', 'bag', 279000], ['Túi đeo chéo', 'phukien', 'bag', 349000], ['Giày sneaker', 'giay', 'shoe', 590000], ['Mũ lưỡi trai', 'phukien', 'cap', 169000]];
+    const M = ['cotton basic', 'oversize', 'linen thoáng mát', 'form rộng', 'cổ tròn', 'thêu chữ', 'dáng suông', 'tối giản', 'phong cách Hàn'];
+    let seed = 11; const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const out = [];
+    for (let k = 0; k < 3; k++) T.forEach((t, ti) => {
+      const i = k * 12 + ti; const cols = [C[i % 5], C[(i + 2) % 5]]; if (i % 2) cols.push(C[(i + 3) % 5]);
+      const price = Math.round(t[3] * (0.9 + rnd() * 0.3) / 1000) * 1000; const sale = rnd() < 0.35; const sold = Math.round(80 + rnd() * 1400);
+      out.push({ id: 'p' + i, i, name: t[0] + ' ' + M[(i + ti) % 9], cat: t[1], icon: I[t[2]], price, orig: sale ? Math.round(price * (1.2 + rnd() * 0.15) / 1000) * 1000 : 0, sizes: t[1] === 'giay' ? ['39', '40', '41', '42'] : (t[1] === 'phukien' ? [] : ['S', 'M', 'L', 'XL']), colors: cols.map((c) => c.k), dots: cols, tone: cols[0].tone, rating: 4.3 + rnd() * 0.6, sold, isNew: i % 7 === 0, stock: i % 11 !== 0 });
+    });
+    return (this.P = out);
+  }
+  filter(list, f) {
+    const R = [[0, 300000], [300000, 500000], [500000, 700000], [700000, 1e9]];
+    return list.filter((p) => (f.cat === 'all' || p.cat === f.cat) && (!f.sizes.length || f.sizes.some((z) => p.sizes.includes(z))) && (!f.colors.length || f.colors.some((c) => p.colors.includes(c))) && (f.price < 0 || (p.price >= R[f.price][0] && p.price < R[f.price][1])) && (!f.sale || p.orig > 0) && (!f.stock || p.stock));
+  }
+  sortList(list, s) { const l = list.slice(); if (s === 'new') l.sort((a, b) => (b.isNew - a.isNew) || (b.i - a.i)); else if (s === 'asc') l.sort((a, b) => a.price - b.price); else if (s === 'desc') l.sort((a, b) => b.price - a.price); else if (s === 'rate') l.sort((a, b) => b.rating - a.rating); else l.sort((a, b) => b.sold - a.sold); return l; }
+  commit(f, extra) { this.setState({ f, d: { ...f }, shown: 10, n: this.state.n + 1, sheet: null, ...(extra || {}) }); }
+  toast(t) { clearTimeout(this.tt); this.setState({ toastOn: true, toastText: t }); this.tt = setTimeout(() => this.setState({ toastOn: false }), 2600); }
+  renderVals() {
+    const s = this.state, f = s.f, d = s.d;
+    const reduced = !!this.props.reduceMotion;
+    const ALL = this.buildProducts(), I = this.I;
+    const res = this.sortList(this.filter(ALL, f), s.sort);
+    const CATS = [{ k: 'all', l: 'Tất cả', bg: '#1C1917', fg: '#FAFAF9', icon: I.tee }, { k: 'ao', l: 'Áo', bg: '#ECFDF5', fg: '#064E3B', icon: I.tee }, { k: 'quan', l: 'Quần', bg: '#FFF7ED', fg: '#7C2D12', icon: I.pants }, { k: 'vay', l: 'Váy', bg: '#FCE7F3', fg: '#831843', icon: I.dress }, { k: 'giay', l: 'Giày', bg: '#E0F2FE', fg: '#0C4A6E', icon: I.shoe }, { k: 'phukien', l: 'Phụ kiện', bg: '#FEF3C7', fg: '#78350F', icon: I.bag }];
+    const PR = ['Dưới 300k', '300k – 500k', '500k – 700k', 'Trên 700k'];
+    const SORTS = [{ v: 'pop', l: 'Phổ biến nhất' }, { v: 'new', l: 'Mới nhất' }, { v: 'asc', l: 'Giá tăng dần' }, { v: 'desc', l: 'Giá giảm dần' }, { v: 'rate', l: 'Đánh giá cao' }];
+    const tog = (arr, v) => arr.includes(v) ? arr.filter((x) => x !== v) : arr.concat(v);
+    const setD = (patch) => this.setState({ d: { ...d, ...patch } });
+    const empty = { cat: f.cat, sizes: [], colors: [], price: -1, sale: false, stock: false };
+    const activeChips = [];
+    f.sizes.forEach((z) => activeChips.push({ label: 'Size ' + z, remove: () => this.commit({ ...f, sizes: f.sizes.filter((x) => x !== z) }) }));
+    f.colors.forEach((k) => activeChips.push({ label: this.COLORS.find((c) => c.k === k).name, remove: () => this.commit({ ...f, colors: f.colors.filter((x) => x !== k) }) }));
+    if (f.price >= 0) activeChips.push({ label: PR[f.price], remove: () => this.commit({ ...f, price: -1 }) });
+    if (f.sale) activeChips.push({ label: 'Giảm giá', remove: () => this.commit({ ...f, sale: false }) });
+    if (f.stock) activeChips.push({ label: 'Còn hàng', remove: () => this.commit({ ...f, stock: false }) });
+    const visible = res.slice(0, s.shown).map((p) => {
+      const wished = !!s.wish[p.id], pop = s.pops[p.id] || 0, sale = p.orig > 0;
+      const badge = !p.stock ? '' : (sale ? '-' + Math.round((1 - p.price / p.orig) * 100) + '%' : (p.isNew ? 'Mới' : ''));
+      return { ...p, catName: this.CATN[p.cat], onSale: sale, priceLabel: this.vnd(p.price), origLabel: sale ? this.vnd(p.orig) : '', priceColor: sale ? '#B91C1C' : '#1C1917', rating: p.rating.toFixed(1).replace('.', ','), soldLabel: p.sold >= 1000 ? (p.sold / 1000).toFixed(1).replace('.', ',') + 'k' : String(p.sold),
+        hasBadge: !!badge, badge, badgeBg: sale ? '#B91C1C' : '#047857', soldOut: !p.stock, canBuy: p.stock,
+        wished: wished ? 'true' : 'false', heartFill: wished ? 'currentColor' : 'none', heartCls: 'heart' + (wished ? ' on' : '') + (pop ? (pop % 2 ? ' popA' : ' popB') : ''),
+        toggleWish: () => this.setState({ wish: { ...s.wish, [p.id]: !wished }, pops: { ...s.pops, [p.id]: pop + 1 } }),
+        add: () => { this.setState({ cart: s.cart + 1 }); this.toast('Đã thêm vào giỏ' + (p.sizes.length ? ' (size mặc định ' + p.sizes[1] + ')' : '')); } };
+    });
+    const cur = CATS.find((c) => c.k === f.cat);
+    return {
+      rootClass: reduced ? 'rm' : '', catTitle: f.cat === 'all' ? 'Tất cả sản phẩm' : (f.cat === 'vay' ? 'Váy & đầm' : cur.l), total: res.length,
+      stories: CATS.map((c) => ({ ...c, label: c.l, sel: f.cat === c.k ? 'true' : 'false', cls: 'story' + (f.cat === c.k ? ' on' : ''), pick: () => this.commit({ ...f, cat: c.k }) })),
+      activeChips, hasActive: activeChips.length > 0, noActive: activeChips.length === 0, activeCount: activeChips.length, clearAll: () => this.commit(empty),
+      sortLabel: SORTS.find((o) => o.v === s.sort).l,
+      isGrid: s.view === 'grid', isList: s.view === 'list', vGrid: 'vbtn' + (s.view === 'grid' ? ' on' : ''), vList: 'vbtn' + (s.view === 'list' ? ' on' : ''), vGridSel: s.view === 'grid' ? 'true' : 'false', vListSel: s.view === 'list' ? 'true' : 'false',
+      setGrid: () => this.setState({ view: 'grid', n: s.n + 1 }), setList: () => this.setState({ view: 'list', n: s.n + 1 }),
+      visible, noResults: res.length === 0, gridClass: reduced ? '' : (s.n % 2 ? 'gridA' : 'gridB'),
+      hasMore: res.length > s.shown, shownCount: Math.min(s.shown, res.length), shownPct: Math.round(Math.min(s.shown, res.length) / Math.max(1, res.length) * 100) + '%', moreCount: Math.min(10, res.length - s.shown), loadMore: () => this.setState({ shown: s.shown + 10 }),
+      hasCart: s.cart > 0, cartCount: s.cart, bumpClass: reduced ? '' : (s.cart % 2 ? 'bumpA' : 'bumpB'),
+      toastClass: 'toast' + (s.toastOn ? ' on' : ''), toastText: s.toastText,
+      openFilter: () => this.setState({ sheet: 'filter', d: { ...f } }), openSort: () => this.setState({ sheet: 'sort' }), closeAll: () => this.setState({ sheet: null }),
+      panelClass: 'panel' + (s.sheet === 'filter' ? ' on' : ''), scrimClass: 'scrim' + (s.sheet === 'sort' ? ' on' : ''), sortClass: 'sheet' + (s.sheet === 'sort' ? ' on' : ''),
+      dSizes: ['S', 'M', 'L', 'XL', '39', '40', '41', '42'].map((z) => ({ label: z, sel: d.sizes.includes(z) ? 'true' : 'false', cls: 'fchip' + (d.sizes.includes(z) ? ' on' : ''), pick: () => setD({ sizes: tog(d.sizes, z) }) })),
+      dColors: this.COLORS.map((c) => ({ ...c, sel: d.colors.includes(c.k) ? 'true' : 'false', cls: 'fchip' + (d.colors.includes(c.k) ? ' on' : ''), pick: () => setD({ colors: tog(d.colors, c.k) }) })),
+      dPrices: PR.map((l, i) => ({ label: l, sel: d.price === i ? 'true' : 'false', cls: 'fchip' + (d.price === i ? ' on' : ''), pick: () => setD({ price: d.price === i ? -1 : i }) })),
+      dSaleCls: 'fchip' + (d.sale ? ' on' : ''), dSaleSel: d.sale ? 'true' : 'false', toggleDSale: () => setD({ sale: !d.sale }),
+      dStockCls: 'fchip' + (d.stock ? ' on' : ''), dStockSel: d.stock ? 'true' : 'false', toggleDStock: () => setD({ stock: !d.stock }),
+      draftCount: this.filter(ALL, d).length, resetDraft: () => this.setState({ d: { ...empty } }), applyFilters: () => this.commit({ ...d }),
+      sortOpts: SORTS.map((o) => ({ ...o, on: s.sort === o.v, sel: s.sort === o.v ? 'true' : 'false', cls: 'rowopt' + (s.sort === o.v ? ' on' : ''), pick: () => this.setState({ sort: o.v, sheet: null, shown: 10, n: s.n + 1 }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

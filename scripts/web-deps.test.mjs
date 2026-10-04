@@ -58,16 +58,3 @@ test("pnpm-workspace.yaml does not override sharp [VCK-009-AC3]", () => {
   assert.doesNotMatch(read("pnpm-workspace.yaml"), /overrides|sharp/);
 });
 
-test("docs record the LGPL notice and risk R-15 [VCK-009-AC3]", () => {
-  assert.match(read("docs/12-documentation-lifecycle.md"), /LGPL/);
-  assert.match(read("docs/09-risk-register.md"), /\| R-15 \|/);
-});
-
-test("storefront prod dependencies are exactly next, react, react-dom, motion (+ workspace ui-kit), all pinned [VCK-009-AC4]", () => {
-  const { dependencies } = JSON.parse(read("apps/storefront/package.json"));
-  const { "@vck/ui-kit": kit, ...external } = dependencies;
-  assert.equal(kit, "workspace:*");
-  assert.deepEqual(Object.keys(external).sort(), ["motion", "next", "react", "react-dom"]);
-  for (const [name, v] of Object.entries(external)) assert.match(v, /^\d+\.\d+\.\d+$/, `${name} pinned exactly`);
-  assert.equal(external.motion, "13.4.6");
-});

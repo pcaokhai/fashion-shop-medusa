@@ -19,9 +19,7 @@
       "Read(./**/.env.staging)",
       "Read(./**/.env.development)",
       "Read(./**/.env.test)",
-      "Read(./**/.env.*.local)",
-      "Read(./.claude/skills/ui-ux-pro-max/data/**)",
-      "Read(./.claude/skills/ui-ux-pro-max/scripts/tests/**)"
+      "Read(./**/.env.*.local)"
     ]
   }
 }

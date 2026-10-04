@@ -16,3 +16,5 @@ tools/seed/out/
 __pycache__/
 .next-*/
 test-results/
+.shots/
+.env.prod

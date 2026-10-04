@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Tìm kiếm mobile — VCK Shop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0;background:#FAFAF9;color:#1C1917;font-family:"Be Vietnam Pro","Noto Sans",system-ui,sans-serif}
+a{color:#047857}a:hover{color:#065F46}
+*{box-sizing:border-box}
+button,input{font-family:inherit}
+button{cursor:pointer}
+summary::-webkit-details-marker{display:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:2px solid #047857;outline-offset:2px}
+.scroller{scrollbar-width:none}.scroller>*{flex-shrink:0}.scroller::-webkit-scrollbar{display:none}
+.snap{display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}.snap::-webkit-scrollbar{display:none}
+.iconbtn{width:44px;height:44px;border-radius:22px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;color:#fff;text-decoration:none;flex-shrink:0}
+.iconbtn:hover{color:#fff}
+.sbox{flex-grow:1;height:52px;border-radius:16px;background:#fff;display:flex;align-items:center;gap:6px;padding:0 4px 0 14px}
+.sbox input{flex-grow:1;min-width:0;height:48px;border:0;background:transparent;font-size:16px;color:#1C1917}
+.sbox input:focus{outline:none}
+.sbox:focus-within{box-shadow:0 0 0 3px rgba(167,243,208,.7)}
+.clr{width:44px;height:44px;border-radius:12px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;color:#57534E}
+.chip{height:40px;padding:0 14px;border-radius:999px;border:1.5px solid #E7E5E4;background:#fff;font-size:14px;font-weight:600;color:#1C1917;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0}
+.chip.on{background:#1C1917;border-color:#1C1917;color:#fff}
+.chip.dark{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:#fff}
+.hl{background:#FEF3C7;color:#1C1917;font-weight:700;border-radius:3px}
+.res{display:flex;gap:12px;align-items:center;min-height:76px;padding:8px 0;border-bottom:1px solid #F5F5F4;text-decoration:none;color:#1C1917}
+.res:hover{color:#1C1917}
+.resA{animation:resA 240ms cubic-bezier(.05,.7,.1,1)}.resB{animation:resB 240ms cubic-bezier(.05,.7,.1,1)}
+@keyframes resA{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes resB{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+.rank{display:flex;align-items:center;gap:14px;min-height:52px;border:0;background:transparent;width:100%;text-align:left;border-bottom:1px solid #F5F5F4;padding:0;color:#1C1917;font-size:15px;font-weight:600}
+.btn-cta{height:52px;padding:0 20px;border-radius:14px;border:0;background:#C2410C;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+.btn-cta:hover{color:#fff}
+.btn-outline{height:48px;padding:0 24px;border-radius:12px;border:1.5px solid #1C1917;background:transparent;color:#1C1917;font-weight:700;font-size:15px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.rm *{animation:none !important;transition:none !important}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+<style data-vck-motion="v2">
+/* VCK motion layer v2 — docs/13 §4.6. Transform/opacity only; progressive (no support = static, fully visible). */
+:root{--dur-instant:100ms;--dur-fast:160ms;--dur-base:220ms;--dur-slow:320ms;--dur-expressive:480ms;--ease-std:cubic-bezier(.2,0,0,1);--ease-enter:cubic-bezier(.05,.7,.1,1);--ease-exit:cubic-bezier(.3,0,.8,.15)}
+/* MI-30 press + hover feedback (zero-specificity so page rules still win) */
+:where(.btn,.btn-cta,.btn-dark,.btn-out,.btn-outline,.btn-danger,.chip,.pill,.fbtn,.pg,.seg button,.tab,.nv,.nav,.mnav,.demo,.todo,.choice,.story,.sub,.tpl,.pnav,.rank,.sg,.rowopt,.mrow){transition:background-color var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast),box-shadow var(--dur-fast),transform var(--dur-instant) var(--ease-std)}
+:where(.btn,.btn-cta,.btn-dark,.btn-out,.btn-outline,.btn-danger,.chip,.pill,.fbtn,.pg,.demo,.choice,.story,.sub,.tpl,.mnav):active:not([aria-disabled=true]){transform:scale(.97)}
+:where(.card):is(a,button):hover{box-shadow:0 10px 28px -14px rgba(28,25,23,.28)}
+/* MI-31 staggered list enter (runs on mount) */
+.stg>*{animation:vckStg var(--dur-slow) var(--ease-enter) both}
+.stg>*:nth-child(2){animation-delay:40ms}.stg>*:nth-child(3){animation-delay:80ms}.stg>*:nth-child(4){animation-delay:120ms}.stg>*:nth-child(5){animation-delay:160ms}.stg>*:nth-child(6){animation-delay:200ms}.stg>*:nth-child(7){animation-delay:240ms}.stg>*:nth-child(n+8){animation-delay:280ms}
+@keyframes vckStg{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* back-to-top + reading progress default hidden state when scroll timelines are unsupported */
+.to-top{display:none}
+@media (prefers-reduced-motion: no-preference){
+@supports (animation-timeline: view()){
+  /* MI-25 scroll reveal: starts as the element enters, done at 20% coverage */
+  .sr-up{animation:vckUp linear both;animation-timeline:view();animation-range:entry 0% cover 20%}
+  .sr-fade{animation:vckFade linear both;animation-timeline:view();animation-range:entry 0% cover 20%}
+  .sr-scale{animation:vckScale linear both;animation-timeline:view();animation-range:entry 0% cover 25%}
+  .sr-left{animation:vckLeft linear both;animation-timeline:view();animation-range:entry 0% cover 22%}
+  .sr-right{animation:vckRight linear both;animation-timeline:view();animation-range:entry 0% cover 22%}
+  .sr-stg>*{animation:vckUp linear both;animation-timeline:view();animation-range:entry 0% cover 18%}
+  .sr-stg>*:nth-child(2){animation-range:entry 5% cover 22%}.sr-stg>*:nth-child(3){animation-range:entry 10% cover 26%}.sr-stg>*:nth-child(4){animation-range:entry 15% cover 30%}
+  /* MI-29 parallax: decorative layers only, never the LCP image */
+  .plx{animation:vckPlx linear both;animation-timeline:view();animation-range:cover}
+  .plx-slow{animation:vckPlxS linear both;animation-timeline:view();animation-range:cover}
+  /* MI-32 bar fill on view (stock / share bars) — scaleX */
+  .fill-x{transform-origin:0 50%;animation:vckFill linear both;animation-timeline:view();animation-range:entry 10% cover 30%}
+  /* MI-26 header elevation on scroll (desktop document scroll) */
+  .hdr-scroll{animation:vckHdr linear both;animation-timeline:scroll(root);animation-range:0 120px}
+  .hdr-scroll .hdr-logo{transform-origin:0 50%;animation:vckLogo linear both;animation-timeline:scroll(root);animation-range:0 120px}
+  /* MI-27 back-to-top + MI-28 reading progress (document scroll) */
+  .to-top{display:flex;animation:vckTop linear both;animation-timeline:scroll(root);animation-range:300px 700px}
+  .read-progress{transform-origin:0 50%;animation:vckGrow linear both;animation-timeline:scroll(root)}
+}
+@supports (timeline-scope: --pg){
+  /* Mobile frames: the inner scroller publishes --pg; siblings outside it read it */
+  .pg-scope{timeline-scope:--pg}
+  .pg-src{scroll-timeline:--pg block}
+  .hdr-m{animation:vckHdrM linear both;animation-timeline:--pg;animation-range:0 90px}
+  .to-top.m{display:flex;animation:vckTop linear both;animation-timeline:--pg;animation-range:280px 600px}
+  .read-progress.m{animation:vckGrow linear both;animation-timeline:--pg}
+}
+}
+@keyframes vckUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes vckFade{from{opacity:0}to{opacity:1}}
+@keyframes vckScale{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+@keyframes vckLeft{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+@keyframes vckRight{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes vckPlx{from{transform:translateY(-40px)}to{transform:translateY(40px)}}
+@keyframes vckPlxS{from{transform:translateY(24px) rotate(0deg)}to{transform:translateY(-24px) rotate(12deg)}}
+@keyframes vckFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes vckHdr{from{box-shadow:0 0 0 rgba(28,25,23,0);background-color:rgba(250,250,249,.94)}to{box-shadow:0 8px 24px -14px rgba(28,25,23,.35);background-color:rgba(255,255,255,.98)}}
+@keyframes vckLogo{to{transform:scale(.9)}}
+@keyframes vckHdrM{to{box-shadow:0 8px 20px -12px rgba(28,25,23,.35);background-color:rgba(255,255,255,.98)}}
+@keyframes vckTop{from{opacity:0;transform:translateY(16px) scale(.9);visibility:hidden}to{opacity:1;transform:none;visibility:visible}}
+@keyframes vckGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.to-top{position:fixed;right:24px;bottom:24px;z-index:45;width:48px;height:48px;border-radius:24px;border:0;background:#1C1917;color:#fff;align-items:center;justify-content:center;box-shadow:0 10px 24px -8px rgba(28,25,23,.45);text-decoration:none}
+.to-top:hover{background:#047857;color:#fff}
+.to-top.m{position:absolute;right:16px;bottom:88px;width:44px;height:44px;border-radius:22px}
+.read-progress{position:fixed;left:0;right:0;top:0;height:3px;background:#047857;z-index:60;transform:scaleX(0)}
+.read-progress.m{position:absolute}
+.rm .to-top,.rm .read-progress{animation:none !important}
+</style>
+
+</helmet>
+<div class="{{rootClass}} pg-scope" style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #FAFAF9; font-family: 'Be Vietnam Pro','Noto Sans',system-ui,sans-serif; color: #1C1917"><a class="to-top m" href="#top" aria-label="Lên đầu trang"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"></path></svg></a>
+<div class="scroller pg-src" style="position: absolute; inset: 0; overflow-y: auto; display: flex; flex-direction: column"><span id="top" aria-hidden="true" style="display: block; height: 0"></span>
+
+<div style="position: sticky; top: 0; z-index: 30; background: #064E3B; padding: 8px 12px 14px 4px; overflow: hidden">
+<div style="position: absolute; right: -40px; top: -60px; width: 150px; height: 150px; border-radius: 75px; background: #047857"></div>
+<div style="position: relative; display: flex; align-items: center; gap: 4px" role="search">
+<a class="iconbtn" href="MobileHome.dc.html" aria-label="Quay lại"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+<div class="sbox"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#57534E" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<label style="flex-grow: 1; display: flex; min-width: 0"><span class="sr">Tìm sản phẩm</span><input type="search" enterkeyhint="search" autocomplete="off" placeholder="Tìm, không cần dấu…" value="{{q}}" onInput="{{onInput}}" onKeyDown="{{onKey}}"></label>
+<sc-if value="{{hasQ}}" hint-placeholder-val="{{ false }}"><button class="clr" type="button" aria-label="Xoá từ khoá" onClick="{{clearQ}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></sc-if>
+</div>
+</div>
+<sc-if value="{{hasQ}}" hint-placeholder-val="{{ false }}"><div class="snap" style="position: relative; gap: 8px; padding: 12px 0 0 12px"><sc-for list="{{completions}}" as="c" hint-placeholder-count="3"><button class="chip dark" type="button" onClick="{{c.pick}}">{{c.label}}</button></sc-for></div></sc-if>
+</div>
+
+<sc-if value="{{hasQ}}" hint-placeholder-val="{{ false }}">
+<section aria-live="polite" style="padding: 14px 16px 0">
+<div style="display: flex; align-items: baseline; justify-content: space-between"><h1 style="margin: 0; font-size: 17px"><span style="color: #047857">{{total}}</span> kết quả</h1><sc-if value="{{fuzzyUsed}}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; color: #B45309; font-weight: 700">Có kết quả gần đúng</span></sc-if></div>
+<sc-if value="{{hasResults}}" hint-placeholder-val="{{ true }}">
+<div class="snap" role="group" aria-label="Danh mục khớp" style="gap: 8px; padding: 10px 0 4px"><sc-for list="{{catFacets}}" as="c" hint-placeholder-count="3"><button class="{{c.cls}}" type="button" aria-pressed="{{c.sel}}" onClick="{{c.pick}}">{{c.label}} · {{c.count}}</button></sc-for></div>
+<div class="{{resClass}} stg">
+<sc-for list="{{visible}}" as="p" hint-placeholder-count="5">
+<a class="res" href="MobileProduct.dc.html">
+<span style="width: 56px; height: 68px; border-radius: 12px; background: {{p.tone}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#1C1917" stroke-opacity=".75" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true"><path d="{{p.icon}}"></path></svg><sc-if value="{{p.onSale}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; left: -4px; top: -4px; background: #B91C1C; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 5px; border-radius: 999px">-{{p.off}}%</span></sc-if></span>
+<span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; color: #57534E; font-weight: 600; text-transform: uppercase; letter-spacing: .04em">{{p.catName}}<sc-if value="{{p.fuzzy}}" hint-placeholder-val="{{ false }}"> · <span style="color: #B45309">gần đúng</span></sc-if></span><span style="font-size: 14px; font-weight: 600; line-height: 1.35; white-space: pre-wrap"><span>{{p.a}}</span><span class="hl">{{p.m}}</span><span>{{p.b}}</span></span><span style="font-size: 12px; color: #57534E">★ {{p.rating}}</span></span>
+<span style="display: flex; flex-direction: column; align-items: flex-end"><b style="font-size: 14px; color: {{p.priceColor}}; font-variant-numeric: tabular-nums">{{p.priceLabel}}</b><sc-if value="{{p.onSale}}" hint-placeholder-val="{{ false }}"><s style="font-size: 11px; color: #57534E">{{p.origLabel}}</s></sc-if></span>
+</a>
+</sc-for>
+</div>
+<sc-if value="{{hasMore}}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{loadMore}}" style="width: 100%; height: 48px; margin-top: 12px; border-radius: 12px; border: 1.5px solid #1C1917; background: #fff; font-weight: 700; font-size: 15px; color: #1C1917">Xem thêm {{moreCount}} kết quả</button></sc-if>
+<a class="btn-cta" href="MobileCategory.dc.html" style="margin-top: 12px">Mở trong trang danh mục để lọc</a>
+</sc-if>
+<sc-if value="{{noResults}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 32px 8px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px"><h2 style="margin: 0; font-size: 18px">Không tìm thấy “{{q}}”</h2><p style="margin: 0; color: #57534E; font-size: 14px; line-height: 1.6">Thử từ khoá ngắn hơn, hoặc chọn một xu hướng:</p><div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center"><sc-for list="{{trends}}" as="t" hint-placeholder-count="4"><button class="chip" type="button" onClick="{{t.pick}}">{{t.label}}</button></sc-for></div></div>
+</sc-if>
+</section>
+</sc-if>
+
+<sc-if value="{{noQ}}" hint-placeholder-val="{{ true }}">
+<section style="padding: 18px 16px 0">
+<sc-if value="{{hasRecents}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; justify-content: space-between"><h2 style="margin: 0; font-size: 15px">Tìm gần đây</h2><button type="button" onClick="{{clearRecents}}" style="border: 0; background: transparent; color: #047857; font-weight: 700; font-size: 13px; height: 44px">Xoá</button></div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px"><sc-for list="{{recents}}" as="r" hint-placeholder-count="3"><button class="chip" type="button" onClick="{{r.pick}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#57534E" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{r.label}}</button></sc-for></div>
+</sc-if>
+<h2 style="margin: 0 0 4px; font-size: 15px">Top tìm kiếm tuần này</h2>
+<sc-for list="{{ranks}}" as="r" hint-placeholder-count="5"><button class="rank" type="button" onClick="{{r.pick}}"><span style="width: 28px; font-size: 22px; font-weight: 800; color: {{r.color}}; font-variant-numeric: tabular-nums">{{r.n}}</span><span style="flex-grow: 1">{{r.label}}</span><span style="font-size: 12px; color: #57534E">{{r.count}}</span></button></sc-for>
+<h2 style="margin: 24px 0 12px; font-size: 15px">Bán chạy nhất</h2>
+</section>
+<div class="snap" style="gap: 10px; padding: 0 16px"><sc-for list="{{suggested}}" as="p" hint-placeholder-count="4"><a href="MobileProduct.dc.html" style="width: 140px; flex-shrink: 0; text-decoration: none; color: #1C1917; display: flex; flex-direction: column; gap: 6px"><span style="height: 170px; border-radius: 16px; background: {{p.tone}}; display: flex; align-items: center; justify-content: center"><svg width="56%" height="56%" viewBox="0 0 32 32" fill="none" stroke="#1C1917" stroke-opacity=".75" stroke-width="1" stroke-linejoin="round" aria-hidden="true"><path d="{{p.icon}}"></path></svg></span><span style="font-size: 13px; font-weight: 600; line-height: 1.35; height: 35px; overflow: hidden">{{p.name}}</span><b style="font-size: 14px; font-variant-numeric: tabular-nums">{{p.priceLabel}}</b></a></sc-for></div>
+</sc-if>
+
+<div aria-hidden="true" style="height: 40px; flex-shrink: 0"></div>
+<footer aria-label="Chân trang" style="background: #1C1917; color: #D6D3D1; margin-top: auto; flex-shrink: 0; padding: 28px 16px 32px; display: flex; flex-direction: column; gap: 16px; font-size: 14px">
+<a href="MobileHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #ffffff; font-weight: 800; font-size: 20px"><span style="width: 30px; height: 30px; border-radius: 9px; background: #047857; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px">V</span>VCK Shop</a>
+<details style="border-top: 1px solid #292524"><summary style="min-height: 48px; display: flex; align-items: center; justify-content: space-between; color: #fff; font-weight: 700; cursor: pointer; list-style: none">Hỗ trợ khách hàng<span aria-hidden="true">+</span></summary>
+<div style="display: flex; flex-direction: column; padding-bottom: 8px"><a href="MobilePolicy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Chính sách đổi trả</a><a href="MobilePolicy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Vận chuyển &amp; giao hàng</a><a href="MobilePolicy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Hướng dẫn chọn size</a><a href="MobileTrack.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Tra cứu đơn hàng</a></div></details>
+<details style="border-top: 1px solid #292524; border-bottom: 1px solid #292524"><summary style="min-height: 48px; display: flex; align-items: center; justify-content: space-between; color: #fff; font-weight: 700; cursor: pointer; list-style: none">Về chúng tôi<span aria-hidden="true">+</span></summary>
+<div style="display: flex; flex-direction: column; padding-bottom: 8px"><a href="MobileAbout.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Câu chuyện thương hiệu</a><a href="MobilePolicy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Chính sách bảo mật</a><a href="MobilePolicy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Điều khoản sử dụng</a></div></details>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><span style="border: 1px solid #44403C; border-radius: 8px; padding: 5px 9px; font-weight: 700; color: #fff; font-size: 12px">VNPay</span><span style="border: 1px solid #44403C; border-radius: 8px; padding: 5px 9px; font-weight: 700; color: #fff; font-size: 12px">VietQR</span><span style="border: 1px solid #44403C; border-radius: 8px; padding: 5px 9px; font-weight: 700; color: #fff; font-size: 12px">COD</span><span style="border: 1px solid #44403C; border-radius: 8px; padding: 5px 9px; font-weight: 700; color: #fff; font-size: 12px">GHN</span></div>
+<div style="font-size: 12px; line-height: 1.7; color: #A8A29E">[Tên doanh nghiệp] · MST [mã số thuế]<br>Hotline [số hotline]<br>© 2026 VCK Shop · Bản demo portfolio</div>
+</footer>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"initialQuery":{"editor":"text","default":"","section":"Demo"},"reduceMotion":{"editor":"boolean","default":false,"section":"Chuyển động"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { q: props.initialQuery ?? '', cat: 'all', shown: 6, n: 0, recents: ['áo thun', 'quần jeans', 'túi tote'] };
+  }
+  vnd(n) { return n.toLocaleString('vi-VN') + ' ₫'; }
+  norm(s) { return (s || '').split('').map((ch) => ch.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, 'd')).join('').toLowerCase(); }
+  lev(a, b) {
+    const m = a.length, n = b.length; if (Math.abs(m - n) > 1) return 2;
+    const d = []; for (let i = 0; i <= m; i++) d[i] = [i]; for (let j = 1; j <= n; j++) d[0][j] = j;
+    for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    return d[m][n];
+  }
+  buildProducts() {
+    if (this.P) return this.P;
+    const I = { tee: 'M9 5l5-2h4l5 2 5 5-3.5 3.5L22 12v16H10V12l-2.5 1.5L4 10z', pants: 'M10 4h12l2 24h-5l-3-15-3 15H8z', dress: 'M12 3h8l-1 6 5 19H8l5-19z', bag: 'M7 12h18l-1.6 15H8.6zM12 12V9a4 4 0 0 1 8 0v3', shoe: 'M3 22c0-3 2-6 4-6l5-4 3 3c3 2 8 2 12 3 2 .5 3 2 3 4v2H3z', cap: 'M5 20c0-6 5-11 11-11s11 5 11 11zM3 20h28' };
+    const C = [{ name: 'Đen', tone: '#D6D3D1' }, { name: 'Trắng kem', tone: '#F5F0E6' }, { name: 'Xanh rêu', tone: '#D1E0D5' }, { name: 'Be', tone: '#EFE6D8' }, { name: 'Xanh dương', tone: '#DBEAFE' }];
+    this.CATN = { ao: 'Áo', quan: 'Quần', vay: 'Váy & đầm', giay: 'Giày', phukien: 'Phụ kiện' };
+    const T = [['Áo thun', 'ao', 'tee', 189000], ['Áo sơ mi', 'ao', 'tee', 329000], ['Áo khoác', 'ao', 'tee', 529000], ['Quần jeans', 'quan', 'pants', 459000], ['Quần short', 'quan', 'pants', 229000], ['Quần kaki', 'quan', 'pants', 389000], ['Đầm midi', 'vay', 'dress', 489000], ['Chân váy', 'vay', 'dress', 299000], ['Túi tote', 'phukien', 'bag', 279000], ['Túi đeo chéo', 'phukien', 'bag', 349000], ['Giày sneaker', 'giay', 'shoe', 590000], ['Mũ lưỡi trai', 'phukien', 'cap', 169000]];
+    const M = ['cotton basic', 'oversize', 'linen thoáng mát', 'form rộng', 'cổ tròn', 'thêu chữ', 'dáng suông', 'tối giản', 'phong cách Hàn'];
+    let seed = 11; const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const out = [];
+    for (let k = 0; k < 3; k++) T.forEach((t, ti) => {
+      const i = k * 12 + ti; const cols = [C[i % 5], C[(i + 2) % 5]]; if (i % 2) cols.push(C[(i + 3) % 5]);
+      const price = Math.round(t[3] * (0.9 + rnd() * 0.3) / 1000) * 1000; const sale = rnd() < 0.35; const sold = Math.round(80 + rnd() * 1400);
+      out.push({ id: 'p' + i, i, name: t[0] + ' ' + M[(i + ti) % 9], cat: t[1], icon: I[t[2]], price, orig: sale ? Math.round(price * (1.2 + rnd() * 0.15) / 1000) * 1000 : 0, colorNames: cols.map((c) => c.name), tone: cols[0].tone, rating: 4.3 + rnd() * 0.6, sold });
+    });
+    return (this.P = out);
+  }
+  matchProduct(p, q) {
+    const toks = this.norm(q).split(/\s+/).filter(Boolean); if (!toks.length) return null;
+    const nn = this.norm(p.name), hay = this.norm(p.name + ' ' + this.CATN[p.cat] + ' ' + p.colorNames.join(' ')), words = hay.split(/\s+/);
+    let score = 0, fuzzy = false;
+    for (const t of toks) { if (hay.includes(t)) score += nn.includes(t) ? 3 : 1; else if (t.length >= 4 && words.some((w) => this.lev(w, t) <= 1)) { score += 1; fuzzy = true; } else return null; }
+    if (nn.startsWith(toks.join(' '))) score += 3;
+    return { score: score + p.sold / 2000, fuzzy };
+  }
+  hl(name, q) { const nn = this.norm(name); const toks = this.norm(q).split(/\s+/).filter(Boolean).sort((a, b) => b.length - a.length); for (const t of toks) { const i = nn.indexOf(t); if (i >= 0) return { a: name.slice(0, i), m: name.slice(i, i + t.length), b: name.slice(i + t.length) }; } return { a: name, m: '', b: '' }; }
+  remember(label) { return [label].concat(this.state.recents.filter((x) => x !== label)).slice(0, 5); }
+  setQ(q) { this.setState({ q, cat: 'all', shown: 6, n: this.state.n + 1, recents: this.remember(q) }); }
+  renderVals() {
+    const s = this.state, q = s.q;
+    const reduced = !!this.props.reduceMotion;
+    const ALL = this.buildProducts();
+    const hasQ = q.trim().length > 0;
+    const matched = hasQ ? ALL.map((p) => ({ p, m: this.matchProduct(p, q) })).filter((x) => x.m).sort((a, b) => b.m.score - a.m.score) : [];
+    const catCount = {}; matched.forEach((x) => { catCount[x.p.cat] = (catCount[x.p.cat] || 0) + 1; });
+    const inCat = matched.filter((x) => s.cat === 'all' || x.p.cat === s.cat);
+    const seen = {}; const completions = [];
+    matched.forEach((x) => { const base = x.p.name.split(' ').slice(0, 3).join(' ').toLowerCase(); const key = this.norm(base); if (!seen[key] && completions.length < 5) { seen[key] = 1; completions.push({ label: base, pick: () => this.setQ(base) }); } });
+    const TR = ['áo thun', 'quần jeans', 'đầm midi', 'túi tote', 'giày sneaker'];
+    return {
+      rootClass: reduced ? 'rm' : '', q, hasQ, noQ: !hasQ,
+      onInput: (e) => this.setState({ q: e.target.value, cat: 'all', shown: 6, n: s.n + 1 }),
+      onKey: (e) => { if (e.key === 'Enter' && hasQ) this.setState({ recents: this.remember(q.trim()) }); },
+      clearQ: () => this.setState({ q: '', cat: 'all', n: s.n + 1 }),
+      completions, total: inCat.length, fuzzyUsed: matched.some((x) => x.m.fuzzy), hasResults: inCat.length > 0, noResults: hasQ && inCat.length === 0,
+      catFacets: [{ k: 'all', l: 'Tất cả', c: matched.length }].concat(Object.keys(catCount).map((k) => ({ k, l: this.CATN[k], c: catCount[k] }))).map((c) => ({ label: c.l, count: c.c, sel: s.cat === c.k ? 'true' : 'false', cls: 'chip' + (s.cat === c.k ? ' on' : ''), pick: () => this.setState({ cat: c.k, shown: 6, n: s.n + 1 }) })),
+      visible: inCat.slice(0, s.shown).map((x) => { const p = x.p, sale = p.orig > 0; return { ...p, ...this.hl(p.name, q), catName: this.CATN[p.cat], fuzzy: x.m.fuzzy, onSale: sale, off: sale ? Math.round((1 - p.price / p.orig) * 100) : 0, priceLabel: this.vnd(p.price), origLabel: sale ? this.vnd(p.orig) : '', priceColor: sale ? '#B91C1C' : '#1C1917', rating: p.rating.toFixed(1).replace('.', ',') }; }),
+      resClass: reduced ? '' : (s.n % 2 ? 'resA' : 'resB'), hasMore: inCat.length > s.shown, moreCount: Math.min(6, inCat.length - s.shown), loadMore: () => this.setState({ shown: s.shown + 6 }),
+      trends: TR.map((l) => ({ label: l, pick: () => this.setQ(l) })),
+      ranks: TR.map((l, i) => ({ n: i + 1, label: l, count: ALL.filter((p) => this.matchProduct(p, l)).length + ' sp', color: i < 3 ? '#EA580C' : '#A8A29E', pick: () => this.setQ(l) })),
+      recents: s.recents.map((l) => ({ label: l, pick: () => this.setQ(l) })), hasRecents: s.recents.length > 0, clearRecents: () => this.setState({ recents: [] }),
+      suggested: ALL.slice().sort((a, b) => b.sold - a.sold).slice(0, 6).map((p) => ({ ...p, priceLabel: this.vnd(p.price) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

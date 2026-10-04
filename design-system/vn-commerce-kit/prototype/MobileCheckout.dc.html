@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Thanh toán mobile — VCK Shop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0;background:#FAFAF9;color:#1C1917;font-family:"Be Vietnam Pro","Noto Sans",system-ui,sans-serif}
+a{color:#047857}a:hover{color:#065F46}
+*{box-sizing:border-box}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:2px solid #047857;outline-offset:2px}
+.scroller{scrollbar-width:none}.scroller::-webkit-scrollbar{display:none}
+.iconbtn{width:44px;height:44px;border-radius:22px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;color:#1C1917;text-decoration:none}
+.step-dot{width:28px;height:28px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:2px solid #D6D3D1;background:#fff;color:#57534E;transition:background 220ms,border-color 220ms,color 220ms,transform 220ms cubic-bezier(.2,0,0,1)}
+.step-dot.cur{border-color:#047857;color:#047857;transform:scale(1.1)}
+.step-dot.done{background:#047857;border-color:#047857;color:#fff}
+.enterA{animation:enterA 300ms cubic-bezier(.05,.7,.1,1)}.enterB{animation:enterB 300ms cubic-bezier(.05,.7,.1,1)}
+@keyframes enterA{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+@keyframes enterB{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+.field{display:flex;flex-direction:column;gap:6px;position:relative}
+.field label{font-size:14px;font-weight:600}
+.input{height:48px;border-radius:12px;border:1.5px solid #E7E5E4;padding:0 14px;font-size:16px;font-family:inherit;background:#fff;color:#1C1917;width:100%;transition:border-color 160ms,box-shadow 160ms}
+.input:focus{outline:none;border-color:#047857;box-shadow:0 0 0 3px rgba(4,120,87,.15)}
+.input.bad{border-color:#DC2626}
+.err{font-size:13px;color:#B91C1C;display:flex;gap:6px;align-items:center}
+.shakeA{animation:shakeA 360ms}.shakeB{animation:shakeB 360ms}
+@keyframes shakeA{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes shakeB{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.listbox{position:absolute;left:0;right:0;top:78px;z-index:20;background:#fff;border:1px solid #E7E5E4;border-radius:12px;box-shadow:0 16px 40px -8px rgba(28,25,23,.18);max-height:220px;overflow-y:auto;padding:6px;animation:drop 200ms cubic-bezier(.05,.7,.1,1)}
+@keyframes drop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.opt{width:100%;min-height:44px;border:0;background:transparent;text-align:left;padding:0 12px;border-radius:8px;font-size:15px;color:#1C1917}
+.opt:hover,.opt:focus{background:#ECFDF5}
+.card{background:#fff;border:1px solid #E7E5E4;border-radius:16px}
+.choice{width:100%;border:1.5px solid #E7E5E4;background:#fff;border-radius:16px;padding:14px;display:flex;gap:12px;align-items:flex-start;text-align:left;color:#1C1917;transition:border-color 160ms,background 160ms,transform 100ms}
+.choice:active{transform:scale(.99)}
+.choice.on{border-color:#047857;background:#ECFDF5}
+.choice.off{opacity:.55;cursor:not-allowed}
+.radio{width:22px;height:22px;border-radius:11px;border:2px solid #A8A29E;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:border-color 160ms}
+.radio i{width:10px;height:10px;border-radius:5px;background:#047857;transform:scale(0);transition:transform 220ms cubic-bezier(.2,0,0,1)}
+.choice.on .radio{border-color:#047857}.choice.on .radio i{transform:scale(1)}
+.skel{border-radius:16px;height:76px;background:linear-gradient(90deg,#F5F5F4 0%,#FAFAF9 50%,#F5F5F4 100%);background-size:200% 100%;animation:shimmer 1.2s linear infinite}
+@keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+.sum .body{display:grid;grid-template-rows:0fr;transition:grid-template-rows 280ms cubic-bezier(.2,0,0,1)}
+.sum.open .body{grid-template-rows:1fr}
+.sum .inner{overflow:hidden}
+.sum .chev{transition:transform 220ms cubic-bezier(.2,0,0,1)}
+.sum.open .chev{transform:rotate(180deg)}
+.btn-cta{height:52px;padding:0 20px;border-radius:14px;border:0;background:#C2410C;color:#fff;font-weight:700;font-size:16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;transition:transform 100ms,background 160ms}
+.btn-cta:active{transform:scale(.97);background:#9A3412}.btn-cta:hover{color:#fff}
+.btn-ghost{height:52px;padding:0 18px;border-radius:14px;border:1.5px solid #1C1917;background:#fff;color:#1C1917;font-weight:700;font-size:15px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.btn-ghost:hover{color:#1C1917}
+.pulse{animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.12);opacity:.7}}
+.spin{animation:spin 900ms linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.qr{position:relative;display:grid;grid-template-columns:repeat(25,minmax(0,1fr));width:216px;height:216px;background:#fff;padding:0}
+.qr i{display:block}
+.qr i.k{background:#1C1917}
+.scan{position:absolute;left:-6px;right:-6px;height:3px;border-radius:2px;background:#047857;box-shadow:0 0 12px 2px rgba(4,120,87,.5);animation:scan 2.2s ease-in-out infinite}
+@keyframes scan{0%{top:0}50%{top:100%}100%{top:0}}
+.ring{transition:stroke-dashoffset 1000ms linear}
+.check path{stroke-dasharray:48;stroke-dashoffset:48;animation:draw 520ms 180ms cubic-bezier(.2,0,0,1) forwards}
+.check circle{transform-origin:center;animation:popc 420ms cubic-bezier(.2,0,0,1)}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes popc{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.confetti i{position:absolute;top:-20px;width:8px;height:12px;border-radius:2px;opacity:0;animation:fall 1200ms cubic-bezier(.2,0,.6,1) forwards}
+@keyframes fall{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(300px) rotate(540deg)}}
+.copy{height:36px;padding:0 12px;border-radius:8px;border:1px solid #E7E5E4;background:#fff;font-weight:600;font-size:13px;color:#047857}
+.rm *{animation:none !important;transition:none !important}.rm .check path{stroke-dashoffset:0}.rm .confetti{display:none}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}.check path{stroke-dashoffset:0}.confetti{display:none}.scan{display:none}}
+</style>
+<style data-vck-motion="v2">
+/* VCK motion layer v2 — docs/13 §4.6. Transform/opacity only; progressive (no support = static, fully visible). */
+:root{--dur-instant:100ms;--dur-fast:160ms;--dur-base:220ms;--dur-slow:320ms;--dur-expressive:480ms;--ease-std:cubic-bezier(.2,0,0,1);--ease-enter:cubic-bezier(.05,.7,.1,1);--ease-exit:cubic-bezier(.3,0,.8,.15)}
+/* MI-30 press + hover feedback (zero-specificity so page rules still win) */
+:where(.btn,.btn-cta,.btn-dark,.btn-out,.btn-outline,.btn-danger,.chip,.pill,.fbtn,.pg,.seg button,.tab,.nv,.nav,.mnav,.demo,.todo,.choice,.story,.sub,.tpl,.pnav,.rank,.sg,.rowopt,.mrow){transition:background-color var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast),box-shadow var(--dur-fast),transform var(--dur-instant) var(--ease-std)}
+:where(.btn,.btn-cta,.btn-dark,.btn-out,.btn-outline,.btn-danger,.chip,.pill,.fbtn,.pg,.demo,.choice,.story,.sub,.tpl,.mnav):active:not([aria-disabled=true]){transform:scale(.97)}
+:where(.card):is(a,button):hover{box-shadow:0 10px 28px -14px rgba(28,25,23,.28)}
+/* MI-31 staggered list enter (runs on mount) */
+.stg>*{animation:vckStg var(--dur-slow) var(--ease-enter) both}
+.stg>*:nth-child(2){animation-delay:40ms}.stg>*:nth-child(3){animation-delay:80ms}.stg>*:nth-child(4){animation-delay:120ms}.stg>*:nth-child(5){animation-delay:160ms}.stg>*:nth-child(6){animation-delay:200ms}.stg>*:nth-child(7){animation-delay:240ms}.stg>*:nth-child(n+8){animation-delay:280ms}
+@keyframes vckStg{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* back-to-top + reading progress default hidden state when scroll timelines are unsupported */
+.to-top{display:none}
+@media (prefers-reduced-motion: no-preference){
+@supports (animation-timeline: view()){
+  /* MI-25 scroll reveal: starts as the element enters, done at 20% coverage */
+  .sr-up{animation:vckUp linear both;animation-timeline:view();animation-range:entry 0% cover 20%}
+  .sr-fade{animation:vckFade linear both;animation-timeline:view();animation-range:entry 0% cover 20%}
+  .sr-scale{animation:vckScale linear both;animation-timeline:view();animation-range:entry 0% cover 25%}
+  .sr-left{animation:vckLeft linear both;animation-timeline:view();animation-range:entry 0% cover 22%}
+  .sr-right{animation:vckRight linear both;animation-timeline:view();animation-range:entry 0% cover 22%}
+  .sr-stg>*{animation:vckUp linear both;animation-timeline:view();animation-range:entry 0% cover 18%}
+  .sr-stg>*:nth-child(2){animation-range:entry 5% cover 22%}.sr-stg>*:nth-child(3){animation-range:entry 10% cover 26%}.sr-stg>*:nth-child(4){animation-range:entry 15% cover 30%}
+  /* MI-29 parallax: decorative layers only, never the LCP image */
+  .plx{animation:vckPlx linear both;animation-timeline:view();animation-range:cover}
+  .plx-slow{animation:vckPlxS linear both;animation-timeline:view();animation-range:cover}
+  /* MI-32 bar fill on view (stock / share bars) — scaleX */
+  .fill-x{transform-origin:0 50%;animation:vckFill linear both;animation-timeline:view();animation-range:entry 10% cover 30%}
+  /* MI-26 header elevation on scroll (desktop document scroll) */
+  .hdr-scroll{animation:vckHdr linear both;animation-timeline:scroll(root);animation-range:0 120px}
+  .hdr-scroll .hdr-logo{transform-origin:0 50%;animation:vckLogo linear both;animation-timeline:scroll(root);animation-range:0 120px}
+  /* MI-27 back-to-top + MI-28 reading progress (document scroll) */
+  .to-top{display:flex;animation:vckTop linear both;animation-timeline:scroll(root);animation-range:300px 700px}
+  .read-progress{transform-origin:0 50%;animation:vckGrow linear both;animation-timeline:scroll(root)}
+}
+@supports (timeline-scope: --pg){
+  /* Mobile frames: the inner scroller publishes --pg; siblings outside it read it */
+  .pg-scope{timeline-scope:--pg}
+  .pg-src{scroll-timeline:--pg block}
+  .hdr-m{animation:vckHdrM linear both;animation-timeline:--pg;animation-range:0 90px}
+  .to-top.m{display:flex;animation:vckTop linear both;animation-timeline:--pg;animation-range:280px 600px}
+  .read-progress.m{animation:vckGrow linear both;animation-timeline:--pg}
+}
+}
+@keyframes vckUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes vckFade{from{opacity:0}to{opacity:1}}
+@keyframes vckScale{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+@keyframes vckLeft{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+@keyframes vckRight{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes vckPlx{from{transform:translateY(-40px)}to{transform:translateY(40px)}}
+@keyframes vckPlxS{from{transform:translateY(24px) rotate(0deg)}to{transform:translateY(-24px) rotate(12deg)}}
+@keyframes vckFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes vckHdr{from{box-shadow:0 0 0 rgba(28,25,23,0);background-color:rgba(250,250,249,.94)}to{box-shadow:0 8px 24px -14px rgba(28,25,23,.35);background-color:rgba(255,255,255,.98)}}
+@keyframes vckLogo{to{transform:scale(.9)}}
+@keyframes vckHdrM{to{box-shadow:0 8px 20px -12px rgba(28,25,23,.35);background-color:rgba(255,255,255,.98)}}
+@keyframes vckTop{from{opacity:0;transform:translateY(16px) scale(.9);visibility:hidden}to{opacity:1;transform:none;visibility:visible}}
+@keyframes vckGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.to-top{position:fixed;right:24px;bottom:24px;z-index:45;width:48px;height:48px;border-radius:24px;border:0;background:#1C1917;color:#fff;align-items:center;justify-content:center;box-shadow:0 10px 24px -8px rgba(28,25,23,.45);text-decoration:none}
+.to-top:hover{background:#047857;color:#fff}
+.to-top.m{position:absolute;right:16px;bottom:88px;width:44px;height:44px;border-radius:22px}
+.read-progress{position:fixed;left:0;right:0;top:0;height:3px;background:#047857;z-index:60;transform:scaleX(0)}
+.read-progress.m{position:absolute}
+.rm .to-top,.rm .read-progress{animation:none !important}
+</style>
+
+</helmet>
+<div data-m-root="checkout" class="{{rootClass}} pg-scope" style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #FAFAF9; font-family: 'Be Vietnam Pro','Noto Sans',system-ui,sans-serif; color: #1C1917">
+
+<header style="position: absolute; top: 0; left: 0; right: 0; height: 56px; z-index: 30; background: #FAFAF9; border-bottom: 1px solid #E7E5E4; display: flex; align-items: center; padding: 0 6px; gap: 4px">
+<sc-if value="{{backToProduct}}" hint-placeholder-val="{{ true }}">
+<a class="iconbtn" href="MobileProduct.dc.html" aria-label="Quay lại sản phẩm"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+</sc-if>
+<sc-if value="{{backInFlow}}" hint-placeholder-val="{{ false }}">
+<button class="iconbtn" type="button" aria-label="Quay lại bước trước" onClick="{{goBack}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+</sc-if>
+<sc-if value="{{noBack}}" hint-placeholder-val="{{ false }}"><span style="width: 44px"></span></sc-if>
+<div style="flex-grow: 1; text-align: center; font-weight: 800; font-size: 18px; color: #064E3B; letter-spacing: -0.02em">VCK Shop</div>
+<span style="display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: #047857; padding-right: 10px">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>Bảo mật
+</span>
+</header>
+
+<div class="scroller pg-src" style="position: absolute; top: 56px; left: 0; right: 0; bottom: {{scrollBottom}}px; overflow-y: auto"><span id="top" aria-hidden="true" style="display: block; height: 0"></span>
+
+<sc-if value="{{showStepper}}" hint-placeholder-val="{{ true }}">
+<nav aria-label="Các bước thanh toán" style="padding: 16px 24px 8px">
+<div style="position: relative; display: flex; justify-content: space-between; align-items: center">
+<div style="position: absolute; left: 14px; right: 14px; top: 13px; height: 2px; background: #E7E5E4"></div>
+<div style="position: absolute; left: 14px; top: 13px; height: 2px; width: {{progressW}}; background: #047857; transition: width 320ms cubic-bezier(.2,0,0,1)"></div>
+<sc-for list="{{steps}}" as="st" hint-placeholder-count="3">
+<div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; width: 90px" aria-current="{{st.current}}">
+<span class="{{st.cls}}">
+<sc-if value="{{st.done}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></sc-if>
+<sc-if value="{{st.notDone}}" hint-placeholder-val="{{ true }}">{{st.n}}</sc-if>
+</span>
+<span style="font-size: 12px; font-weight: 600; color: {{st.color}}">{{st.label}}</span>
+</div>
+</sc-for>
+</div>
+</nav>
+
+<div class="{{sumClass}}" style="margin: 8px 16px 0; background: #ffffff; border: 1px solid #E7E5E4; border-radius: 16px">
+<button type="button" aria-expanded="{{sumExp}}" onClick="{{toggleSum}}" style="width: 100%; min-height: 56px; border: 0; background: transparent; display: flex; align-items: center; gap: 8px; padding: 0 16px; font-size: 14px; font-weight: 600; color: #1C1917">
+Tóm tắt đơn hàng ({{itemCount}})
+<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+<span style="margin-left: auto; font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums">{{totalLabel}}</span>
+</button>
+<div class="body"><div class="inner"><div style="padding: 0 16px 16px; display: flex; flex-direction: column; gap: 12px">
+<sc-for list="{{items}}" as="it" hint-placeholder-count="2">
+<div style="display: flex; gap: 12px; align-items: center">
+<div style="position: relative; width: 52px; height: 64px; border-radius: 10px; background: {{it.tone}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+<svg width="60%" height="60%" viewBox="0 0 32 32" fill="none" stroke="#1C1917" stroke-width="1.1" stroke-linejoin="round" aria-hidden="true"><path d="{{it.icon}}"></path></svg>
+<span style="position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 10px; background: #57534E; color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{it.qty}}</span>
+</div>
+<div style="flex-grow: 1; font-size: 13px"><div style="font-weight: 500">{{it.name}}</div><div style="color: #57534E">{{it.variant}}</div></div>
+<b style="font-size: 14px; font-variant-numeric: tabular-nums">{{it.priceLabel}}</b>
+</div>
+</sc-for>
+<div style="display: flex; gap: 8px">
+<label style="flex-grow: 1"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Mã giảm giá</span><input class="input" type="text" placeholder="Mã giảm giá (thử VCK10)" value="{{promo}}" onInput="{{onPromo}}" style="height: 44px; text-transform: uppercase"></label>
+<button type="button" onClick="{{applyPromo}}" style="height: 44px; padding: 0 14px; border-radius: 12px; border: 1.5px solid #1C1917; background: #fff; font-weight: 700">Áp dụng</button>
+</div>
+<sc-if value="{{promoMsgShow}}" hint-placeholder-val="{{ false }}"><div style="font-size: 13px; font-weight: 600; color: {{promoMsgColor}}" role="status">{{promoMsg}}</div></sc-if>
+<div style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; border-top: 1px solid #F5F5F4; padding-top: 12px">
+<div style="display: flex; justify-content: space-between"><span style="color: #57534E">Tạm tính</span><span style="font-variant-numeric: tabular-nums">{{subtotalLabel}}</span></div>
+<sc-if value="{{hasDiscount}}" hint-placeholder-val="{{ false }}"><div style="display: flex; justify-content: space-between; color: #047857"><span>Giảm giá (VCK10)</span><span style="font-variant-numeric: tabular-nums">−{{discountLabel}}</span></div></sc-if>
+<div style="display: flex; justify-content: space-between"><span style="color: #57534E">Vận chuyển</span><span style="font-variant-numeric: tabular-nums">{{shipLabel}}</span></div>
+<div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 16px"><span>Tổng cộng</span><span style="font-variant-numeric: tabular-nums">{{totalLabel}}</span></div>
+</div>
+</div></div></div>
+</div>
+</sc-if>
+
+<sc-if value="{{isInfo}}" hint-placeholder-val="{{ true }}">
+<section class="{{enterClass}}" aria-labelledby="h-info" style="padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<h1 id="h-info" style="margin: 0; font-size: 20px; color: #064E3B">Thông tin nhận hàng</h1>
+<button type="button" onClick="{{fillDemo}}" style="height: 36px; padding: 0 10px; border-radius: 8px; border: 1px dashed #A8A29E; background: transparent; font-size: 12px; font-weight: 600; color: #57534E">Điền dữ liệu mẫu</button>
+</div>
+<sc-if value="{{hasErrors}}" hint-placeholder-val="{{ false }}">
+<div role="alert" class="{{shakeClass}}" style="background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; border-radius: 12px; padding: 12px 14px; font-size: 14px; font-weight: 600">Vui lòng kiểm tra {{errorCount}} trường bên dưới.</div>
+</sc-if>
+<div class="field">
+<label for="f-name">Họ và tên</label>
+<input id="f-name" class="{{nameCls}}" type="text" autocomplete="name" value="{{f.name}}" onInput="{{onName}}" aria-invalid="{{nameInvalid}}" aria-describedby="e-name">
+<sc-if value="{{nameErr}}" hint-placeholder-val="{{ false }}"><div id="e-name" class="err">Vui lòng nhập họ tên người nhận</div></sc-if>
+</div>
+<div class="field">
+<label for="f-phone">Số điện thoại</label>
+<input id="f-phone" class="{{phoneCls}}" type="tel" inputmode="numeric" autocomplete="tel" placeholder="0901234567" value="{{f.phone}}" onInput="{{onPhone}}" aria-invalid="{{phoneInvalid}}" aria-describedby="e-phone">
+<sc-if value="{{phoneErr}}" hint-placeholder-val="{{ false }}"><div id="e-phone" class="err">Số điện thoại gồm 10 số, bắt đầu bằng 0</div></sc-if>
+</div>
+<div class="field">
+<label for="f-prov">Tỉnh / Thành phố</label>
+<input id="f-prov" class="{{provCls}}" type="text" role="combobox" aria-expanded="{{provOpen}}" aria-controls="lb-prov" aria-autocomplete="list" placeholder="Gõ để tìm, không cần dấu" value="{{provQuery}}" onInput="{{onProvInput}}" onFocus="{{openProv}}" onBlur="{{blurList}}">
+<sc-if value="{{provOpen}}" hint-placeholder-val="{{ false }}">
+<div id="lb-prov" class="listbox" role="listbox">
+<sc-for list="{{provOptions}}" as="o" hint-placeholder-count="4">
+<button class="opt" type="button" role="option" onMouseDown="{{o.pick}}">{{o.name}}</button>
+</sc-for>
+<sc-if value="{{provNone}}" hint-placeholder-val="{{ false }}"><div style="padding: 12px; font-size: 14px; color: #57534E">Không tìm thấy</div></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{provErr}}" hint-placeholder-val="{{ false }}"><div class="err">Chọn tỉnh / thành phố từ danh sách</div></sc-if>
+</div>
+<div class="field">
+<label for="f-ward">Phường / Xã</label>
+<input id="f-ward" class="{{wardCls}}" type="text" role="combobox" aria-expanded="{{wardOpen}}" aria-controls="lb-ward" aria-autocomplete="list" placeholder="{{wardPlaceholder}}" disabled="{{wardDisabled}}" value="{{wardQuery}}" onInput="{{onWardInput}}" onFocus="{{openWard}}" onBlur="{{blurList}}">
+<sc-if value="{{wardOpen}}" hint-placeholder-val="{{ false }}">
+<div id="lb-ward" class="listbox" role="listbox">
+<sc-for list="{{wardOptions}}" as="o" hint-placeholder-count="4">
+<button class="opt" type="button" role="option" onMouseDown="{{o.pick}}">{{o.name}}</button>
+</sc-for>
+<sc-if value="{{wardNone}}" hint-placeholder-val="{{ false }}"><div style="padding: 12px; font-size: 14px; color: #57534E">Không tìm thấy</div></sc-if>
+</div>
+</sc-if>
+<sc-if value="{{wardErr}}" hint-placeholder-val="{{ false }}"><div class="err">Chọn phường / xã từ danh sách</div></sc-if>
+</div>
+<div class="field">
+<label for="f-street">Số nhà, tên đường</label>
+<input id="f-street" class="{{streetCls}}" type="text" autocomplete="street-address" value="{{f.street}}" onInput="{{onStreet}}" aria-invalid="{{streetInvalid}}">
+<sc-if value="{{streetErr}}" hint-placeholder-val="{{ false }}"><div class="err">Vui lòng nhập số nhà, tên đường</div></sc-if>
+</div>
+<p style="margin: 0; font-size: 12px; color: #57534E">Địa chỉ theo mô hình 2 cấp (tỉnh → phường/xã). Danh sách ở đây là dữ liệu mẫu; bản thật lấy từ plugin địa chỉ.</p>
+</section>
+</sc-if>
+
+<sc-if value="{{isShip}}" hint-placeholder-val="{{ false }}">
+<section class="{{enterClass}}" aria-labelledby="h-ship" style="padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 12px">
+<h1 id="h-ship" style="margin: 0 0 4px; font-size: 20px; color: #064E3B">Phương thức vận chuyển</h1>
+<div class="card" style="padding: 12px 14px; font-size: 13px; color: #57534E">Giao đến: <b style="color: #1C1917">{{addressLine}}</b></div>
+<sc-if value="{{shipLoading}}" hint-placeholder-val="{{ false }}">
+<div aria-busy="true" aria-label="Đang lấy phí vận chuyển" style="display: flex; flex-direction: column; gap: 12px"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+</sc-if>
+<sc-if value="{{shipReady}}" hint-placeholder-val="{{ true }}">
+<div role="radiogroup" aria-label="Chọn vận chuyển" style="display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{quotes}}" as="q" hint-placeholder-count="3">
+<button class="{{q.cls}}" type="button" role="radio" aria-checked="{{q.sel}}" aria-disabled="{{q.dis}}" onClick="{{q.pick}}">
+<span class="radio"><i></i></span>
+<span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px">
+<span style="font-weight: 700; font-size: 15px">{{q.name}}</span>
+<span style="font-size: 13px; color: #57534E">{{q.eta}}</span>
+</span>
+<span style="font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums">{{q.feeLabel}}</span>
+</button>
+</sc-for>
+</div>
+<p style="margin: 4px 0 0; font-size: 12px; color: #57534E">Phí lấy trực tiếp từ hãng vận chuyển. Đơn từ 499.000 ₫ được miễn phí vận chuyển.</p>
+</sc-if>
+</section>
+</sc-if>
+
+<sc-if value="{{isPay}}" hint-placeholder-val="{{ false }}">
+<section class="{{enterClass}}" aria-labelledby="h-pay" style="padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 12px">
+<h1 id="h-pay" style="margin: 0 0 4px; font-size: 20px; color: #064E3B">Thanh toán</h1>
+<div role="radiogroup" aria-label="Chọn phương thức thanh toán" style="display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{pays}}" as="p" hint-placeholder-count="3">
+<button class="{{p.cls}}" type="button" role="radio" aria-checked="{{p.sel}}" onClick="{{p.pick}}">
+<span class="radio"><i></i></span>
+<span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px">
+<span style="font-weight: 700; font-size: 15px">{{p.name}}</span>
+<span style="font-size: 13px; color: #57534E; line-height: 1.45">{{p.desc}}</span>
+</span>
+<span style="font-size: 11px; font-weight: 800; letter-spacing: .02em; border: 1px solid #E7E5E4; border-radius: 6px; padding: 4px 6px; color: #1C1917; background: #fff">{{p.tag}}</span>
+</button>
+</sc-for>
+</div>
+<div class="card" style="padding: 12px 14px; font-size: 13px; color: #57534E; display: flex; gap: 10px; align-items: flex-start">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM8.5 12l2.5 2.5 4.5-5"></path></svg>
+<span>Đơn chỉ được xác nhận khi cửa hàng nhận được thông báo thanh toán từ cổng thanh toán hoặc ngân hàng.</span>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{isGateway}}" hint-placeholder-val="{{ false }}">
+<section class="{{enterClass}}" aria-labelledby="h-gw" style="padding: 32px 20px; display: flex; flex-direction: column; gap: 16px; align-items: center; text-align: center">
+<div style="width: 64px; height: 64px; border-radius: 32px; border: 4px solid #E7E5E4; border-top-color: #047857" class="spin" aria-hidden="true"></div>
+<h1 id="h-gw" style="margin: 0; font-size: 20px">Cổng thanh toán VNPay (mô phỏng)</h1>
+<p style="margin: 0; font-size: 14px; color: #57534E; line-height: 1.6">Trong bản thật, khách được chuyển sang trang VNPay. Chọn kết quả để mô phỏng hành trình quay lại cửa hàng.</p>
+<div class="card" style="width: 100%; padding: 14px; display: flex; justify-content: space-between; font-size: 14px"><span style="color: #57534E">Số tiền</span><b style="font-variant-numeric: tabular-nums">{{totalLabel}}</b></div>
+<button class="btn-cta" type="button" onClick="{{vnpSuccess}}" style="width: 100%">Mô phỏng: thanh toán thành công</button>
+<button class="btn-ghost" type="button" onClick="{{vnpCancel}}" style="width: 100%">Mô phỏng: huỷ thanh toán</button>
+</section>
+</sc-if>
+
+<sc-if value="{{isPending}}" hint-placeholder-val="{{ false }}">
+<section class="{{enterClass}}" role="status" aria-live="polite" style="padding: 48px 24px; display: flex; flex-direction: column; gap: 16px; align-items: center; text-align: center">
+<div class="pulse" style="width: 88px; height: 88px; border-radius: 44px; background: #FEF3C7; display: flex; align-items: center; justify-content: center">
+<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+</div>
+<h1 style="margin: 0; font-size: 20px">Đang xác nhận thanh toán…</h1>
+<p style="margin: 0; font-size: 14px; color: #57534E; line-height: 1.6">Cửa hàng đang chờ thông báo từ VNPay. Thường chỉ mất vài giây — bạn không cần thanh toán lại.</p>
+</section>
+</sc-if>
+
+<sc-if value="{{isCancelled}}" hint-placeholder-val="{{ false }}">
+<section class="{{enterClass}}" role="alert" style="padding: 40px 24px; display: flex; flex-direction: column; gap: 16px; align-items: center; text-align: center">
+<div style="width: 88px; height: 88px; border-radius: 44px; background: #F5F5F4; display: flex; align-items: center; justify-content: center">
+<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#57534E" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+</div>
+<h1 style="margin: 0; font-size: 20px">Bạn đã huỷ thanh toán</h1>
+<p style="margin: 0; font-size: 14px; color: #57534E; line-height: 1.6">Giỏ hàng vẫn được giữ nguyên. Bạn có thể thử lại hoặc chọn phương thức khác.</p>
+<button class="btn-cta" type="button" onClick="{{backToPay}}" style="width: 100%">Chọn lại phương thức thanh toán</button>
+</section>
+</sc-if>
+
+<sc-if value="{{isQr}}" hint-placeholder-val="{{ false }}">
+<section class="{{enterClass}}" aria-labelledby="h-qr" style="padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 14px; align-items: center">
+<h1 id="h-qr" style="margin: 0; font-size: 20px; color: #064E3B">Quét mã VietQR để thanh toán</h1>
+<div style="position: relative; padding: 16px; background: #ffffff; border-radius: 20px; border: 1px solid #E7E5E4; box-shadow: 0 6px 16px -4px rgba(28,25,23,.12)">
+<div class="qr" role="img" aria-label="Mã QR chuyển khoản (mô phỏng)">
+<sc-for list="{{qrCells}}" as="c" hint-placeholder-count="625"><i class="{{c}}"></i></sc-for>
+<sc-if value="{{qrWaiting}}" hint-placeholder-val="{{ true }}"><span class="scan" aria-hidden="true"></span></sc-if>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px">
+<svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="none" stroke="#E7E5E4" stroke-width="4"></circle><circle class="ring" cx="22" cy="22" r="18" fill="none" stroke="#047857" stroke-width="4" stroke-linecap="round" stroke-dasharray="113.1" stroke-dashoffset="{{ringOffset}}" transform="rotate(-90 22 22)"></circle></svg>
+<div role="timer" aria-live="off"><div style="font-size: 13px; color: #57534E">Mã hết hạn sau</div><div style="font-weight: 800; font-size: 20px; font-variant-numeric: tabular-nums">{{qrTime}}</div></div>
+</div>
+<div class="card" style="width: 100%; padding: 4px 14px; font-size: 14px">
+<div style="display: flex; justify-content: space-between; align-items: center; min-height: 48px; border-bottom: 1px solid #F5F5F4"><span style="color: #57534E">Ngân hàng</span><b>[Tên ngân hàng]</b></div>
+<div style="display: flex; justify-content: space-between; align-items: center; min-height: 48px; border-bottom: 1px solid #F5F5F4"><span style="color: #57534E">Số tài khoản</span><span style="display: flex; gap: 8px; align-items: center"><b>[Số tài khoản]</b></span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; min-height: 48px; border-bottom: 1px solid #F5F5F4"><span style="color: #57534E">Số tiền</span><span style="display: flex; gap: 8px; align-items: center"><b style="font-variant-numeric: tabular-nums">{{totalLabel}}</b><button class="copy" type="button" onClick="{{copyAmount}}">{{copyAmountLabel}}</button></span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; min-height: 48px"><span style="color: #57534E">Nội dung</span><span style="display: flex; gap: 8px; align-items: center"><b style="color: #C2410C; letter-spacing: .04em">{{memo}}</b><button class="copy" type="button" onClick="{{copyMemo}}">{{copyMemoLabel}}</button></span></div>
+</div>
+<p style="margin: 0; font-size: 12px; color: #57534E; text-align: center">Giữ nguyên nội dung chuyển khoản để đơn được xác nhận tự động.</p>
+<sc-if value="{{qrReceived}}" hint-placeholder-val="{{ false }}">
+<div role="status" style="width: 100%; background: #ECFDF5; color: #064E3B; border-radius: 12px; padding: 12px 14px; font-weight: 700; font-size: 14px; display: flex; gap: 8px; align-items: center"><span class="spin" style="width: 16px; height: 16px; border-radius: 8px; border: 2px solid #A7F3D0; border-top-color: #047857"></span>Đã nhận chuyển khoản, đang hoàn tất đơn…</div>
+</sc-if>
+</section>
+</sc-if>
+
+<sc-if value="{{isSuccess}}" hint-placeholder-val="{{ false }}">
+<section aria-labelledby="h-ok" style="position: relative; padding: 36px 20px 24px; display: flex; flex-direction: column; gap: 14px; align-items: center; text-align: center">
+<div class="confetti" aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden; pointer-events: none">
+<sc-for list="{{confetti}}" as="c" hint-placeholder-count="14"><i style="left: {{c.x}}; background: {{c.color}}; animation-delay: {{c.delay}}"></i></sc-for>
+</div>
+<svg class="check" width="96" height="96" viewBox="0 0 96 96" aria-hidden="true"><circle cx="48" cy="48" r="44" fill="#ECFDF5" stroke="#047857" stroke-width="3"></circle><path d="M30 49l12 12 24-26" fill="none" stroke="#047857" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<h1 id="h-ok" style="margin: 0; font-size: 24px; color: #064E3B">Đặt hàng thành công!</h1>
+<p style="margin: 0; font-size: 14px; color: #57534E; line-height: 1.6">Cảm ơn bạn. Xác nhận đơn đã được gửi qua email và Zalo.</p>
+<div class="card" style="width: 100%; padding: 4px 16px; font-size: 14px; text-align: left">
+<div style="display: flex; justify-content: space-between; min-height: 46px; align-items: center; border-bottom: 1px solid #F5F5F4"><span style="color: #57534E">Mã đơn hàng</span><b tabindex="-1" style="letter-spacing: .03em">{{orderNo}}</b></div>
+<div style="display: flex; justify-content: space-between; min-height: 46px; align-items: center; border-bottom: 1px solid #F5F5F4"><span style="color: #57534E">Thanh toán</span><b>{{paidText}}</b></div>
+<div style="display: flex; justify-content: space-between; min-height: 46px; align-items: center; border-bottom: 1px solid #F5F5F4"><span style="color: #57534E">Vận chuyển</span><b>{{shipName}}</b></div>
+<div style="display: flex; justify-content: space-between; min-height: 46px; align-items: center"><span style="color: #57534E">Tổng cộng</span><b style="font-variant-numeric: tabular-nums">{{totalLabel}}</b></div>
+</div>
+<div class="card" style="width: 100%; padding: 14px 16px; text-align: left">
+<div style="font-weight: 700; font-size: 14px; margin-bottom: 10px">Hành trình đơn hàng</div>
+<div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px">
+<div style="display: flex; gap: 10px; align-items: center"><span style="width: 12px; height: 12px; border-radius: 6px; background: #047857"></span><b>Đã đặt hàng</b><span style="margin-left: auto; color: #57534E">Vừa xong</span></div>
+<div style="display: flex; gap: 10px; align-items: center; color: #57534E"><span style="width: 12px; height: 12px; border-radius: 6px; border: 2px solid #D6D3D1"></span>Đang chuẩn bị hàng</div>
+<div style="display: flex; gap: 10px; align-items: center; color: #57534E"><span style="width: 12px; height: 12px; border-radius: 6px; border: 2px solid #D6D3D1"></span>Giao cho {{carrierShort}} · dự kiến {{etaText}}</div>
+</div>
+</div>
+<a class="btn-cta" href="MobileAccount.dc.html" style="width: 100%">Theo dõi đơn hàng</a>
+<a class="btn-ghost" href="MobileHome.dc.html" style="width: 100%">Tiếp tục mua sắm</a>
+<button type="button" onClick="{{restart}}" style="height: 44px; border: 0; background: transparent; color: #57534E; font-size: 13px; text-decoration: underline">Chạy lại luồng demo</button>
+</section>
+</sc-if>
+</div>
+
+<sc-if value="{{showBar}}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 40; background: rgba(255,255,255,.97); backdrop-filter: blur(8px); border-top: 1px solid #E7E5E4; padding: 12px 16px 20px; display: flex; gap: 12px; align-items: center">
+<div style="display: flex; flex-direction: column"><span style="font-size: 12px; color: #57534E">Tổng cộng</span><b style="font-size: 18px; font-variant-numeric: tabular-nums">{{totalLabel}}</b></div>
+<button class="btn-cta" type="button" onClick="{{primaryAction}}" aria-disabled="{{primaryDisabled}}" style="flex-grow: 1; opacity: {{primaryOpacity}}">{{primaryLabel}}</button>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"reduceMotion":{"editor":"boolean","default":false,"section":"Chuyển động"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = this.initial();
+  }
+  initial() {
+    return { step: 'info', n: 0, f: { name: '', phone: '', prov: null, ward: null, street: '' }, provQuery: '', wardQuery: '', open: null,
+      submitted: false, shake: 0, sumOpen: false, promo: '', promoOk: false, promoMsg: '', ship: 'ghn-std', shipLoading: false,
+      pay: 'cod', qrLeft: 1800, qrReceived: false, copied: '', orderNo: '', paidVia: '' };
+  }
+  componentWillUnmount() { this.clearTimers(); }
+  clearTimers() { clearTimeout(this.t1); clearTimeout(this.t2); clearTimeout(this.t3); clearInterval(this.qrI); }
+  vnd(n) { return n.toLocaleString('vi-VN') + ' ₫'; }
+  norm(s) { return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase().trim(); }
+  go(step, extra) { this.setState({ step, n: this.state.n + 1, ...(extra || {}) }); }
+  errors() {
+    const f = this.state.f, e = {};
+    if (!f.name.trim()) e.name = 1;
+    if (!/^0\d{9}$/.test(f.phone)) e.phone = 1;
+    if (!f.prov) e.prov = 1;
+    if (!f.ward) e.ward = 1;
+    if (!f.street.trim()) e.street = 1;
+    return e;
+  }
+  orderNumber() { const d = new Date(); return 'VCK' + String(d.getFullYear()).slice(2) + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '-' + Math.random().toString(36).slice(2, 6).toUpperCase(); }
+  success(via) { this.clearTimers(); this.go('success', { orderNo: this.orderNumber(), paidVia: via }); }
+  renderVals() {
+    const s = this.state;
+    const reduced = !!this.props.reduceMotion;
+    const DATA = {
+      'TP. Hồ Chí Minh': ['Phường Sài Gòn', 'Phường Bến Thành', 'Phường Tân Định', 'Phường Bình Thạnh', 'Phường Thủ Đức'],
+      'Hà Nội': ['Phường Hoàn Kiếm', 'Phường Ba Đình', 'Phường Cửa Nam', 'Phường Tây Hồ'],
+      'Đà Nẵng': ['Phường Hải Châu', 'Phường Sơn Trà', 'Phường An Hải'],
+      'Cần Thơ': ['Phường Ninh Kiều', 'Phường Cái Răng'],
+      'Hải Phòng': ['Phường Hồng Bàng', 'Phường Lê Chân'],
+      'Khánh Hòa': ['Phường Nha Trang', 'Phường Cam Ranh']
+    };
+    const items = [
+      { name: 'Áo thun oversize cotton 250gsm', variant: 'Đen · L', qty: 1, price: 259000, tone: '#D6D3D1', icon: 'M9 5l5-2h4l5 2 5 5-3.5 3.5L22 12v16H10V12l-2.5 1.5L4 10z' },
+      { name: 'Túi tote canvas dày dặn', variant: 'Be', qty: 1, price: 179000, tone: '#FED7AA', icon: 'M7 12h18l-1.6 15H8.6zM12 12V9a4 4 0 0 1 8 0v3' }
+    ];
+    const subtotal = items.reduce((a, i) => a + i.qty * i.price, 0);
+    const discount = s.promoOk ? Math.round(subtotal * 0.1 / 1000) * 1000 : 0;
+    const eta = (a, b) => { const d1 = new Date(), d2 = new Date(); d1.setDate(d1.getDate() + a); d2.setDate(d2.getDate() + b); const f = (d) => String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0'); return f(d1) + ' – ' + f(d2); };
+    const QUOTES = [
+      { k: 'ghn-std', name: 'GHN · Chuẩn', fee: 32000, eta: 'Dự kiến ' + eta(2, 4), short: 'GHN', ok: true },
+      { k: 'ghn-fast', name: 'GHN · Nhanh', fee: 45000, eta: 'Dự kiến ' + eta(1, 2), short: 'GHN', ok: true },
+      { k: 'flat', name: 'Đồng giá toàn quốc', fee: 35000, eta: 'Dự kiến ' + eta(3, 5), short: 'đơn vị vận chuyển', ok: true },
+      { k: 'ghtk', name: 'GHTK', fee: 0, eta: 'Tạm thời không lấy được phí, vui lòng chọn hãng khác', short: 'GHTK', ok: false }
+    ];
+    const Q = QUOTES.find((q) => q.k === s.ship) || QUOTES[0];
+    const shipFee = subtotal - discount >= 499000 ? 0 : Q.fee;
+    const shipKnown = s.step !== 'info';
+    const total = subtotal - discount + (shipKnown ? shipFee : 0);
+    const e = this.errors();
+    const showE = s.submitted;
+    const errCount = Object.keys(e).length;
+    const provNames = Object.keys(DATA);
+    const pq = this.norm(s.provQuery);
+    const provOptions = provNames.filter((n) => !pq || this.norm(n).includes(pq)).map((n) => ({ name: n, pick: () => this.setState({ f: { ...s.f, prov: n, ward: null }, provQuery: n, wardQuery: '', open: null }) }));
+    const wq = this.norm(s.wardQuery);
+    const wardOptions = s.f.prov ? DATA[s.f.prov].filter((n) => !wq || this.norm(n).includes(wq)).map((n) => ({ name: n, pick: () => this.setState({ f: { ...s.f, ward: n }, wardQuery: n, open: null }) })) : [];
+    const stepIdx = { info: 0, ship: 1, pay: 2 }[s.step];
+    const inFlow = stepIdx !== undefined;
+    const steps = ['Thông tin', 'Vận chuyển', 'Thanh toán'].map((label, i) => ({ label, n: i + 1, done: i < stepIdx, notDone: !(i < stepIdx),
+      cls: 'step-dot' + (i < stepIdx ? ' done' : (i === stepIdx ? ' cur' : '')), current: i === stepIdx ? 'step' : 'false', color: i <= stepIdx ? '#1C1917' : '#57534E' }));
+    const PAYS = [
+      { k: 'cod', name: 'Thanh toán khi nhận hàng (COD)', desc: 'Trả tiền mặt cho shipper khi nhận hàng.', tag: 'COD' },
+      { k: 'vnpay', name: 'VNPay', desc: 'Thẻ ATM, thẻ quốc tế hoặc QR ngân hàng qua cổng VNPay.', tag: 'VNPAY' },
+      { k: 'vietqr', name: 'Chuyển khoản VietQR', desc: 'Quét mã bằng app ngân hàng bất kỳ, xác nhận tự động.', tag: 'QR' }
+    ];
+    const memo = 'VCK' + (s.orderNo ? s.orderNo.slice(-4) : 'A7K2') + 'M9QX';
+    let seed = 7; const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const qrCells = [];
+    for (let y = 0; y < 25; y++) for (let x = 0; x < 25; x++) {
+      const inF = (fx, fy) => x >= fx && x < fx + 7 && y >= fy && y < fy + 7;
+      let on;
+      const F = [[0, 0], [18, 0], [0, 18]].find(([fx, fy]) => inF(fx, fy));
+      if (F) { const dx = x - F[0], dy = y - F[1]; on = dx === 0 || dx === 6 || dy === 0 || dy === 6 || (dx >= 2 && dx <= 4 && dy >= 2 && dy <= 4); }
+      else if ((x === 7 || y === 7 || x === 17 || y === 17) && (x < 8 && y < 8 || x > 16 && y < 8 || x < 8 && y > 16)) on = false;
+      else on = rnd() > 0.52;
+      qrCells.push(on ? 'k' : '');
+    }
+    const mm = String(Math.floor(s.qrLeft / 60)).padStart(2, '0'), ss = String(s.qrLeft % 60).padStart(2, '0');
+    const colors = ['#047857', '#EA580C', '#F59E0B', '#1C1917', '#A7F3D0'];
+    const confetti = Array.from({ length: 14 }, (_, i) => ({ x: (6 + i * 6.5) + '%', color: colors[i % 5], delay: (i % 5) * 90 + 'ms' }));
+    const startShip = () => { this.go('ship', { shipLoading: true, open: null }); clearTimeout(this.t1); this.t1 = setTimeout(() => this.setState({ shipLoading: false }), reduced ? 0 : 900); };
+    const place = () => {
+      if (s.pay === 'cod') this.success('Thanh toán khi nhận hàng');
+      else if (s.pay === 'vnpay') this.go('gateway');
+      else {
+        this.go('vietqr', { qrLeft: 1800, qrReceived: false, copied: '' });
+        clearInterval(this.qrI); this.qrI = setInterval(() => this.setState({ qrLeft: Math.max(0, this.state.qrLeft - 1) }), 1000);
+      }
+    };
+    const labels = { info: 'Tiếp tục đến vận chuyển', ship: 'Tiếp tục đến thanh toán', pay: s.pay === 'cod' ? 'Đặt hàng' : (s.pay === 'vnpay' ? 'Thanh toán qua VNPay' : 'Tạo mã VietQR'), vietqr: 'Mô phỏng: tôi đã chuyển khoản' };
+    const primary = {
+      info: () => { if (errCount) { this.setState({ submitted: true, shake: s.shake + 1 }); return; } startShip(); },
+      ship: () => { if (!s.shipLoading) this.go('pay'); },
+      pay: place,
+      vietqr: () => { if (s.qrReceived) return; this.setState({ qrReceived: true }); clearTimeout(this.t2); this.t2 = setTimeout(() => this.success('Chuyển khoản VietQR'), reduced ? 300 : 1600); }
+    };
+    const cls = (bad) => 'input' + (showE && bad ? ' bad' : '');
+    return {
+      rootClass: reduced ? 'rm' : '',
+      backToProduct: s.step === 'info', backInFlow: ['ship', 'pay', 'vietqr', 'gateway', 'cancelled'].includes(s.step), noBack: ['pending', 'success'].includes(s.step),
+      goBack: () => { this.clearTimers(); const prev = { ship: 'info', pay: 'ship', vietqr: 'pay', gateway: 'pay', cancelled: 'pay' }[s.step]; this.go(prev); },
+      showStepper: inFlow, steps, progressW: stepIdx === 0 ? '0%' : (stepIdx === 1 ? 'calc(50% - 14px)' : 'calc(100% - 28px)'),
+      sumClass: 'sum' + (s.sumOpen ? ' open' : ''), sumExp: s.sumOpen ? 'true' : 'false', toggleSum: () => this.setState({ sumOpen: !s.sumOpen }),
+      itemCount: items.reduce((a, i) => a + i.qty, 0),
+      items: items.map((i) => ({ ...i, priceLabel: this.vnd(i.qty * i.price) })),
+      promo: s.promo, onPromo: (ev) => this.setState({ promo: (ev && ev.target ? ev.target.value : '').toUpperCase() }),
+      applyPromo: () => { const ok = s.promo.trim() === 'VCK10'; this.setState({ promoOk: ok, promoMsg: ok ? 'Đã áp dụng mã giảm 10%' : 'Mã không hợp lệ hoặc đã hết hạn' }); },
+      promoMsgShow: !!s.promoMsg, promoMsg: s.promoMsg, promoMsgColor: s.promoOk ? '#047857' : '#B91C1C',
+      hasDiscount: discount > 0, discountLabel: this.vnd(discount),
+      subtotalLabel: this.vnd(subtotal), shipLabel: shipKnown ? (shipFee === 0 ? 'Miễn phí' : this.vnd(shipFee)) : 'Tính ở bước sau',
+      totalLabel: this.vnd(total),
+      enterClass: reduced ? '' : (s.n % 2 ? 'enterA' : 'enterB'),
+      isInfo: s.step === 'info', isShip: s.step === 'ship', isPay: s.step === 'pay', isGateway: s.step === 'gateway',
+      isPending: s.step === 'pending', isCancelled: s.step === 'cancelled', isQr: s.step === 'vietqr', isSuccess: s.step === 'success',
+      fillDemo: () => this.setState({ f: { name: 'Nguyễn Văn A', phone: '0900000123', prov: 'TP. Hồ Chí Minh', ward: 'Phường Bến Thành', street: '[Số nhà], [tên đường]' }, provQuery: 'TP. Hồ Chí Minh', wardQuery: 'Phường Bến Thành' }),
+      hasErrors: showE && errCount > 0, errorCount: errCount, shakeClass: reduced || !s.shake ? '' : (s.shake % 2 ? 'shakeA' : 'shakeB'),
+      f: s.f,
+      onName: (ev) => this.setState({ f: { ...s.f, name: ev.target.value } }),
+      onPhone: (ev) => this.setState({ f: { ...s.f, phone: ev.target.value.replace(/[^0-9]/g, '').slice(0, 10) } }),
+      onStreet: (ev) => this.setState({ f: { ...s.f, street: ev.target.value } }),
+      nameCls: cls(e.name), phoneCls: cls(e.phone), provCls: cls(e.prov), wardCls: cls(e.ward), streetCls: cls(e.street),
+      nameErr: showE && !!e.name, phoneErr: showE && !!e.phone, provErr: showE && !!e.prov, wardErr: showE && !!e.ward, streetErr: showE && !!e.street,
+      nameInvalid: showE && e.name ? 'true' : 'false', phoneInvalid: showE && e.phone ? 'true' : 'false', streetInvalid: showE && e.street ? 'true' : 'false',
+      provQuery: s.provQuery, wardQuery: s.wardQuery,
+      onProvInput: (ev) => this.setState({ provQuery: ev.target.value, open: 'prov', f: { ...s.f, prov: null, ward: null }, wardQuery: '' }),
+      onWardInput: (ev) => this.setState({ wardQuery: ev.target.value, open: 'ward', f: { ...s.f, ward: null } }),
+      openProv: () => this.setState({ open: 'prov' }), openWard: () => this.setState({ open: 'ward' }),
+      blurList: () => { clearTimeout(this.t3); this.t3 = setTimeout(() => this.setState({ open: null }), 120); },
+      provOpen: s.open === 'prov', wardOpen: s.open === 'ward' && !!s.f.prov,
+      provOptions, wardOptions, provNone: provOptions.length === 0, wardNone: wardOptions.length === 0,
+      wardDisabled: !s.f.prov, wardPlaceholder: s.f.prov ? 'Gõ để tìm, không cần dấu' : 'Chọn tỉnh / thành phố trước',
+      addressLine: [s.f.street, s.f.ward, s.f.prov].filter(Boolean).join(', '),
+      shipLoading: s.shipLoading, shipReady: !s.shipLoading,
+      quotes: QUOTES.map((q) => ({ ...q, feeLabel: q.ok ? (subtotal - discount >= 499000 ? 'Miễn phí' : this.vnd(q.fee)) : '—', sel: q.k === s.ship ? 'true' : 'false', dis: q.ok ? 'false' : 'true',
+        cls: 'choice' + (q.k === s.ship ? ' on' : '') + (q.ok ? '' : ' off'), pick: () => { if (q.ok) this.setState({ ship: q.k }); } })),
+      pays: PAYS.map((p) => ({ ...p, sel: p.k === s.pay ? 'true' : 'false', cls: 'choice' + (p.k === s.pay ? ' on' : ''), pick: () => this.setState({ pay: p.k }) })),
+      vnpSuccess: () => { this.go('pending'); clearTimeout(this.t1); this.t1 = setTimeout(() => this.success('VNPay'), reduced ? 400 : 2600); },
+      vnpCancel: () => this.go('cancelled'),
+      backToPay: () => this.go('pay'),
+      qrCells, qrTime: mm + ':' + ss, ringOffset: (113.1 * (1 - s.qrLeft / 1800)).toFixed(1),
+      qrWaiting: !s.qrReceived, qrReceived: s.qrReceived, memo,
+      copyAmount: () => this.setState({ copied: 'amount' }), copyMemo: () => this.setState({ copied: 'memo' }),
+      copyAmountLabel: s.copied === 'amount' ? 'Đã chép' : 'Sao chép', copyMemoLabel: s.copied === 'memo' ? 'Đã chép' : 'Sao chép',
+      confetti, orderNo: s.orderNo, paidText: s.paidVia, shipName: Q.name, carrierShort: Q.short, etaText: Q.eta.replace('Dự kiến ', ''),
+      restart: () => { this.clearTimers(); this.setState(this.initial()); },
+      showBar: ['info', 'ship', 'pay', 'vietqr'].includes(s.step) && !(s.step === 'vietqr' && s.qrReceived),
+      scrollBottom: ['info', 'ship', 'pay', 'vietqr'].includes(s.step) ? 84 : 0,
+      primaryLabel: labels[s.step] || '', primaryAction: primary[s.step] || (() => {}),
+      primaryDisabled: s.step === 'ship' && s.shipLoading ? 'true' : 'false', primaryOpacity: s.step === 'ship' && s.shipLoading ? 0.6 : 1
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -3,14 +3,33 @@
   "globalDependencies": [
     "tsconfig.base.json",
     "eslint.config.mjs",
-    "design-system/vn-commerce-kit/MASTER.md",
-    "docs/13-ux-design-and-motion.md"
+    "design-system/vn-commerce-kit/MASTER.md"
   ],
   "tasks": {
-    "build": { "dependsOn": ["^build"], "outputs": ["dist/**", ".next/**", "!.next/cache/**", ".medusa/**"] },
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**",
+        ".medusa/**"
+      ]
+    },
     "lint": {},
-    "typecheck": { "dependsOn": ["^typecheck"] },
-    "test": { "dependsOn": ["^build"] },
-    "test:integration": { "cache": false }
+    "typecheck": {
+      "dependsOn": [
+        "^typecheck"
+      ]
+    },
+    "test": {
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "test:integration": {
+      "cache": false
+    }
   }
 }

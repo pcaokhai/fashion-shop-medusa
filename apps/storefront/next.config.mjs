@@ -1,5 +1,3 @@
-import { PHASE_DEVELOPMENT_SERVER } from "next/constants.js";
-
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   // e2e builds the production bundle into its own dir so it never clobbers the dev server's .next
@@ -12,8 +10,4 @@ const nextConfig = {
   agentRules: false,
 };
 
-// R-009-25: `page.dev.tsx` (the /_design route) is a page only under `next dev`; build/start never see the file.
-export default (phase) => ({
-  ...nextConfig,
-  pageExtensions: phase === PHASE_DEVELOPMENT_SERVER ? ["tsx", "ts", "dev.tsx"] : ["tsx", "ts"],
-});
+export default () => nextConfig;

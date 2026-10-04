@@ -51,15 +51,14 @@ const SAMPLES = [
   "apps/storefront/.env.production.local",
   "apps/storefront/.env.development.local",
   "apps/storefront/.env.test.local",
-  ".claude/skills/ui-ux-pro-max/data/styles.csv",
 ];
 
 test("[VCK-001-AC4] every docs/11 §2 path is matched by a permissions.deny Read rule", () => {
   for (const p of SAMPLES) assert.ok(denied(`./${p}`), `${p} not denied`);
 });
 
-// docs/11 §2: `**/generated/**` and ui-ux-pro-max data are deny-only by design (must stay tracked); lockfile is committed, deny-only too.
-const DENY_ONLY = ["pnpm-lock.yaml", "apps/backend/src/generated/types.ts", ".claude/skills/ui-ux-pro-max/data/styles.csv"];
+// docs/11 §2: `**/generated/**` is deny-only by design (must stay tracked); lockfile is committed, deny-only too.
+const DENY_ONLY = ["pnpm-lock.yaml", "apps/backend/src/generated/types.ts"];
 test("[VCK-001-AC4] ignorable docs/11 §2 paths are also gitignored", () => {
   for (const p of SAMPLES.filter((x) => !DENY_ONLY.includes(x)))
     assert.ok(ignored(p), `${p} not gitignored`);

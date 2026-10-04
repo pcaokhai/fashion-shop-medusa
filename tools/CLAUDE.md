@@ -1,28 +1,16 @@
 # tools — CLAUDE.md
-Operational tooling owned by lane **PLAT**: realistic/stress data seeding, load tests, chaos scenarios and provider simulators.
-
-## Layout
-```
-tools/seed/        TS CLI (faker vi) — modes: realistic | stress; deterministic via --seed
-tools/load/        k6 scenarios (browse, search, checkout, flash-sale) + thresholds
-tools/chaos/       scripts that inject faults (duplicate/out-of-order IPN, worker kill, carrier latency via toxiproxy)
-tools/sims/vnpay/  VNPay simulator: pay page, IPN sender with fault modes, querydr/refund API
-tools/sims/ghn/    GHN simulator: fee/create/cancel + webhook replayer
-```
+Developer tooling owned by lane **BE**: `tools/seed` (seed engine) and `tools/sims` (VNPay and GHN simulators).
 
 ## Rules
-- Seed: base catalogue/customers through Medusa workflows (consistency); historical orders via bulk COPY into a staging
-  schema then a verified insert step; always finish with `make seed-verify` (docs/08 §4).
-- Seed data is synthetic: names from faker `vi`, phones `0900000xxx`, emails `@example.test`, addresses from real admin units only.
-- Scenarios are declarative (YAML) so new ones need no code; each states the invariant it checks.
-- Simulators implement the documented behaviour in docs/03 and reproduce `contracts/vnpay/golden-vectors.json`.
-- Never point tools at production. `--target` must match an allow-list (`local`, `staging`).
+- Seed data is synthetic and deterministic (fixed seed, fixed names): B1a 60 products, B1b 900, categories, demo customer.
+  Never real names, phones, addresses, card or bank data. `make seed` is idempotent and finishes in under 10 minutes.
+- Product photos: ≥ 60 images from sources whose licence allows commercial use, kept in `tools/seed/assets/`, reused across
+  products with resized variants; every source and licence is recorded in `tools/seed/ASSETS.md`. No brand photos.
+- `make record-fixtures` (task B1) records the Medusa Store API responses the storefront uses from the seeded backend into
+  `contracts/fixtures/medusa/`; recorded files replace hand-written ones with the same names.
+- Simulators implement only what `contracts/` and `contracts/vnpay/golden-vectors.json` describe: signed IPN, return URL,
+  `querydr`, refund; GHN status webhook. Failure modes (late, duplicate, wrong signature) are switches, not code forks.
+- Seed output (`tools/seed/out/`) and dumps are never read or committed.
 
 ## Commands
-```
-make seed-realistic      # ~900 products / ~4k variants / 20k customers / 100k orders over 12 months
-make seed-stress         # 50k products / 1M orders (staging only; ~40 GB disk budget)
-make seed-verify         # integrity checks (orphans, totals, stock, link tables)
-make load SCENARIO=flash-sale
-make chaos SCENARIO=ipn-duplicate
-```
+`make seed` · `make seed-verify` · `make record-fixtures` · `make up | down` (simulators start with the infra)

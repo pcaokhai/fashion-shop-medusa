@@ -1,114 +1,75 @@
-# CLAUDE.md — VN Commerce Kit
+# CLAUDE.md — VN Commerce Kit (SHIP MODE v3.1)
 
-Production-grade Vietnamese e-commerce starter: Medusa v2 backend + admin, Next.js storefront, and reusable
-VN plugins (VNPay, VietQR, GHN, 2-tier addresses, Zalo ZNS). Flow: storefront → Medusa Store API + custom
-routes → workflows → modules/plugins → PostgreSQL/Redis/search; providers call back via `/hooks/*`.
-
-This file loads in every session. Keep it short. Read the doc that matches your task — only the section you need.
+Vietnamese e-commerce store for an SME (~900 products): Medusa v2 backend + stock admin, Next.js storefront, and the
+reusable VN pieces (VNPay, VN addresses, accent-insensitive search). Goal: a public demo a client can click through end
+to end (browse → search → cart → checkout COD or VNPay sandbox) that **looks finished**: the storefront is what a
+prospect sees first, so UI quality comes before secondary flows. One person (Khai) plus parallel Claude Code sessions;
+Khai reads diffs only for money, payment truth and private data. Keep this file short; read only what your task needs.
 
 ## 1. Repository map
 ```
-apps/backend/        Medusa v2 server+worker, custom modules, workflows, API   → apps/backend/CLAUDE.md
-  src/admin/, src/api/admin/   Admin dashboard extensions (lane ADM)            → apps/backend/CLAUDE.md §ADM
-apps/storefront/     Next.js App Router storefront                              → apps/storefront/CLAUDE.md
-packages/            Reusable Medusa plugins (medusa-*-vck), ui-kit             → packages/CLAUDE.md
-tools/               seed, load (k6), chaos, provider simulators                → tools/CLAUDE.md
-design-system/       Curated UI UX Pro Max output: MASTER.md + pages/*.md (lane WEB)
-contracts/           openapi.yaml, event schemas, fixtures, VNPay vectors (normative)
-infra/               docker compose, deploy, terraform (reference)
-docs/                PRD, architecture, stories, plans, ADR, PROGRESS, BUG, RELEASE
+apps/backend/      Medusa v2 server + worker, modules, workflows, API routes, VNPay provider   lane BE
+apps/storefront/   Next.js App Router: Tailwind v4 + shadcn/ui + Motion; data layer real|mock   lanes WEB-1, WEB-2
+packages/ui-kit/   Design tokens only (mapped into the shadcn theme); no hand-built primitives   lane WEB-1
+tools/seed, sims   Seed engine + images, VNPay/GHN simulators                                   lane BE
+contracts/         openapi.yaml (custom routes), fixtures (+ fixtures/medusa), VNPay golden vectors
+design-system/     MASTER.md + pages/*.md: the look of each page                                read by WEB lanes
+docs/plan.md       THE plan and THE tracker (checkboxes)     docs/rules.md  numbered rules     docs/archive/  never read
 ```
 
-## 2. Which doc to read
-| You are about to… | Read first |
-| --- | --- |
-| Start any story | `docs/06` (your story only), `docs/07` §3 (slice, deps), `docs/progress/PROGRESS.md` (top block) |
-| Touch VNPay/VietQR/GHN | `docs/03` + `contracts/vnpay/golden-vectors.json` |
-| Touch REST/events | `contracts/openapi.yaml`, `contracts/events/`, `docs/04` |
-| Touch tables/modules/links | `docs/05` |
-| Make a design choice | `docs/02`, `docs/adr/` |
-| Write tests / seed / load | `docs/08` |
-| Write any code | `docs/10` (summary in §6 below) |
-| Fix a bug | `docs/12` §3 (BUG record) then systematic-debugging |
-| Release a feature | `docs/12` §4 (RELEASE + CHANGELOG + PROGRESS) |
-| Plan token use / dispatch subagents | `docs/11` |
-| Build or change any UI | `design-system/vn-commerce-kit/MASTER.md` + `pages/<page>.md`, `docs/13` §3.1 (prototype) + §4–6 |
-Precedence when docs disagree: accepted ADR > `contracts/` > `docs/03` > `docs/02` > `docs/06` > this file.
-Record the conflict as a **Ruling** in the plan and open a `docs:` fix PR.
+## 2. Workflow (no exceptions)
+1. Each session has its own clone **from GitHub** (never from a local repo with unpushed commits). `git pull --rebase`
+   before a task; one commit per task `type(scope): summary (<task id>)`, box ticked in docs/plan.md in the same
+   commit; `git pull --rebase && git push`.
+2. Read: this file, your app's CLAUDE.md, your task in docs/plan.md §5, the rules it names. Nothing else. Never read
+   `**/generated/**`, lockfiles, `node_modules/`, `.next/`, `.medusa/`, seed dumps, docs/archive/, docs/adr/.
+3. Tests only where docs/plan.md §6 lists them (money, payment truth, oversell, two Playwright journeys). Everything
+   else: `pnpm typecheck`, `pnpm lint`, build, and the UI QA loop below.
+4. **UI QA loop** (every UI task, max 2 rounds; first open `design-system/vn-commerce-kit/refs/<page>-*.png` if present):
+   run the dev server; with `agent-browser` open the page, capture 375 px
+   and 1440 px screenshots and `snapshot -i`; compare with `design-system/vn-commerce-kit/pages/<page>.md` and MASTER.md;
+   fix visible defects (alignment, overflow, missing states, contrast, jerky motion); then report. At each gate run the
+   `agent-browser` dogfood workflow over the whole journey and fix P0 defects. Playwright is for `make e2e` only.
+5. Pipe noisy output through `| tail -n 30`. Report in 6 lines: what changed, what you ran (real output), what Khai
+   must check by hand, pages checked.
+6. Blocked more than 15 minutes: write it in the report, leave the box unticked, take the next independent task.
+7. No PRs, worktrees, feature flags, ADRs, PROGRESS/BUG/RELEASE files, docs tooling, or planning tools for specified tasks.
+8. Ports: backend 9000, WEB-1 8000, WEB-2 8001. Only the BE clone runs `make up`; WEB lanes in real mode call
+   `localhost:9000`. Screenshots go to `.shots/<lane>/` inside your own clone (gitignored), never /tmp.
 
-## 3. Commands (scaffolded by VCK-001/002)
+## 3. Commands
 ```
-make up | down            # postgres, redis, meilisearch, minio, mailpit, vnpay-sim, ghn-sim
-make dev                  # backend server + worker + storefront (turbo)
-make test                 # unit + integration for changed packages (turbo --filter=...[origin/main])
-make test-all | lint | typecheck | fmt
-make contracts            # spectral lint, oasdiff breaking check, JSON Schema compile, VNPay vectors, gen types+MSW
-make e2e                  # Playwright journeys against local stack
-make seed-realistic | seed-stress | seed-verify
-make load SCENARIO=<name> | chaos SCENARIO=<name>
-make docs-check           # validate docs pack, PROGRESS/BUG/RELEASE formats, dead links
+make up | down          postgres, redis, meilisearch, minio, mailpit, vnpay-sim, ghn-sim
+pnpm dev                backend server + worker + storefront (turbo)
+pnpm typecheck | lint | test | build
+make contracts          spectral, oasdiff, schema compile, VNPay vectors, generate types
+make seed | record-fixtures   seed (B1a mini 60 products, B1b full 900) | record Medusa Store responses as fixtures
+make e2e                Playwright COD + VNPay-simulator journeys;  make demo-reset  reset the public demo (D1)
+agent-browser open <url> | snapshot -i | screenshot <file> | close     UI QA (see `agent-browser skills get core`)
+npx medusa db:generate <module> | db:migrate | db:sync-links | exec <file> | user -e <email> | develop     Medusa CLI
 ```
-Output rule: pipe noisy commands through `| tail -n 40`; on failure re-run only the failing target (docs/11 §3).
 
-## 4. How we work — Superpowers workflow (mandatory)
-1. **brainstorming** — only if the story leaves a design decision open; otherwise write a 1-paragraph understanding citing doc sections.
-2. **using-git-worktrees** — one worktree + branch per story: `feat/VCK-<id>-<slug>` in `../vck-worktrees/`.
-3. **writing-plans** — save to `docs/plans/VCK-<id>.md`; tasks 2–5 min, exact files, failing test first, verification command.
-4. **subagent-driven-development** (default) or **executing-plans** (small/tightly coupled).
-5. **test-driven-development** — RED → GREEN → REFACTOR, always.
-6. **verification-before-completion** — run commands, paste real (tailed) output before claiming done.
-7. **requesting-code-review** → **receiving-code-review**.
-8. **finishing-a-development-branch** — rebase, green CI, squash-merge `type(scope): summary (VCK-<id>)`.
-9. **Record** — update `docs/progress/PROGRESS.md`; on slice release write RELEASE + CHANGELOG (docs/12).
-Bugs: **systematic-debugging** first → open `docs/bugs/BUG-<nnn>.md` → reproduce, root cause, regression test, fix.
-**dispatching-parallel-agents** only for tasks with disjoint file sets.
+## 4. Strict rules (never bend; full text docs/rules.md §1)
+1. Money is **integer VND** everywhere; VNPay amount ×100 only inside the VNPay adapter.
+2. An order is paid **only** when a verified IPN or a provider query says so; never from the browser return URL.
+3. Every webhook/IPN handler verifies the signature first and is **idempotent** (dedupe key with a unique index).
+4. Business logic in workflows + steps with compensation; routes validate (Zod), call a workflow, map the result.
+5. Custom data in custom modules linked by module links; never a foreign key into core Medusa tables.
+6. No secrets, real PII or real merchant keys in code, fixtures, logs or seed; mask phone and address in logs.
+7. Every outbound call has a timeout (5 s, carriers 3 s); retries only for idempotent calls, max 3, with jitter.
 
-## 5. Parallel work rules
-- Contract first: boundary changes start with a `contract/<slice>-<slug>` PR touching only `contracts/`.
-- Slices ship together: backend + frontend stories on one contract, parallel worktrees, one flag `FF_<SLICE>`.
-- Lanes own directories — PLAT: `contracts/ infra/ tools/ .github/ Makefile turbo.json docs/(shared)`;
-  BE: `apps/backend/**` except ADM paths; ADM: `apps/backend/src/{admin,api/admin}/**` and
-  `apps/backend/src/modules/{audit_log,import_job,reporting}/**`;
-  PKG: `packages/**` except `packages/ui-kit/**`; WEB: `apps/storefront/**`, `packages/ui-kit/**`, `design-system/**`.
-- Frontend never waits: MSW mocks generated from contracts; real API behind `NEXT_PUBLIC_API_MODE=real`.
-- Migrations: BE/PKG own their module migrations; one module = one owner; reserve names in the plan.
-- Integration checkpoint per slice: `make up && make e2e` with the flag on, mocks off.
+## 5. Allowed shortcuts (use them; speed matters)
+- UI: shadcn/ui components (Sheet, Drawer, Command, Carousel, Sonner, Combobox, Form…), Motion for animation, Lucide icons.
+  Customise through the theme and variants; do not hand-build primitives or write bespoke CSS animation systems.
+- Storefront data layer starts from the official Medusa Next.js starter's `lib/data` (cart, checkout, customer, orders);
+  copy the data/actions, never its look. Check its licence before copying.
+- Client validation: required fields + phone format only. Server validation (Zod) stays at API boundaries.
+- Medusa: use its CLI for what it covers (scaffold with `create-medusa-app`, `db:generate`/`db:migrate`/`db:sync-links`, `exec` for
+  seed scripts, `user` for the admin); never hand-write migrations. Stock admin, flat-rate shipping, Mailpit, simple Meilisearch.
 
-## 6. Engineering rules (summary — full text docs/10)
-1. Money is **integer VND** everywhere (ADR-008). VNPay amount = VND × 100 only inside the VNPay adapter.
-2. Payment outcome comes **only from IPN / provider query**, never from the browser return (ADR-007).
-3. Every webhook/IPN handler is **idempotent** (dedupe key stored, unique index) and verifies signature/token first.
-4. Business logic lives in **workflows + steps with compensation**; API routes only validate, call a workflow, map result.
-5. Custom data lives in **custom modules**; cross-module relations via **module links**, never FK into core tables.
-6. Plugins in `packages/` MUST NOT import from `apps/`; config by options object, validated with Zod at load.
-7. No secrets, real PII, or real merchant credentials in code, fixtures, logs, or seed data.
-8. Timeouts on every outbound call (default 5 s, carriers 3 s); retries only for idempotent ops, backoff + jitter, cap 3.
-9. Structured logs with `trace_id`; never log full provider payloads, tokens, phone numbers or addresses unmasked.
-10. TypeScript `strict`; no `any`; Zod at every trust boundary; named exports; files ≤ 300 lines.
-11. Server Components by default in storefront; client components small and leaf-level.
-12. Tests reference AC ids: `it("... [VCK-203-AC2]")`; no test depends on another test's state.
-13. PR ≤ 400 changed lines (generated excluded), one story per PR, docs updated in the same PR.
-
-## 7. Definition of Done
-- [ ] Every AC proven by a named test; tests fail without the change
-- [ ] `make lint typecheck test contracts` green (tailed output in PR)
-- [ ] Logs/metrics/traces added for new I/O; no sensitive data logged
-- [ ] Docs updated in the same PR (contracts, 05 data model, ADR if hard to reverse)
-- [ ] `docs/progress/PROGRESS.md` updated; BUG files closed with regression test id
-- [ ] UI stories: design QA gate in `docs/13` §6 passed
-- [ ] Slice: partner story merged, integration checkpoint passed, RELEASE note drafted (docs/12)
-
-## 8. Domain glossary (use these names in code)
-Cart · Order · Product · Variant · SKU · Region (`reg_vn`) · SalesChannel · PublishableKey · Province (tỉnh/thành) ·
-Ward (xã/phường) · LegacyAddress (3-tier) · Shipment · Carrier · TrackingCode · COD · PaymentSession ·
-TxnRef (our VNPay ref) · IPN · Reconciliation · Mismatch · TransferMemo (VietQR) · Review · Wishlist · AuditLog ·
-Flag (`FF_*`) · Slice · Lane.
-
-## 9. Things Claude must not do
-- Edit `contracts/` in a feature branch; edit another lane's directories; edit generated code (`**/generated/**`).
-- Add dependencies without noting them in the plan and the PR ("New dependency: name@version — why").
-- Weaken, skip, or delete tests/gates to get green; mark tests `.skip` without a BUG id.
-- Complete an order from the VNPay return URL; trust any webhook before verifying it.
-- Use real personal data, real merchant keys, or production endpoints outside `infra/` secrets.
-- Regenerate the design system (`--persist --force`) or paste generator output unreviewed (ADR-013).
-- Read `node_modules/`, `.medusa/`, `.next/`, `dist/`, seed dumps, or lockfiles into context (docs/11 §2).
+## 6. Things Claude must not do
+- Complete an order from the VNPay return URL; trust an IPN before verifying it; store money as float or string.
+- Edit `contracts/openapi.yaml` in a WEB lane (ask BE in the report); edit another lane's directories.
+- Add a dependency without one commit-message line ("New dependency: name@version, why"); use `^` ranges.
+- Skip or delete a listed test to get green; log full provider payloads or unmasked phone numbers.
+- Re-run the design-system generator; read docs/archive/; add GSAP or a second animation system.

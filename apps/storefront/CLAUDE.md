@@ -1,43 +1,34 @@
 # apps/storefront — CLAUDE.md
-Next.js App Router storefront (Vietnamese UI, VND). Lane **WEB**, owns `apps/storefront/**`.
-Talks to Medusa via `@medusajs/js-sdk` (core) and generated client from `contracts/openapi.yaml` (custom).
+Next.js App Router storefront, Vietnamese UI. Lanes **WEB-1** (shell, home, listing, product, search) and **WEB-2**
+(cart, checkout, VNPay return, confirmation, account lite). This is the first thing a prospect sees: it must look finished.
 
-## Commands
-```
-pnpm --filter storefront dev               # NEXT_PUBLIC_API_MODE=mock uses MSW; =real hits localhost:9000
-pnpm --filter storefront test              # vitest + Testing Library
-pnpm --filter storefront test:e2e          # Playwright (also run by make e2e)
-pnpm --filter storefront lint | typecheck | build
-pnpm --filter storefront gen:api           # regenerate types + MSW handlers from contracts (never edit output)
-```
+## Stack
+Tailwind v4 + shadcn/ui (Radix) themed from MASTER tokens · Motion for animation · Lucide icons · Sonner toasts ·
+Embla (Carousel), cmdk (Command), Vaul (Drawer) through shadcn · react-hook-form + Zod for forms.
+Add components with `pnpm dlx shadcn@latest add <name>`; customise via the theme and variants, never by hand-building primitives.
 
-## Layout
-```
-src/app/(shop)/            home, c/[...category], p/[handle], search, cart, checkout/*, account/*
-src/app/api/revalidate/    on-demand revalidation webhook (signed)
-src/features/<feature>/    components/, server/ (data loaders, server actions), hooks/, schemas.ts
-src/lib/                   sdk.ts, money.ts (formatVnd), seo.ts, analytics.ts, flags.ts
-src/generated/             OpenAPI types + MSW handlers — generated, read-only
-src/mocks/                 MSW setup using contracts/fixtures
-```
+## Data layer (`src/lib/data`)
+- `real`: derived from the official Medusa Next.js starter's data/actions (cart, checkout, customer, orders, regions)
+  using the Medusa JS SDK against `localhost:9000`; copy its logic, not its look; check its licence first.
+- `mock`: reads `contracts/fixtures/medusa/`; mock cart state lives in a cookie. Selected by `NEXT_PUBLIC_API_MODE`.
+- `NEXT_PUBLIC_DEMO_BANNER=1` shows the demo banner; any public non-production deploy is `noindex`.
 
-## Next.js rules
-- Server Components by default; `"use client"` only for interactive leaves (variant picker, cart drawer, forms).
-- Data: server loaders with `fetch` cache tags (`product:<id>`, `category:<id>`); mutations via Server Actions; no `useEffect` fetching.
-- Catalog pages: ISR + tag revalidation triggered by backend subscriber (price/stock change) — never `revalidate: 0` on PLP/PDP.
-- Checkout and account are dynamic and never cached; cart id in an httpOnly cookie.
-- VNPay return page shows status from `verifyVnpayReturn`; if `PENDING_CONFIRMATION`, poll order status ≤ 30 s, then show "we'll email you".
+## Design sources (priority order; details in design-system/vn-commerce-kit/README.md)
+1. `MASTER.md` + `pages/<page>.md`. 2. `refs/<page>-*.png`: open before building, compare after. 3. shadcn blocks/components.
+4. `frontend-design` skill for composition and polish only; it never overrides tokens, fonts or the page specs.
+5. `prototype/*.dc.html`: markup only, one board per task, only for microcopy/states the spec lacks.
 
-## UI rules
-- Before any UI work read `design-system/vn-commerce-kit/MASTER.md` and the matching `pages/<page>.md`; they override generic taste.
-- Use the **ui-ux-pro-max** skill only for targeted queries (`--domain ux|gsap`, `--stack nextjs`), per docs/13 §1.2.
-- Design tokens from `packages/ui-kit`; Tailwind only with tokens; no inline magic colours.
-- Motion: tokens from `packages/ui-kit/src/motion.ts`; Motion (`LazyMotion` + `m`) in client leaves; GSAP only via dynamic import on home/campaign; every animation has a reduced-motion path; implement the MI ids of your story (docs/13 §5).
-- Prices through `formatVnd()` → "259.000 ₫"; dates `dd/MM/yyyy` in `Asia/Ho_Chi_Minh`.
-- Images via `next/image` with CDN loader, explicit sizes; LCP image `priority`.
-- Accessibility: labelled inputs, focus management in drawers/dialogs, `aria-live` for cart and payment status.
-- Budgets: Lighthouse mobile ≥ 90 on home/PLP/PDP; JS ≤ 170 KB gz per route (checked in CI).
+## Rules for this app
+- Server Components by default; client components small and at the leaves (cart, forms, pickers, gallery).
+- Money is integer VND; display only through `formatVnd`. Never do arithmetic on formatted strings.
+- Motion: `MotionConfig reducedMotion="user"`; subtle entrance, hover/tap feedback, cart-drawer and add-to-cart feedback,
+  `whileInView` reveals on home only. No GSAP, no second animation system.
+- Forms: required fields + phone format only on the client; the server validates.
+- The VNPay return page only displays state and polls the order; it never marks anything paid.
+- Do not edit `contracts/openapi.yaml`; report a missing field and wait for "contract pushed".
+- Fixtures and copy stay synthetic (no real names, phones, addresses).
 
-## Tests
-- Component tests for every client component with state; E2E for journeys in docs/08 §5.
-- Test names include AC ids. Mock mode tests must pass before the real-API checkpoint.
+## Commands and QA
+`pnpm --filter storefront dev` (WEB-1 8000, WEB-2 8001) · `pnpm typecheck` · `pnpm lint` · `pnpm build` · `make e2e`.
+UI QA loop (CLAUDE.md §2.4): `agent-browser open http://localhost:<port>/<path>` → screenshots at 375 and 1440 px →
+`snapshot -i` → compare with `design-system/vn-commerce-kit/pages/<page>.md` → fix → max 2 rounds.

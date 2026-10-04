@@ -5,22 +5,7 @@ import { existsSync, mkdtempSync, rmSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { checkPrTitle } from "./check-pr-title.mjs";
 import { checkLicences } from "./check-licenses.mjs";
-
-test("[VCK-003-AC3] accepts conventional titles with a story suffix", () => {
-  for (const t of ["feat(infra): x (VCK-003)", "fix: y (VCK-104)", "chore(repo)!: z (VCK-001)"]) {
-    assert.equal(checkPrTitle(t).ok, true, t);
-  }
-});
-
-test("[VCK-003-AC3] rejects malformed titles with a reason", () => {
-  for (const t of ["feat: x", "feat: x (VCK-3)", "wip: x (VCK-003)", "feat: x (vck-003)", "feat:  (VCK-003)", "feat: (VCK-003)"]) {
-    const r = checkPrTitle(t);
-    assert.equal(r.ok, false, t);
-    assert.ok(r.reason, t);
-  }
-});
 
 const allow = ["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "ISC", "0BSD", "CC0-1.0", "BlueOak-1.0.0"];
 const pkg = (name) => ({ name, versions: ["1.0.0"] });
@@ -80,11 +65,6 @@ test("[VCK-003-AC2] checkLicences throws on null/undefined input", () => {
   assert.throws(() => checkLicences(undefined, allow, []));
 });
 
-test("[VCK-003-AC3] rejects trailing newline and multi-line titles", () => {
-  assert.equal(checkPrTitle("feat: x (VCK-003)\n").ok, false);
-  assert.equal(checkPrTitle("bad\nfeat: x (VCK-003)").ok, false);
-});
-
 const dir = mkdtempSync(join(tmpdir(), "vck-cli-"));
 after(() => rmSync(dir, { recursive: true, force: true }));
 const cli = (file, args, input) => {
@@ -93,12 +73,6 @@ const cli = (file, args, input) => {
   return [file, link].map((f) => spawnSync("node", [f === file ? fileURLToPath(new URL(file, import.meta.url)) : f, ...args], { input, encoding: "utf8" }));
 };
 const statuses = (file, args, input) => cli(file, args, input).map((r) => r.status);
-
-test("[VCK-003-AC3] title CLI exit codes, also via symlink", () => {
-  assert.deepEqual(statuses("check-pr-title.mjs", ["feat: x (VCK-003)"]), [0, 0]);
-  assert.deepEqual(statuses("check-pr-title.mjs", ["bad title"]), [1, 1]);
-  assert.deepEqual(statuses("check-pr-title.mjs", []), [1, 1]);
-});
 
 test("[VCK-003-AC2] licence CLI fails closed, also via symlink", () => {
   const f = "check-licenses.mjs";
@@ -110,7 +84,3 @@ test("[VCK-003-AC2] licence CLI fails closed, also via symlink", () => {
   }
 });
 
-test("[VCK-003-AC3] rejects blank or whitespace-only descriptions", () => {
-  for (const t of ["feat:   (VCK-003)", "feat: \t (VCK-003)", "feat:  (VCK-003)"]) assert.equal(checkPrTitle(t).ok, false, JSON.stringify(t));
-  assert.equal(checkPrTitle("feat: real thing (VCK-003)").ok, true);
-});

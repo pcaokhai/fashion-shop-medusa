@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Chi tiết sản phẩm — VCK Shop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0;background:#FAFAF9;color:#1C1917;font-family:"Be Vietnam Pro","Noto Sans",system-ui,sans-serif}
+a{color:#047857}a:hover{color:#065F46}
+*{box-sizing:border-box}
+button{font-family:inherit;cursor:pointer}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:2px solid #047857;outline-offset:2px}
+.iconbtn{width:44px;height:44px;border-radius:10px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;color:#1C1917;position:relative;transition:background 160ms}
+.iconbtn:hover{background:#F5F5F4}
+.badge{position:absolute;top:4px;right:2px;min-width:18px;height:18px;border-radius:9px;background:#C2410C;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.bumpA{animation:bumpA 420ms cubic-bezier(.2,0,0,1)}.bumpB{animation:bumpB 420ms cubic-bezier(.2,0,0,1)}
+@keyframes bumpA{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+@keyframes bumpB{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+.thumb{width:84px;height:104px;border-radius:12px;border:0;padding:0;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;transition:transform 160ms}
+.thumb:hover{transform:translateX(2px)}
+.fadeA{animation:fadeA 320ms cubic-bezier(.2,0,0,1)}.fadeB{animation:fadeB 320ms cubic-bezier(.2,0,0,1)}
+@keyframes fadeA{from{opacity:0;transform:scale(1.02)}to{opacity:1;transform:none}}
+@keyframes fadeB{from{opacity:0;transform:scale(1.02)}to{opacity:1;transform:none}}
+.zoom{transition:transform 320ms cubic-bezier(.2,0,0,1);transform-origin:var(--ox,50%) var(--oy,50%)}
+.stage:hover .zoom{transform:scale(1.35)}
+.swatch{width:44px;height:44px;border-radius:22px;border:2px solid transparent;background:transparent;padding:3px;display:flex;align-items:center;justify-content:center;transition:border-color 160ms}
+.swatch span{display:block;width:100%;height:100%;border-radius:50%;border:1px solid rgba(28,25,23,.15);transition:transform 160ms cubic-bezier(.2,0,0,1)}
+.swatch.on{border-color:#1C1917}.swatch.on span{transform:scale(.86)}
+.size{min-width:56px;height:44px;border-radius:10px;border:1.5px solid #E7E5E4;background:#fff;font-weight:600;font-size:15px;color:#1C1917;position:relative;transition:border-color 160ms,background 160ms,color 160ms}
+.size:hover{border-color:#1C1917}
+.size.on{border-color:#047857;background:#ECFDF5;color:#064E3B}
+.size.off{color:#A8A29E;background:#F5F5F4;cursor:not-allowed;text-decoration:line-through}
+.size.off:hover{border-color:#E7E5E4}
+.btn-cta{height:52px;padding:0 24px;border-radius:12px;border:0;background:#C2410C;color:#fff;font-weight:700;font-size:16px;display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;transition:background 160ms,transform 100ms}
+.btn-cta:hover{background:#9A3412;color:#fff}.btn-cta:active{transform:scale(.97)}
+.btn-outline{height:52px;padding:0 22px;border-radius:12px;border:1.5px solid #1C1917;background:transparent;color:#1C1917;font-weight:700;font-size:16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;transition:background 160ms,color 160ms}
+.btn-outline:hover{background:#1C1917;color:#fff}
+.qtybtn{width:44px;height:44px;border-radius:10px;border:0;background:transparent;display:flex;align-items:center;justify-content:center}
+.qtybtn:hover{background:#F5F5F4}
+.rollA{animation:rollA 220ms cubic-bezier(.05,.7,.1,1)}.rollB{animation:rollB 220ms cubic-bezier(.05,.7,.1,1)}
+@keyframes rollA{from{transform:translateY(-60%);opacity:0}to{transform:none;opacity:1}}
+@keyframes rollB{from{transform:translateY(60%);opacity:0}to{transform:none;opacity:1}}
+.heart{width:52px;height:52px;border-radius:12px;border:1.5px solid #E7E5E4;background:#fff;display:flex;align-items:center;justify-content:center;color:#1C1917;position:relative;transition:color 160ms,border-color 160ms}
+.heart:hover{border-color:#1C1917}
+.heart.on{color:#B91C1C}
+.popA svg{animation:popA 480ms cubic-bezier(.2,0,0,1)}.popB svg{animation:popB 480ms cubic-bezier(.2,0,0,1)}
+@keyframes popA{0%{transform:scale(1)}35%{transform:scale(1.35)}100%{transform:scale(1)}}
+@keyframes popB{0%{transform:scale(1)}35%{transform:scale(1.35)}100%{transform:scale(1)}}
+.tab{height:48px;border:0;background:transparent;font-weight:600;font-size:16px;color:#57534E;padding:0 4px;transition:color 160ms}
+.tab.on{color:#1C1917}
+.tabA{animation:tabA 260ms cubic-bezier(.05,.7,.1,1)}.tabB{animation:tabB 260ms cubic-bezier(.05,.7,.1,1)}
+@keyframes tabA{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes tabB{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.bar{height:8px;border-radius:4px;background:#F5F5F4;overflow:hidden;flex-grow:1}
+.bar i{display:block;height:100%;background:#F59E0B;border-radius:4px}
+.flyer{position:fixed;z-index:90;width:56px;height:70px;border-radius:10px;pointer-events:none;box-shadow:0 6px 16px -4px rgba(28,25,23,.3);display:flex;align-items:center;justify-content:center}
+.flyA{animation:flyA 650ms cubic-bezier(.5,0,.2,1) forwards}.flyB{animation:flyB 650ms cubic-bezier(.5,0,.2,1) forwards}
+@keyframes flyA{0%{transform:translate(0,0) scale(1);opacity:1}60%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.25);opacity:.2}}
+@keyframes flyB{0%{transform:translate(0,0) scale(1);opacity:1}60%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.25);opacity:.2}}
+.card{position:relative;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(28,25,23,.06);transition:transform 220ms cubic-bezier(.2,0,0,1),box-shadow 220ms}
+.card:hover{transform:translateY(-4px);box-shadow:0 6px 16px -4px rgba(28,25,23,.12)}
+.plink{text-decoration:none;color:#1C1917;display:block}.plink:hover{color:#047857}
+.scrim{position:fixed;inset:0;background:rgba(28,25,23,.45);opacity:0;pointer-events:none;transition:opacity 320ms;z-index:70}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:420px;background:#fff;z-index:80;transform:translateX(100%);transition:transform 360ms cubic-bezier(.05,.7,.1,1);display:flex;flex-direction:column;border-radius:20px 0 0 20px;box-shadow:0 16px 40px -8px rgba(28,25,23,.25)}
+.drawer.on{transform:none}
+.drawer .line{animation:lineIn 320ms cubic-bezier(.05,.7,.1,1)}
+@keyframes lineIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+.lqty{width:36px;height:36px;border-radius:8px;border:1px solid #E7E5E4;background:#fff;display:flex;align-items:center;justify-content:center}
+.lqty:hover{border-color:#1C1917}
+.rm *{animation:none !important;transition:none !important}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}.stage:hover .zoom{transform:none}}
+</style>
+<style data-vck-motion="v2">
+/* VCK motion layer v2 — docs/13 §4.6. Transform/opacity only; progressive (no support = static, fully visible). */
+:root{--dur-instant:100ms;--dur-fast:160ms;--dur-base:220ms;--dur-slow:320ms;--dur-expressive:480ms;--ease-std:cubic-bezier(.2,0,0,1);--ease-enter:cubic-bezier(.05,.7,.1,1);--ease-exit:cubic-bezier(.3,0,.8,.15)}
+/* MI-30 press + hover feedback (zero-specificity so page rules still win) */
+:where(.btn,.btn-cta,.btn-dark,.btn-out,.btn-outline,.btn-danger,.chip,.pill,.fbtn,.pg,.seg button,.tab,.nv,.nav,.mnav,.demo,.todo,.choice,.story,.sub,.tpl,.pnav,.rank,.sg,.rowopt,.mrow){transition:background-color var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast),box-shadow var(--dur-fast),transform var(--dur-instant) var(--ease-std)}
+:where(.btn,.btn-cta,.btn-dark,.btn-out,.btn-outline,.btn-danger,.chip,.pill,.fbtn,.pg,.demo,.choice,.story,.sub,.tpl,.mnav):active:not([aria-disabled=true]){transform:scale(.97)}
+:where(.card):is(a,button):hover{box-shadow:0 10px 28px -14px rgba(28,25,23,.28)}
+/* MI-31 staggered list enter (runs on mount) */
+.stg>*{animation:vckStg var(--dur-slow) var(--ease-enter) both}
+.stg>*:nth-child(2){animation-delay:40ms}.stg>*:nth-child(3){animation-delay:80ms}.stg>*:nth-child(4){animation-delay:120ms}.stg>*:nth-child(5){animation-delay:160ms}.stg>*:nth-child(6){animation-delay:200ms}.stg>*:nth-child(7){animation-delay:240ms}.stg>*:nth-child(n+8){animation-delay:280ms}
+@keyframes vckStg{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* back-to-top + reading progress default hidden state when scroll timelines are unsupported */
+.to-top{display:none}
+@media (prefers-reduced-motion: no-preference){
+@supports (animation-timeline: view()){
+  /* MI-25 scroll reveal: starts as the element enters, done at 20% coverage */
+  .sr-up{animation:vckUp linear both;animation-timeline:view();animation-range:entry 0% cover 20%}
+  .sr-fade{animation:vckFade linear both;animation-timeline:view();animation-range:entry 0% cover 20%}
+  .sr-scale{animation:vckScale linear both;animation-timeline:view();animation-range:entry 0% cover 25%}
+  .sr-left{animation:vckLeft linear both;animation-timeline:view();animation-range:entry 0% cover 22%}
+  .sr-right{animation:vckRight linear both;animation-timeline:view();animation-range:entry 0% cover 22%}
+  .sr-stg>*{animation:vckUp linear both;animation-timeline:view();animation-range:entry 0% cover 18%}
+  .sr-stg>*:nth-child(2){animation-range:entry 5% cover 22%}.sr-stg>*:nth-child(3){animation-range:entry 10% cover 26%}.sr-stg>*:nth-child(4){animation-range:entry 15% cover 30%}
+  /* MI-29 parallax: decorative layers only, never the LCP image */
+  .plx{animation:vckPlx linear both;animation-timeline:view();animation-range:cover}
+  .plx-slow{animation:vckPlxS linear both;animation-timeline:view();animation-range:cover}
+  /* MI-32 bar fill on view (stock / share bars) — scaleX */
+  .fill-x{transform-origin:0 50%;animation:vckFill linear both;animation-timeline:view();animation-range:entry 10% cover 30%}
+  /* MI-26 header elevation on scroll (desktop document scroll) */
+  .hdr-scroll{animation:vckHdr linear both;animation-timeline:scroll(root);animation-range:0 120px}
+  .hdr-scroll .hdr-logo{transform-origin:0 50%;animation:vckLogo linear both;animation-timeline:scroll(root);animation-range:0 120px}
+  /* MI-27 back-to-top + MI-28 reading progress (document scroll) */
+  .to-top{display:flex;animation:vckTop linear both;animation-timeline:scroll(root);animation-range:300px 700px}
+  .read-progress{transform-origin:0 50%;animation:vckGrow linear both;animation-timeline:scroll(root)}
+}
+@supports (timeline-scope: --pg){
+  /* Mobile frames: the inner scroller publishes --pg; siblings outside it read it */
+  .pg-scope{timeline-scope:--pg}
+  .pg-src{scroll-timeline:--pg block}
+  .hdr-m{animation:vckHdrM linear both;animation-timeline:--pg;animation-range:0 90px}
+  .to-top.m{display:flex;animation:vckTop linear both;animation-timeline:--pg;animation-range:280px 600px}
+  .read-progress.m{animation:vckGrow linear both;animation-timeline:--pg}
+}
+}
+@keyframes vckUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes vckFade{from{opacity:0}to{opacity:1}}
+@keyframes vckScale{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+@keyframes vckLeft{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+@keyframes vckRight{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes vckPlx{from{transform:translateY(-40px)}to{transform:translateY(40px)}}
+@keyframes vckPlxS{from{transform:translateY(24px) rotate(0deg)}to{transform:translateY(-24px) rotate(12deg)}}
+@keyframes vckFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes vckHdr{from{box-shadow:0 0 0 rgba(28,25,23,0);background-color:rgba(250,250,249,.94)}to{box-shadow:0 8px 24px -14px rgba(28,25,23,.35);background-color:rgba(255,255,255,.98)}}
+@keyframes vckLogo{to{transform:scale(.9)}}
+@keyframes vckHdrM{to{box-shadow:0 8px 20px -12px rgba(28,25,23,.35);background-color:rgba(255,255,255,.98)}}
+@keyframes vckTop{from{opacity:0;transform:translateY(16px) scale(.9);visibility:hidden}to{opacity:1;transform:none;visibility:visible}}
+@keyframes vckGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.to-top{position:fixed;right:24px;bottom:24px;z-index:45;width:48px;height:48px;border-radius:24px;border:0;background:#1C1917;color:#fff;align-items:center;justify-content:center;box-shadow:0 10px 24px -8px rgba(28,25,23,.45);text-decoration:none}
+.to-top:hover{background:#047857;color:#fff}
+.to-top.m{position:absolute;right:16px;bottom:88px;width:44px;height:44px;border-radius:22px}
+.read-progress{position:fixed;left:0;right:0;top:0;height:3px;background:#047857;z-index:60;transform:scaleX(0)}
+.read-progress.m{position:absolute}
+.rm .to-top,.rm .read-progress{animation:none !important}
+</style>
+
+</helmet>
+<div id="top" class="{{rootClass}}" style="width: 100%; min-height: 100vh; display: flex; flex-direction: column; background: #FAFAF9; font-family: 'Be Vietnam Pro','Noto Sans',system-ui,sans-serif; color: #1C1917"><a class="to-top" href="#top" aria-label="Lên đầu trang"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"></path></svg></a>
+
+<header class="hdr-scroll" style="position: sticky; top: 0; z-index: 50; background: rgba(250,250,249,.92); backdrop-filter: blur(8px); border-bottom: 1px solid #E7E5E4">
+<div style="max-width: 1280px; margin: 0 auto; height: 72px; padding: 0 24px; display: flex; align-items: center; gap: 32px">
+<a class="hdr-logo" href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #064E3B; font-weight: 800; font-size: 22px; letter-spacing: -0.02em">
+<span style="width: 34px; height: 34px; border-radius: 10px; background: {{primary}}; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px">V</span>
+VCK Shop
+</a>
+<nav aria-label="Danh mục chính" style="display: flex; gap: 24px; font-weight: 500; font-size: 15px">
+<a href="Main.dc.html" style="color: #1C1917; text-decoration: none">Trang chủ</a>
+<a href="Category.dc.html" style="color: #1C1917; text-decoration: none">Sản phẩm</a>
+<a href="Category.dc.html" style="color: #1C1917; text-decoration: none">Nam</a>
+<a href="Category.dc.html" style="color: #1C1917; text-decoration: none">Phụ kiện</a>
+</nav>
+<div style="flex-grow: 1"></div>
+<a class="iconbtn" href="Search.dc.html" aria-label="Tìm kiếm" style="text-decoration: none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg></a>
+<button class="iconbtn" type="button" data-cart-icon="1" aria-label="Giỏ hàng, {{cartCount}} sản phẩm" onClick="{{openDrawer}}">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg>
+<sc-if value="{{hasCart}}" hint-placeholder-val="{{ false }}"><span class="badge {{bumpClass}}">{{cartCount}}</span></sc-if>
+</button>
+</div>
+</header>
+
+<main style="max-width: 1280px; margin: 0 auto; padding: 20px 24px 0">
+<nav aria-label="Đường dẫn" style="font-size: 14px; color: #57534E; display: flex; gap: 8px; margin-bottom: 20px">
+<a href="Main.dc.html" style="color: #57534E; text-decoration: none">Trang chủ</a><span aria-hidden="true">/</span>
+<a href="Category.dc.html" style="color: #57534E; text-decoration: none">Áo</a><span aria-hidden="true">/</span>
+<span style="color: #1C1917" aria-current="page">Áo thun oversize cotton 250gsm</span>
+</nav>
+
+<div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 48px; align-items: start">
+<section aria-label="Hình ảnh sản phẩm" style="grid-column: span 7; display: flex; gap: 16px">
+<div style="position: relative; display: flex; flex-direction: column; gap: 12px">
+<span style="position: absolute; left: -6px; top: 0; width: 3px; height: 104px; border-radius: 2px; background: #1C1917; transform: translateY({{thumbY}}px); transition: transform 320ms cubic-bezier(.2,0,0,1)"></span>
+<sc-for list="{{thumbs}}" as="t" hint-placeholder-count="5">
+<button class="thumb" type="button" aria-label="Xem ảnh: {{t.label}}" aria-pressed="{{t.sel}}" onClick="{{t.pick}}" style="background: {{t.bg}}; opacity: {{t.op}}">
+<svg width="{{t.size}}" height="{{t.size}}" viewBox="0 0 32 32" fill="none" stroke="{{inkColor}}" stroke-width="1.1" stroke-linejoin="round" aria-hidden="true" style="transform: rotate({{t.rot}})"><path d="{{icon}}"></path></svg>
+</button>
+</sc-for>
+</div>
+<div class="stage" onMouseMove="{{moveZoom}}" style="position: relative; flex-grow: 1; aspect-ratio: 4 / 5; border-radius: 20px; overflow: hidden; background: {{stageBg}}; cursor: zoom-in">
+<div class="{{stageClass}}" style="position: absolute; inset: 0">
+<div class="zoom" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; --ox: {{ox}}; --oy: {{oy}}">
+<svg width="{{mainSize}}" height="{{mainSize}}" viewBox="0 0 32 32" fill="none" stroke="{{inkColor}}" stroke-width="0.7" stroke-linejoin="round" aria-hidden="true" style="transform: rotate({{mainRot}})"><path d="{{icon}}"></path></svg>
+</div>
+</div>
+<span style="position: absolute; left: 16px; top: 16px; background: #B91C1C; color: #fff; font-size: 13px; font-weight: 700; padding: 5px 10px; border-radius: 8px">-19%</span>
+<span style="position: absolute; left: 16px; bottom: 16px; font-size: 12px; color: {{captionColor}}; background: rgba(255,255,255,.7); padding: 4px 8px; border-radius: 6px">[Ảnh sản phẩm] · {{thumbLabel}} · {{colorName}}</span>
+<span style="position: absolute; right: 16px; bottom: 16px; font-size: 12px; color: #1C1917; background: rgba(255,255,255,.85); padding: 4px 8px; border-radius: 6px">Di chuột để phóng to</span>
+</div>
+</section>
+
+<section aria-labelledby="p-title" style="grid-column: span 5; position: sticky; top: 96px; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; gap: 8px">
+<span style="font-size: 12px; font-weight: 700; color: #064E3B; background: #ECFDF5; padding: 4px 10px; border-radius: 999px">Bán chạy</span>
+<span style="font-size: 12px; font-weight: 600; color: #57534E; background: #F5F5F4; padding: 4px 10px; border-radius: 999px">Cotton 250gsm</span>
+</div>
+<h1 id="p-title" style="margin: 0; font-size: 32px; line-height: 1.2; letter-spacing: -0.02em; color: #064E3B">Áo thun oversize cotton 250gsm</h1>
+<a href="#danh-gia" style="display: flex; align-items: center; gap: 6px; font-size: 14px; color: #57534E; text-decoration: none">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"></path></svg>
+<span style="font-weight: 600; color: #1C1917">4,8</span><span>· [số] đánh giá · Đã bán [số]</span>
+</a>
+</div>
+<div style="display: flex; align-items: baseline; gap: 12px; padding: 16px 20px; background: #ffffff; border-radius: 14px; border: 1px solid #E7E5E4">
+<span style="font-size: 30px; font-weight: 800; color: #B91C1C; font-variant-numeric: tabular-nums">259.000 ₫</span>
+<s style="font-size: 16px; color: #57534E">319.000 ₫</s>
+<span style="font-size: 13px; font-weight: 700; color: #ffffff; background: #B91C1C; padding: 3px 8px; border-radius: 6px">-19%</span>
+</div>
+
+<fieldset style="border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px">
+<legend style="font-size: 15px; font-weight: 600; padding: 0; margin-bottom: 10px">Màu sắc: <span style="font-weight: 500; color: #57534E">{{colorName}}</span></legend>
+<div style="display: flex; gap: 8px">
+<sc-for list="{{colors}}" as="c" hint-placeholder-count="4">
+<button class="{{c.cls}}" type="button" aria-label="{{c.name}}" aria-pressed="{{c.sel}}" onClick="{{c.pick}}"><span style="background: {{c.hex}}"></span></button>
+</sc-for>
+</div>
+</fieldset>
+
+<fieldset style="border: 0; padding: 0; margin: 0">
+<legend style="font-size: 15px; font-weight: 600; padding: 0; margin-bottom: 10px; width: 100%; display: flex; justify-content: space-between">
+<span>Kích thước: <span style="font-weight: 500; color: #57534E">{{sizeName}}</span></span>
+<a href="#bang-size" style="font-weight: 500; font-size: 14px">Hướng dẫn chọn size</a>
+</legend>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<sc-for list="{{sizes}}" as="z" hint-placeholder-count="5">
+<button class="{{z.cls}}" type="button" aria-pressed="{{z.sel}}" aria-disabled="{{z.dis}}" aria-label="{{z.aria}}" onClick="{{z.pick}}">{{z.label}}</button>
+</sc-for>
+</div>
+<div style="margin-top: 10px; font-size: 13px; color: {{stockColor}}; font-weight: 600">{{stockText}}</div>
+</fieldset>
+
+<div style="display: flex; gap: 12px; align-items: center">
+<div style="display: flex; align-items: center; border: 1.5px solid #E7E5E4; border-radius: 12px; height: 52px; padding: 0 4px; background: #fff">
+<button class="qtybtn" type="button" aria-label="Giảm số lượng" onClick="{{dec}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+<span style="width: 32px; height: 24px; overflow: hidden; text-align: center; font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums" aria-live="polite"><span class="{{rollClass}}" style="display: block">{{qty}}</span></span>
+<button class="qtybtn" type="button" aria-label="Tăng số lượng" onClick="{{inc}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+</div>
+<button class="btn-cta" type="button" onClick="{{addToCart}}" style="flex-grow: 1">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg>
+Thêm vào giỏ
+</button>
+<button class="{{heartCls}}" type="button" aria-pressed="{{wishSel}}" aria-label="Thêm vào yêu thích" onClick="{{toggleWish}}">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="{{heartFill}}" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"></path></svg>
+</button>
+</div>
+<a class="btn-outline" href="Checkout.dc.html">Mua ngay</a>
+
+<div style="display: flex; flex-direction: column; gap: 12px; padding: 18px 20px; background: #ffffff; border-radius: 14px; border: 1px solid #E7E5E4; font-size: 14px">
+<div style="display: flex; gap: 12px; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"></path><circle cx="7" cy="19" r="2"></circle><circle cx="17" cy="19" r="2"></circle></svg><span>Giao đến <b>[phường, tỉnh]</b> — dự kiến <b>[ngày]</b></span></div>
+<div style="display: flex; gap: 12px; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5l2 2M20 12a8 8 0 0 1-14 5l-2-2M20 4v5h-5M4 20v-5h5"></path></svg><span>Đổi size miễn phí trong 7 ngày</span></div>
+<div style="display: flex; gap: 12px; align-items: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM8.5 12l2.5 2.5 4.5-5"></path></svg><span>Thanh toán COD, VNPay hoặc VietQR</span></div>
+</div>
+</section>
+</div>
+
+<section class="sr-up" style="margin-top: 72px; max-width: 840px">
+<div role="tablist" aria-label="Thông tin sản phẩm" style="position: relative; display: flex; gap: 32px; border-bottom: 1px solid #E7E5E4">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+<button class="{{t.cls}}" role="tab" aria-selected="{{t.sel}}" type="button" onClick="{{t.pick}}">{{t.label}}</button>
+</sc-for>
+<span style="position: absolute; bottom: -1px; left: 0; height: 2px; width: {{tabW}}px; background: #1C1917; transform: translateX({{tabX}}px); transition: transform 320ms cubic-bezier(.2,0,0,1), width 320ms cubic-bezier(.2,0,0,1)"></span>
+</div>
+<div role="tabpanel" class="{{panelClass}}" style="padding: 24px 0; font-size: 16px; line-height: 1.7; color: #292524">
+<sc-if value="{{tab0}}" hint-placeholder-val="{{ true }}">
+<p style="margin: 0 0 12px">Áo thun dáng oversize, vai rơi nhẹ, cổ bo gân dày giữ form sau nhiều lần giặt. Phù hợp đi học, đi làm thứ Sáu và dạo phố. [Mô tả sản phẩm do cửa hàng cung cấp]</p>
+<p style="margin: 0">Gợi ý phối: quần kaki ống suông và giày sneaker trắng.</p>
+</sc-if>
+<sc-if value="{{tab1}}" hint-placeholder-val="{{ false }}">
+<div id="bang-size" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 32px; font-size: 15px">
+<span style="color: #57534E">Chất liệu</span><span>100% cotton, 250gsm</span>
+<span style="color: #57534E">Form</span><span>Oversize</span>
+<span style="color: #57534E">Xuất xứ</span><span>[Xuất xứ]</span>
+<span style="color: #57534E">Hướng dẫn giặt</span><span>Giặt máy nước lạnh, lộn trái</span>
+</div>
+</sc-if>
+<sc-if value="{{tab2}}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0">Đổi size hoặc màu trong 7 ngày kể từ khi nhận hàng, sản phẩm còn tem mác. Hoàn tiền qua VNPay hoặc chuyển khoản trong [số] ngày làm việc. [Chính sách đầy đủ của cửa hàng]</p>
+</sc-if>
+</div>
+</section>
+
+<section class="sr-up" id="danh-gia" aria-labelledby="h-rv" style="margin-top: 48px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px">
+<div style="background: #ffffff; border-radius: 20px; padding: 28px; border: 1px solid #E7E5E4; display: flex; flex-direction: column; gap: 14px">
+<h2 id="h-rv" style="margin: 0; font-size: 22px; color: #064E3B">Đánh giá</h2>
+<div style="display: flex; align-items: baseline; gap: 8px"><span style="font-size: 44px; font-weight: 800">4,8</span><span style="color: #57534E">/ 5 · [số] đánh giá</span></div>
+<sc-for list="{{dist}}" as="d" hint-placeholder-count="5">
+<div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #57534E">
+<span style="width: 28px">{{d.star}} ★</span>
+<div class="bar"><i style="width: {{d.pct}}"></i></div>
+<span style="width: 36px; text-align: right">{{d.pct}}</span>
+</div>
+</sc-for>
+</div>
+<div style="grid-column: span 2; display: flex; flex-direction: column; gap: 16px">
+<sc-for list="{{reviews}}" as="r" hint-placeholder-count="2">
+<div style="background: #ffffff; border-radius: 16px; padding: 20px 24px; border: 1px solid #E7E5E4; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; font-size: 14px"><span style="font-weight: 600">{{r.author}}</span><span style="color: #047857; font-weight: 600">✓ Đã mua · {{r.variant}}</span></div>
+<p style="margin: 0; font-size: 15px; line-height: 1.6">{{r.text}}</p>
+<div style="display: flex; gap: 8px"><div style="width: 72px; height: 72px; border-radius: 10px; background: {{r.tone}}; font-size: 10px; color: #57534E; display: flex; align-items: center; justify-content: center">[Ảnh khách]</div></div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section class="sr-up" aria-labelledby="h-rel" style="margin-top: 72px">
+<h2 id="h-rel" style="margin: 0 0 20px; font-size: 28px; letter-spacing: -0.02em; color: #064E3B">Thường được mua cùng</h2>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px">
+<sc-for list="{{related}}" as="p" hint-placeholder-count="4">
+<div class="card">
+<a class="plink" href="Product.dc.html">
+<div style="aspect-ratio: 4 / 5; background: {{p.tone}}; display: flex; align-items: center; justify-content: center">
+<svg width="55%" height="55%" viewBox="0 0 32 32" fill="none" stroke="#1C1917" stroke-opacity=".75" stroke-width="0.9" stroke-linejoin="round" aria-hidden="true"><path d="{{p.icon}}"></path></svg>
+</div>
+<div style="padding: 14px; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 15px; font-weight: 500">{{p.name}}</div>
+<div style="font-weight: 700; font-variant-numeric: tabular-nums; color: #1C1917">{{p.priceLabel}}</div>
+</div>
+</a>
+</div>
+</sc-for>
+</div>
+</section>
+<div style="height: 96px"></div>
+</main>
+<div aria-hidden="true" style="height: 88px; flex-shrink: 0"></div>
+<footer aria-label="Chân trang" style="background: #1C1917; color: #D6D3D1; margin-top: auto; flex-shrink: 0">
+<div style="max-width: 1280px; margin: 0 auto; padding: 48px 24px 0">
+<div style="display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr)); gap: 40px; padding-bottom: 40px; border-bottom: 1px solid #292524">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #ffffff; font-weight: 800; font-size: 22px; letter-spacing: -0.02em"><span style="width: 34px; height: 34px; border-radius: 10px; background: #047857; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px">V</span>VCK Shop</a>
+<p style="margin: 0; font-size: 14px; line-height: 1.7; color: #A8A29E; max-width: 320px">Thời trang cơ bản, chất liệu thoáng mát, giao nhanh toàn quốc.</p>
+<div style="font-size: 13px; line-height: 1.8; color: #A8A29E">[Tên doanh nghiệp] · MST [mã số thuế]<br>[Địa chỉ đăng ký kinh doanh]<br>Hotline [số hotline] · [email hỗ trợ]</div>
+<div style="display: flex; gap: 8px">
+<a href="#" aria-label="Facebook" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid #44403C; display: flex; align-items: center; justify-content: center; color: #D6D3D1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h-2a4 4 0 0 0-4 4v3H7v4h2v7h4v-7h3l1-4h-4V7a1 1 0 0 1 1-1h2z"></path></svg></a>
+<a href="#" aria-label="Instagram" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid #44403C; display: flex; align-items: center; justify-content: center; color: #D6D3D1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"></circle></svg></a>
+<a href="#" aria-label="TikTok" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid #44403C; display: flex; align-items: center; justify-content: center; color: #D6D3D1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v11a3.5 3.5 0 1 1-3.5-3.5M14 3c.5 2.5 2.5 4.5 5 4.5"></path></svg></a>
+<a href="#" aria-label="Zalo OA" style="height: 44px; padding: 0 14px; border-radius: 22px; border: 1px solid #44403C; display: flex; align-items: center; justify-content: center; color: #D6D3D1; font-size: 13px; font-weight: 700; text-decoration: none">Zalo</a>
+</div>
+</div>
+<nav aria-label="Hỗ trợ khách hàng" style="display: flex; flex-direction: column; gap: 4px; font-size: 14px">
+<div style="color: #ffffff; font-weight: 700; margin-bottom: 8px">Hỗ trợ</div>
+<a href="Policy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 32px; display: flex; align-items: center">Hướng dẫn mua hàng</a>
+<a href="Policy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 32px; display: flex; align-items: center">Chính sách đổi trả</a>
+<a href="Policy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 32px; display: flex; align-items: center">Vận chuyển &amp; giao hàng</a>
+<a href="Policy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 32px; display: flex; align-items: center">Hướng dẫn chọn size</a>
+<a href="Track.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 32px; display: flex; align-items: center">Tra cứu đơn hàng</a>
+</nav>
+<nav aria-label="Về VCK Shop" style="display: flex; flex-direction: column; gap: 4px; font-size: 14px">
+<div style="color: #ffffff; font-weight: 700; margin-bottom: 8px">Về chúng tôi</div>
+<a href="About.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 32px; display: flex; align-items: center">Câu chuyện thương hiệu</a>
+<a href="About.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 32px; display: flex; align-items: center">Hệ thống cửa hàng</a>
+<a href="Policy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 32px; display: flex; align-items: center">Chính sách bảo mật</a>
+<a href="Policy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 32px; display: flex; align-items: center">Điều khoản sử dụng</a>
+</nav>
+<div style="display: flex; flex-direction: column; gap: 12px; font-size: 14px">
+<div style="color: #ffffff; font-weight: 700">Thanh toán</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><span style="border: 1px solid #44403C; border-radius: 8px; padding: 6px 10px; font-weight: 700; color: #fff; font-size: 13px">VNPay</span><span style="border: 1px solid #44403C; border-radius: 8px; padding: 6px 10px; font-weight: 700; color: #fff; font-size: 13px">VietQR</span><span style="border: 1px solid #44403C; border-radius: 8px; padding: 6px 10px; font-weight: 700; color: #fff; font-size: 13px">COD</span></div>
+<div style="color: #ffffff; font-weight: 700; margin-top: 6px">Vận chuyển</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><span style="border: 1px solid #44403C; border-radius: 8px; padding: 6px 10px; font-weight: 700; color: #fff; font-size: 13px">GHN</span><span style="border: 1px solid #44403C; border-radius: 8px; padding: 6px 10px; font-weight: 700; color: #fff; font-size: 13px">GHTK</span></div>
+</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 0 28px; font-size: 13px; color: #A8A29E">
+<span>© 2026 VCK Shop. Bản demo portfolio.</span>
+<span style="display: flex; align-items: center; gap: 8px; border: 1px dashed #57534E; border-radius: 8px; padding: 6px 10px">[Dấu "Đã thông báo Bộ Công Thương"]</span>
+</div>
+</div>
+</footer>
+
+
+<sc-if value="{{flying}}" hint-placeholder-val="{{ false }}">
+<div class="flyer {{flyClass}}" aria-hidden="true" style="left: {{fx}}px; top: {{fy}}px; background: {{stageBg}}; --dx: {{fdx}}px; --dy: {{fdy}}px">
+<svg width="36" height="36" viewBox="0 0 32 32" fill="none" stroke="{{inkColor}}" stroke-width="1.4" stroke-linejoin="round"><path d="{{icon}}"></path></svg>
+</div>
+</sc-if>
+
+<div class="{{scrimClass}}" onClick="{{closeDrawer}}"></div>
+<aside class="{{drawerClass}}" aria-label="Giỏ hàng" aria-hidden="{{drawerHidden}}">
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #E7E5E4">
+<div style="font-weight: 700; font-size: 20px">Giỏ hàng ({{cartCount}})</div>
+<button class="iconbtn" type="button" aria-label="Đóng giỏ hàng" onClick="{{closeDrawer}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<div role="status" aria-live="polite" style="margin: 16px 24px 0; padding: 12px 14px; border-radius: 12px; background: #ECFDF5; color: #064E3B; font-size: 14px; font-weight: 600; display: flex; gap: 8px; align-items: center">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>{{drawerMsg}}
+</div>
+<div style="flex-grow: 1; overflow-y: auto; padding: 8px 24px">
+<sc-for list="{{lines}}" as="l" hint-placeholder-count="1">
+<div class="line" style="display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid #F5F5F4">
+<div style="width: 76px; height: 96px; border-radius: 10px; background: {{l.bg}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+<svg width="60%" height="60%" viewBox="0 0 32 32" fill="none" stroke="{{l.ink}}" stroke-width="1" stroke-linejoin="round" aria-hidden="true"><path d="{{icon}}"></path></svg>
+</div>
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 14px; font-weight: 500; line-height: 1.4">Áo thun oversize cotton 250gsm</div>
+<div style="font-size: 13px; color: #57534E">{{l.variant}}</div>
+<div style="display: flex; align-items: center; justify-content: space-between; margin-top: auto">
+<div style="display: flex; align-items: center; gap: 8px">
+<button class="lqty" type="button" aria-label="Giảm số lượng" onClick="{{l.dec}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+<span style="min-width: 20px; text-align: center; font-weight: 600">{{l.qty}}</span>
+<button class="lqty" type="button" aria-label="Tăng số lượng" onClick="{{l.inc}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+</div>
+<span style="font-weight: 700; font-variant-numeric: tabular-nums">{{l.totalLabel}}</span>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="padding: 20px 24px; border-top: 1px solid #E7E5E4; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; font-size: 15px"><span style="color: #57534E">Tạm tính</span><span style="font-weight: 700; font-size: 18px; font-variant-numeric: tabular-nums">{{subtotalLabel}}</span></div>
+<a class="btn-cta" href="Checkout.dc.html">Thanh toán</a>
+<button type="button" onClick="{{closeDrawer}}" style="height: 44px; border: 0; background: transparent; font-weight: 600; color: #1C1917">Tiếp tục mua sắm</button>
+</div>
+</aside>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"primary":{"editor":"color","default":"#047857","options":["#047857","#1D4ED8","#7C2D12","#1C1917"],"section":"Thương hiệu"},"reduceMotion":{"editor":"boolean","default":false,"section":"Chuyển động"},"$preview":{"width":1440,"height":3000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { color: 0, size: 2, qty: 1, qtyDir: 0, thumb: 0, swap: 0, tab: 0, wish: false, pop: 0,
+      cart: [], drawer: false, fly: null, flyN: 0, ox: '50%', oy: '50%', msg: '' };
+  }
+  componentWillUnmount() { clearTimeout(this.flyT); }
+  vnd(n) { return n.toLocaleString('vi-VN') + ' ₫'; }
+  reduced() {
+    const mq = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return !!(this.props.reduceMotion || mq);
+  }
+  commitAdd() {
+    const C = this.COLORS[this.state.color], S = this.SIZES[this.state.size];
+    const key = C.name + ' · ' + S.label;
+    const cart = this.state.cart.slice();
+    const i = cart.findIndex((l) => l.key === key);
+    if (i >= 0) cart[i] = { ...cart[i], qty: cart[i].qty + this.state.qty };
+    else cart.push({ key, variant: key, qty: this.state.qty, bg: C.tone, ink: C.ink });
+    this.setState({ cart, fly: null, drawer: true, msg: 'Đã thêm ' + this.state.qty + ' sản phẩm (' + key + ')' });
+  }
+  renderVals() {
+    const s = this.state;
+    const P = this.props.primary ?? '#047857';
+    this.COLORS = [
+      { name: 'Đen', hex: '#1C1917', tone: '#D6D3D1', ink: '#1C1917' },
+      { name: 'Trắng kem', hex: '#F5F0E6', tone: '#F5F0E6', ink: '#57534E' },
+      { name: 'Xanh rêu', hex: '#3F5E4A', tone: '#D1E0D5', ink: '#1F3A2B' },
+      { name: 'Be', hex: '#D6C3A5', tone: '#EFE6D8', ink: '#6B4F2A' }
+    ];
+    this.SIZES = [
+      { label: 'S', stock: 12 }, { label: 'M', stock: 3 }, { label: 'L', stock: 24 }, { label: 'XL', stock: 8 }, { label: 'XXL', stock: 0 }
+    ];
+    const C = this.COLORS[s.color];
+    const S = this.SIZES[s.size];
+    const icon = 'M9 5l5-2h4l5 2 5 5-3.5 3.5L22 12v16H10V12l-2.5 1.5L4 10z';
+    const views = [
+      { label: 'Mặt trước', size: 56, rot: '0deg', main: '62%' },
+      { label: 'Mặt sau', size: 50, rot: '4deg', main: '58%' },
+      { label: 'Chi tiết cổ áo', size: 70, rot: '0deg', main: '110%' },
+      { label: 'Chất liệu vải', size: 64, rot: '-12deg', main: '140%' },
+      { label: 'Phối đồ', size: 44, rot: '-6deg', main: '48%' }
+    ];
+    const V = views[s.thumb];
+    const reduced = this.reduced();
+    const change = (patch) => this.setState({ ...patch, swap: s.swap + 1 });
+    const count = s.cart.reduce((a, l) => a + l.qty, 0);
+    const PRICE = 259000;
+    const tabs = ['Mô tả', 'Thông số & size', 'Đổi trả'];
+    const tabW = [60, 132, 70];
+    const tabXs = [4, 100, 268];
+    return {
+      primary: P, rootClass: this.props.reduceMotion ? 'rm' : '', icon,
+      inkColor: C.ink, stageBg: C.tone, captionColor: '#1C1917', colorName: C.name,
+      thumbLabel: V.label, mainSize: V.main, mainRot: V.rot,
+      stageClass: reduced ? '' : (s.swap % 2 ? 'fadeA' : 'fadeB'),
+      ox: s.ox, oy: s.oy,
+      moveZoom: (e) => { if (!e || !e.currentTarget) return; const r = e.currentTarget.getBoundingClientRect(); this.setState({ ox: Math.round((e.clientX - r.left) / r.width * 100) + '%', oy: Math.round((e.clientY - r.top) / r.height * 100) + '%' }); },
+      thumbY: s.thumb * 116,
+      thumbs: views.map((v, i) => ({ ...v, bg: C.tone, sel: i === s.thumb ? 'true' : 'false', op: i === s.thumb ? 1 : 0.72, pick: () => change({ thumb: i }) })),
+      colors: this.COLORS.map((c, i) => ({ ...c, sel: i === s.color ? 'true' : 'false', cls: 'swatch' + (i === s.color ? ' on' : ''), pick: () => change({ color: i }) })),
+      sizes: this.SIZES.map((z, i) => ({ ...z, sel: i === s.size ? 'true' : 'false', dis: z.stock === 0 ? 'true' : 'false',
+        aria: z.stock === 0 ? 'Size ' + z.label + ', hết hàng' : 'Size ' + z.label,
+        cls: 'size' + (i === s.size ? ' on' : '') + (z.stock === 0 ? ' off' : ''),
+        pick: () => { if (z.stock > 0) this.setState({ size: i, qty: Math.min(s.qty, z.stock) }); } })),
+      sizeName: S.label,
+      stockText: S.stock <= 5 ? 'Chỉ còn ' + S.stock + ' sản phẩm size ' + S.label : 'Còn hàng',
+      stockColor: S.stock <= 5 ? '#B45309' : '#047857',
+      qty: s.qty, rollClass: reduced || !s.qtyDir ? '' : (s.qtyDir > 0 ? (s.qty % 2 ? 'rollA' : 'rollB') : (s.qty % 2 ? 'rollB' : 'rollA')),
+      inc: () => { if (s.qty < S.stock) this.setState({ qty: s.qty + 1, qtyDir: 1 }); },
+      dec: () => { if (s.qty > 1) this.setState({ qty: s.qty - 1, qtyDir: -1 }); },
+      wishSel: s.wish ? 'true' : 'false', heartFill: s.wish ? 'currentColor' : 'none',
+      heartCls: 'heart' + (s.wish ? ' on' : '') + (s.pop ? (s.pop % 2 ? ' popA' : ' popB') : ''),
+      toggleWish: () => this.setState({ wish: !s.wish, pop: s.pop + 1 }),
+      addToCart: (e) => {
+        if (s.fly) return;
+        const btn = e && e.currentTarget ? e.currentTarget.getBoundingClientRect() : null;
+        const cartEl = typeof document !== 'undefined' ? document.querySelector('[data-cart-icon]') : null;
+        if (reduced || !btn || !cartEl) { this.commitAdd(); return; }
+        const cr = cartEl.getBoundingClientRect();
+        const fx = btn.left + 24, fy = btn.top - 10;
+        this.setState({ fly: { fx, fy, dx: Math.round(cr.left + cr.width / 2 - 28 - fx), dy: Math.round(cr.top + cr.height / 2 - 35 - fy) }, flyN: s.flyN + 1 });
+        clearTimeout(this.flyT);
+        this.flyT = setTimeout(() => this.commitAdd(), 650);
+      },
+      flying: !!s.fly, flyClass: s.flyN % 2 ? 'flyA' : 'flyB',
+      fx: s.fly ? s.fly.fx : 0, fy: s.fly ? s.fly.fy : 0, fdx: s.fly ? s.fly.dx : 0, fdy: s.fly ? s.fly.dy : 0,
+      hasCart: count > 0, cartCount: count, bumpClass: reduced ? '' : (count % 2 ? 'bumpA' : 'bumpB'),
+      drawerClass: 'drawer' + (s.drawer ? ' on' : ''), scrimClass: 'scrim' + (s.drawer ? ' on' : ''), drawerHidden: s.drawer ? 'false' : 'true',
+      openDrawer: () => this.setState({ drawer: true, msg: count ? 'Giỏ hàng của bạn' : 'Giỏ hàng đang trống' }),
+      closeDrawer: () => this.setState({ drawer: false }), drawerMsg: s.msg,
+      lines: s.cart.map((l) => ({ ...l, totalLabel: this.vnd(l.qty * PRICE),
+        inc: () => this.setState({ cart: s.cart.map((x) => x.key === l.key ? { ...x, qty: x.qty + 1 } : x) }),
+        dec: () => this.setState({ cart: s.cart.map((x) => x.key === l.key ? { ...x, qty: x.qty - 1 } : x).filter((x) => x.qty > 0) }) })),
+      subtotalLabel: this.vnd(count * PRICE),
+      tabs: tabs.map((t, i) => ({ label: t, sel: i === s.tab ? 'true' : 'false', cls: 'tab' + (i === s.tab ? ' on' : ''), pick: () => this.setState({ tab: i }) })),
+      tab0: s.tab === 0, tab1: s.tab === 1, tab2: s.tab === 2,
+      tabW: tabW[s.tab], tabX: tabXs[s.tab], panelClass: reduced ? '' : (s.tab % 2 ? 'tabA' : 'tabB'),
+      dist: [{ star: 5, pct: '82%' }, { star: 4, pct: '12%' }, { star: 3, pct: '4%' }, { star: 2, pct: '1%' }, { star: 1, pct: '1%' }],
+      reviews: [
+        { author: 'Khách hàng D.', variant: 'Đen · L', text: 'Form rộng đúng kiểu, vải dày không lộ. Mình cao 1m70 nặng 62kg mặc L vừa đẹp. [Đánh giá mẫu]', tone: '#D6D3D1' },
+        { author: 'Khách hàng E.', variant: 'Be · M', text: 'Màu be ngoài đời xinh, giặt máy 3 lần chưa bai cổ. [Đánh giá mẫu]', tone: '#EFE6D8' }
+      ],
+      related: [
+        { name: 'Quần kaki ống suông', priceLabel: this.vnd(429000), tone: '#D1FAE5', icon: 'M10 4h12l2 24h-5l-3-15-3 15H8z' },
+        { name: 'Giày sneaker vải', priceLabel: this.vnd(590000), tone: '#E0F2FE', icon: 'M3 22c0-3 2-6 4-6l5-4 3 3c3 2 8 2 12 3 2 .5 3 2 3 4v2H3z' },
+        { name: 'Túi tote canvas', priceLabel: this.vnd(299000), tone: '#FED7AA', icon: 'M7 12h18l-1.6 15H8.6zM12 12V9a4 4 0 0 1 8 0v3' },
+        { name: 'Mũ lưỡi trai thêu chữ', priceLabel: this.vnd(169000), tone: '#F5F5F4', icon: 'M5 20c0-6 5-11 11-11s11 5 11 11zM3 20h28' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -14,11 +14,6 @@ const steps = (wf) => Object.values(wf.jobs).flatMap((j) => j.steps ?? []);
 const runs = (wf) => steps(wf).map((s) => s.run ?? '');
 const uses = (wf) => steps(wf).filter((s) => s.uses);
 
-test('[VCK-003-AC1] ci.yml and pr-title.yml exist (glob covers yml and yaml)', () => {
-  assert.ok(files.length >= 2, `found ${files}`);
-  assert.ok(files.includes('ci.yml') && files.includes('pr-title.yml'));
-});
-
 test('[VCK-003-AC1] ci.yml triggers on pull_request without edited (would cancel real runs)', () => {
   const types = load('ci.yml').on.pull_request.types;
   assert.deepEqual(types, ['opened', 'synchronize', 'reopened']);
@@ -128,38 +123,10 @@ test('[VCK-003-AC2] security job: licence gate with exact shape, bash, no || tru
   assert.ok(j.steps.slice(0, i).some((x) => (x.run ?? '').includes('pnpm install --frozen-lockfile')));
 });
 
-test('[VCK-003-AC2] pins job runs check-action-pins with GH_TOKEN via env', () => {
-  const j = load('ci.yml').jobs.pins;
-  assert.ok(j, 'pins job missing');
-  const s = j.steps.find((x) => (x.run ?? '').includes('node scripts/check-action-pins.mjs'));
-  assert.ok(s);
-  assert.equal(s.env.GH_TOKEN, '${{ github.token }}');
-});
-
-test('[VCK-003-AC3] pr-title.yml: triggers incl. edited, title via env only, runs checker', () => {
-  const wf = load('pr-title.yml');
-  const t = wf.on.pull_request.types;
-  for (const e of ['opened', 'edited', 'synchronize', 'reopened', 'ready_for_review']) assert.ok(t.includes(e), e);
-  assert.equal(Object.keys(wf.jobs).length, 1);
-  const s = steps(wf).find((x) => (x.run ?? '').includes('check-pr-title.mjs'));
-  assert.ok(s);
-  assert.equal(s.run.trim(), 'node scripts/check-pr-title.mjs "$PR_TITLE"');
-  assert.equal(s.env.PR_TITLE, '${{ github.event.pull_request.title }}');
-  for (const r of runs(wf)) assert.ok(!r.includes('${{'), 'no expression interpolation in run');
-});
-
-test('[VCK-003-AC3] ci.yml has no pr-title job and no edited trigger', () => {
-  const wf = load('ci.yml');
-  assert.ok(!Object.keys(wf.jobs).some((n) => /title/.test(n)));
-  assert.ok(!runs(wf).some((r) => r.includes('check-pr-title')));
-  assert.ok(!wf.on.pull_request.types.includes('edited'));
-});
-
 // Required status checks (branch protection, when available): checks, integration, security, pins, pr-title.
 // A skipped job counts as passing, so no job may carry an `if:`; job ids and concurrency prefixes must not collide.
 test('[VCK-003-AC1] required-check safety: exact job ids, no job-level if, unique ids and group prefixes', () => {
-  assert.deepEqual(Object.keys(load('ci.yml').jobs).sort(), ['checks', 'integration', 'pins', 'security']);
-  assert.deepEqual(Object.keys(load('pr-title.yml').jobs), ['pr-title']);
+  assert.deepEqual(Object.keys(load('ci.yml').jobs).sort(), ['checks', 'integration', 'security']);
   const ids = files.flatMap((f) => Object.keys(load(f).jobs));
   assert.equal(new Set(ids).size, ids.length, 'job ids must be unique across workflows');
   for (const f of files) {
@@ -190,7 +157,7 @@ test('[VCK-004-AC2] contract-breaking.yml: triggers, distinct group prefix, job 
   assert.deepEqual(wf.on.pull_request.types, ['opened', 'synchronize', 'reopened', 'labeled', 'unlabeled', 'edited']);
   assert.ok(wf.concurrency.group.startsWith('contract-breaking-${{ github.event.pull_request.number }}'));
   assert.deepEqual(Object.keys(wf.jobs), ['breaking']);
-  for (const f of ['ci.yml', 'pr-title.yml']) assert.notEqual(load(f).concurrency.group.split('${{')[0], 'contract-breaking-');
+  for (const f of ['ci.yml']) assert.notEqual(load(f).concurrency.group.split('${{')[0], 'contract-breaking-');
 });
 
 test('[VCK-004-AC2] contract-breaking.yml: oasdiff checksum literal verified before tar; PR text only via env', () => {

@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Trang chủ mobile — VCK Shop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0;background:#FAFAF9;color:#1C1917;font-family:"Be Vietnam Pro","Noto Sans",system-ui,sans-serif}
+a{color:#047857}a:hover{color:#065F46}
+*{box-sizing:border-box}
+button{font-family:inherit;cursor:pointer}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:2px solid #047857;outline-offset:2px}
+.scroller{scrollbar-width:none}.scroller>*{flex-shrink:0}.scroller::-webkit-scrollbar{display:none}
+.hdr{transition:height 220ms cubic-bezier(.2,0,0,1),box-shadow 220ms}
+.hdr.small{box-shadow:0 6px 16px -4px rgba(28,25,23,.12)}
+.hdr .logo{transition:font-size 220ms cubic-bezier(.2,0,0,1)}
+.iconbtn{width:44px;height:44px;border-radius:10px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;color:#1C1917;position:relative}
+.iconbtn:active{background:#F5F5F4}
+.badge{position:absolute;top:4px;right:2px;min-width:18px;height:18px;border-radius:9px;background:#C2410C;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.bumpA{animation:bumpA 420ms cubic-bezier(.2,0,0,1)}.bumpB{animation:bumpB 420ms cubic-bezier(.2,0,0,1)}
+@keyframes bumpA{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+@keyframes bumpB{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+.snap{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.snap::-webkit-scrollbar{display:none}
+.snap>*{scroll-snap-align:start;flex-shrink:0}
+.pip{width:44px;height:28px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;padding:0}
+.pip span{display:block;height:6px;width:8px;border-radius:3px;background:rgba(28,25,23,.25);transition:width 320ms cubic-bezier(.2,0,0,1),background 320ms}
+.pip.on span{width:24px;background:#1C1917}
+.btn-cta{height:48px;padding:0 20px;border-radius:12px;border:0;background:#C2410C;color:#fff;font-weight:700;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;transition:transform 100ms}
+.btn-cta:active{transform:scale(.97)}.btn-cta:hover{color:#fff}
+.chip{height:40px;padding:0 14px;border-radius:999px;border:1.5px solid #E7E5E4;background:#fff;font-size:14px;font-weight:600;color:#1C1917;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:background 160ms,border-color 160ms,color 160ms}
+.chip.on{background:#ECFDF5;border-color:#047857;color:#064E3B}
+.digit{display:inline-flex;width:24px;height:32px;border-radius:6px;background:#1C1917;color:#fff;font-weight:700;font-size:17px;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.flipA{animation:flipA 360ms cubic-bezier(.2,0,0,1)}.flipB{animation:flipB 360ms cubic-bezier(.2,0,0,1)}
+@keyframes flipA{from{transform:rotateX(90deg);opacity:.3}to{transform:none;opacity:1}}
+@keyframes flipB{from{transform:rotateX(90deg);opacity:.3}to{transform:none;opacity:1}}
+.stock{height:5px;border-radius:3px;background:#FED7AA;overflow:hidden}
+.stock i{display:block;height:100%;border-radius:3px;background:#C2410C}
+.card{position:relative;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(28,25,23,.06)}
+.plink{text-decoration:none;color:#1C1917;display:block}.plink:hover{color:#1C1917}
+.plus{position:absolute;right:8px;width:40px;height:40px;border-radius:20px;border:0;background:#1C1917;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px -4px rgba(28,25,23,.35);transition:transform 100ms,background 160ms}
+.plus:active{transform:scale(.9);background:#C2410C}
+.heart{position:absolute;top:6px;right:6px;width:40px;height:40px;border-radius:20px;border:0;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;color:#1C1917}
+.heart.on{color:#B91C1C}
+.popA svg{animation:popA 480ms cubic-bezier(.2,0,0,1)}.popB svg{animation:popB 480ms cubic-bezier(.2,0,0,1)}
+@keyframes popA{0%{transform:scale(1)}35%{transform:scale(1.35)}100%{transform:scale(1)}}
+@keyframes popB{0%{transform:scale(1)}35%{transform:scale(1.35)}100%{transform:scale(1)}}
+.gridA{animation:gridA 320ms cubic-bezier(.05,.7,.1,1)}.gridB{animation:gridB 320ms cubic-bezier(.05,.7,.1,1)}
+@keyframes gridA{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes gridB{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.scrim{position:absolute;inset:0;background:rgba(28,25,23,.45);opacity:0;pointer-events:none;transition:opacity 320ms;z-index:70}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;z-index:80;transform:translateY(105%);transition:transform 380ms cubic-bezier(.05,.7,.1,1);display:flex;flex-direction:column;box-shadow:0 -16px 40px -8px rgba(28,25,23,.25)}
+.sheet.on{transform:none}
+.grab{width:40px;height:5px;border-radius:3px;background:#D6D3D1;margin:10px auto 4px}
+.toast{position:absolute;left:16px;right:16px;bottom:24px;transform:translateY(24px);opacity:0;background:#1C1917;color:#fff;border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:center;font-size:14px;transition:transform 220ms cubic-bezier(.05,.7,.1,1),opacity 220ms;z-index:60;pointer-events:none}
+.toast.on{transform:none;opacity:1;pointer-events:auto}
+.fab{position:absolute;left:50%;bottom:20px;transform:translate(-50%,0);height:48px;padding:0 20px;border-radius:24px;border:0;background:#1C1917;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;z-index:40;box-shadow:0 10px 24px -6px rgba(28,25,23,.45);transition:transform 320ms cubic-bezier(.05,.7,.1,1),opacity 220ms}
+.fab.hide{transform:translate(-50%,120px);opacity:0;pointer-events:none}
+.qtybtn{width:36px;height:36px;border-radius:8px;border:1px solid #E7E5E4;background:#fff;display:flex;align-items:center;justify-content:center}
+.rm *{animation:none !important;transition:none !important}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+<style data-vck-motion="v2">
+/* VCK motion layer v2 — docs/13 §4.6. Transform/opacity only; progressive (no support = static, fully visible). */
+:root{--dur-instant:100ms;--dur-fast:160ms;--dur-base:220ms;--dur-slow:320ms;--dur-expressive:480ms;--ease-std:cubic-bezier(.2,0,0,1);--ease-enter:cubic-bezier(.05,.7,.1,1);--ease-exit:cubic-bezier(.3,0,.8,.15)}
+/* MI-30 press + hover feedback (zero-specificity so page rules still win) */
+:where(.btn,.btn-cta,.btn-dark,.btn-out,.btn-outline,.btn-danger,.chip,.pill,.fbtn,.pg,.seg button,.tab,.nv,.nav,.mnav,.demo,.todo,.choice,.story,.sub,.tpl,.pnav,.rank,.sg,.rowopt,.mrow){transition:background-color var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast),box-shadow var(--dur-fast),transform var(--dur-instant) var(--ease-std)}
+:where(.btn,.btn-cta,.btn-dark,.btn-out,.btn-outline,.btn-danger,.chip,.pill,.fbtn,.pg,.demo,.choice,.story,.sub,.tpl,.mnav):active:not([aria-disabled=true]){transform:scale(.97)}
+:where(.card):is(a,button):hover{box-shadow:0 10px 28px -14px rgba(28,25,23,.28)}
+/* MI-31 staggered list enter (runs on mount) */
+.stg>*{animation:vckStg var(--dur-slow) var(--ease-enter) both}
+.stg>*:nth-child(2){animation-delay:40ms}.stg>*:nth-child(3){animation-delay:80ms}.stg>*:nth-child(4){animation-delay:120ms}.stg>*:nth-child(5){animation-delay:160ms}.stg>*:nth-child(6){animation-delay:200ms}.stg>*:nth-child(7){animation-delay:240ms}.stg>*:nth-child(n+8){animation-delay:280ms}
+@keyframes vckStg{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* back-to-top + reading progress default hidden state when scroll timelines are unsupported */
+.to-top{display:none}
+@media (prefers-reduced-motion: no-preference){
+@supports (animation-timeline: view()){
+  /* MI-25 scroll reveal: starts as the element enters, done at 20% coverage */
+  .sr-up{animation:vckUp linear both;animation-timeline:view();animation-range:entry 0% cover 20%}
+  .sr-fade{animation:vckFade linear both;animation-timeline:view();animation-range:entry 0% cover 20%}
+  .sr-scale{animation:vckScale linear both;animation-timeline:view();animation-range:entry 0% cover 25%}
+  .sr-left{animation:vckLeft linear both;animation-timeline:view();animation-range:entry 0% cover 22%}
+  .sr-right{animation:vckRight linear both;animation-timeline:view();animation-range:entry 0% cover 22%}
+  .sr-stg>*{animation:vckUp linear both;animation-timeline:view();animation-range:entry 0% cover 18%}
+  .sr-stg>*:nth-child(2){animation-range:entry 5% cover 22%}.sr-stg>*:nth-child(3){animation-range:entry 10% cover 26%}.sr-stg>*:nth-child(4){animation-range:entry 15% cover 30%}
+  /* MI-29 parallax: decorative layers only, never the LCP image */
+  .plx{animation:vckPlx linear both;animation-timeline:view();animation-range:cover}
+  .plx-slow{animation:vckPlxS linear both;animation-timeline:view();animation-range:cover}
+  /* MI-32 bar fill on view (stock / share bars) — scaleX */
+  .fill-x{transform-origin:0 50%;animation:vckFill linear both;animation-timeline:view();animation-range:entry 10% cover 30%}
+  /* MI-26 header elevation on scroll (desktop document scroll) */
+  .hdr-scroll{animation:vckHdr linear both;animation-timeline:scroll(root);animation-range:0 120px}
+  .hdr-scroll .hdr-logo{transform-origin:0 50%;animation:vckLogo linear both;animation-timeline:scroll(root);animation-range:0 120px}
+  /* MI-27 back-to-top + MI-28 reading progress (document scroll) */
+  .to-top{display:flex;animation:vckTop linear both;animation-timeline:scroll(root);animation-range:300px 700px}
+  .read-progress{transform-origin:0 50%;animation:vckGrow linear both;animation-timeline:scroll(root)}
+}
+@supports (timeline-scope: --pg){
+  /* Mobile frames: the inner scroller publishes --pg; siblings outside it read it */
+  .pg-scope{timeline-scope:--pg}
+  .pg-src{scroll-timeline:--pg block}
+  .hdr-m{animation:vckHdrM linear both;animation-timeline:--pg;animation-range:0 90px}
+  .to-top.m{display:flex;animation:vckTop linear both;animation-timeline:--pg;animation-range:280px 600px}
+  .read-progress.m{animation:vckGrow linear both;animation-timeline:--pg}
+}
+}
+@keyframes vckUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes vckFade{from{opacity:0}to{opacity:1}}
+@keyframes vckScale{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+@keyframes vckLeft{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+@keyframes vckRight{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes vckPlx{from{transform:translateY(-40px)}to{transform:translateY(40px)}}
+@keyframes vckPlxS{from{transform:translateY(24px) rotate(0deg)}to{transform:translateY(-24px) rotate(12deg)}}
+@keyframes vckFill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes vckHdr{from{box-shadow:0 0 0 rgba(28,25,23,0);background-color:rgba(250,250,249,.94)}to{box-shadow:0 8px 24px -14px rgba(28,25,23,.35);background-color:rgba(255,255,255,.98)}}
+@keyframes vckLogo{to{transform:scale(.9)}}
+@keyframes vckHdrM{to{box-shadow:0 8px 20px -12px rgba(28,25,23,.35);background-color:rgba(255,255,255,.98)}}
+@keyframes vckTop{from{opacity:0;transform:translateY(16px) scale(.9);visibility:hidden}to{opacity:1;transform:none;visibility:visible}}
+@keyframes vckGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.to-top{position:fixed;right:24px;bottom:24px;z-index:45;width:48px;height:48px;border-radius:24px;border:0;background:#1C1917;color:#fff;align-items:center;justify-content:center;box-shadow:0 10px 24px -8px rgba(28,25,23,.45);text-decoration:none}
+.to-top:hover{background:#047857;color:#fff}
+.to-top.m{position:absolute;right:16px;bottom:88px;width:44px;height:44px;border-radius:22px}
+.read-progress{position:fixed;left:0;right:0;top:0;height:3px;background:#047857;z-index:60;transform:scaleX(0)}
+.read-progress.m{position:absolute}
+.rm .to-top,.rm .read-progress{animation:none !important}
+</style>
+
+</helmet>
+<div data-m-root="home" class="{{rootClass}} pg-scope" style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #FAFAF9; font-family: 'Be Vietnam Pro','Noto Sans',system-ui,sans-serif; color: #1C1917"><a class="to-top m" href="#top" aria-label="Lên đầu trang"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"></path></svg></a>
+<div class="scroller pg-src" data-m-scroll="home" onScroll="{{onScroll}}" style="position: absolute; inset: 0; overflow-y: auto; display: flex; flex-direction: column"><span id="top" aria-hidden="true" style="display: block; height: 0"></span><div role="note" style="background: #1C1917; color: #FAFAF9; font-size: 12px; display: flex; align-items: center; gap: 8px; padding: 8px 12px"><span style="font-size: 10px; font-weight: 800; letter-spacing: .08em; background: #EA580C; color: #1C1917; padding: 2px 7px; border-radius: 999px; flex-shrink: 0">DEMO</span><span style="line-height: 1.4">Thanh toán sandbox · dữ liệu reset mỗi đêm · <a href="#" style="color: #FDBA74; font-weight: 700">case study</a></span></div>
+
+<div style="background: {{primary}}; color: #ffffff; font-size: 12px; font-weight: 500; text-align: center; padding: 8px 12px">Freeship đơn từ [X].000 ₫ · COD toàn quốc</div>
+
+<header class="{{hdrClass}}" style="position: sticky; top: 0; z-index: 30; height: {{hdrH}}px; background: rgba(250,250,249,.95); backdrop-filter: blur(8px); border-bottom: 1px solid #E7E5E4; display: flex; align-items: center; padding: 0 8px; gap: 4px">
+<a class="iconbtn" href="MobileCategory.dc.html" aria-label="Xem tất cả danh mục" style="text-decoration: none; color: #1C1917"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"></path></svg></a>
+<a class="logo" href="MobileHome.dc.html" style="flex-grow: 1; text-decoration: none; color: #064E3B; font-weight: 800; font-size: {{logoSize}}px; letter-spacing: -0.02em">VCK Shop</a>
+<a class="iconbtn" href="MobileSearch.dc.html" aria-label="Tìm kiếm" style="text-decoration: none; color: #1C1917"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg></a>
+<a class="iconbtn" href="MobileAccount.dc.html" aria-label="Tài khoản" style="text-decoration: none; color: #1C1917"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg></a>
+<button class="iconbtn" type="button" aria-label="Giỏ hàng, {{cartCount}} sản phẩm" onClick="{{openCart}}">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg>
+<sc-if value="{{hasCart}}" hint-placeholder-val="{{ false }}"><span class="badge {{bumpClass}}">{{cartCount}}</span></sc-if>
+</button>
+</header>
+
+<section aria-label="Chiến dịch nổi bật" style="padding: 12px 16px 0">
+<div class="snap" data-hero="1" onScroll="{{onHeroScroll}}" style="gap: 12px; border-radius: 22px">
+<sc-for list="{{slides}}" as="s" hint-placeholder-count="3">
+<div style="width: 358px; height: 440px; border-radius: 22px; background: {{s.bg}}; position: relative; overflow: hidden; padding: 24px; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px">
+<div style="position: absolute; right: -40px; top: -30px; width: 260px; height: 260px; border-radius: 130px; background: {{s.blockA}}"></div>
+<div style="position: absolute; left: 30px; top: 150px; width: 110px; height: 110px; border-radius: 22px; background: {{s.blockB}}; transform: rotate(-12deg)"></div>
+<div style="position: absolute; right: 24px; top: 36px; width: 200px; height: 200px">
+<svg width="100%" height="100%" viewBox="0 0 32 32" fill="none" stroke="{{s.fg}}" stroke-width="0.9" stroke-linejoin="round" aria-hidden="true"><path d="{{s.icon}}"></path></svg>
+</div>
+<span style="position: relative; align-self: flex-start; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; background: {{s.chipBg}}; color: {{s.chipFg}}; padding: 5px 10px; border-radius: 999px">{{s.kicker}}</span>
+<h1 style="position: relative; margin: 0; font-size: 32px; line-height: 1.1; letter-spacing: -0.03em; font-weight: 800; color: {{s.fg}}; white-space: pre-line">{{s.title}}</h1>
+<a class="btn-cta" href="MobileProduct.dc.html" style="position: relative; align-self: flex-start">{{s.cta}}</a>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; justify-content: center; margin-top: 4px">
+<sc-for list="{{slides}}" as="s" hint-placeholder-count="3">
+<button class="{{s.pipCls}}" type="button" aria-label="Xem slide {{s.n}}" onClick="{{s.go}}"><span></span></button>
+</sc-for>
+</div>
+</section>
+
+<section aria-label="Cam kết" class="snap" style="gap: 8px; padding: 8px 16px 0">
+<sc-for list="{{usps}}" as="u" hint-placeholder-count="4">
+<div style="display: flex; gap: 8px; align-items: center; padding: 10px 14px; background: #ffffff; border-radius: 12px; border: 1px solid #E7E5E4; font-size: 13px; font-weight: 600">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{u.icon}}"></path></svg>{{u.title}}
+</div>
+</sc-for>
+</section>
+
+<section class="sr-up" aria-labelledby="mh-cat" style="padding: 32px 16px 0">
+<h2 id="mh-cat" style="margin: 0 0 14px; font-size: 22px; letter-spacing: -0.02em; color: #064E3B">Mua theo danh mục</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{cats}}" as="c" hint-placeholder-count="5">
+<a href="MobileCategory.dc.html" style="position: relative; grid-column: {{c.col}}; height: {{c.h}}px; border-radius: 16px; overflow: hidden; background: {{c.bg}}; text-decoration: none; color: {{c.fg}}; padding: 14px">
+<div style="font-weight: 800; font-size: {{c.size}}px; letter-spacing: -0.02em; position: relative">{{c.name}}</div>
+<div style="position: absolute; right: 8px; bottom: 6px; width: {{c.art}}px; height: {{c.art}}px">
+<svg width="100%" height="100%" viewBox="0 0 32 32" fill="none" stroke="{{c.fg}}" stroke-width="1" stroke-linejoin="round" aria-hidden="true"><path d="{{c.icon}}"></path></svg>
+</div>
+</a>
+</sc-for>
+</div>
+</section>
+
+<section class="sr-up" aria-labelledby="mh-flash" style="margin: 32px 16px 0; background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 22px; padding: 18px 0 18px 16px">
+<div style="display: flex; align-items: center; gap: 10px; padding-right: 16px; margin-bottom: 14px">
+<h2 id="mh-flash" style="margin: 0; font-size: 22px; letter-spacing: -0.02em; display: flex; align-items: center; gap: 6px">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="#EA580C" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"></path></svg>Flash sale</h2>
+<div role="timer" aria-label="Kết thúc sau {{timeLabel}}" style="margin-left: auto; display: flex; align-items: center; gap: 3px; perspective: 400px">
+<sc-for list="{{digits}}" as="d" hint-placeholder-count="8">
+<sc-if value="{{d.sep}}" hint-placeholder-val="{{ false }}"><span style="font-weight: 700; width: 6px; text-align: center">:</span></sc-if>
+<sc-if value="{{d.num}}" hint-placeholder-val="{{ true }}"><span class="digit {{d.cls}}" aria-hidden="true">{{d.v}}</span></sc-if>
+</sc-for>
+</div>
+</div>
+<div class="snap" style="gap: 10px; padding-right: 16px">
+<sc-for list="{{flash}}" as="p" hint-placeholder-count="4">
+<a class="plink card" href="MobileProduct.dc.html" style="width: 150px">
+<div style="position: relative; height: 180px; background: {{p.tone}}; display: flex; align-items: center; justify-content: center">
+<svg width="60%" height="60%" viewBox="0 0 32 32" fill="none" stroke="#1C1917" stroke-opacity=".75" stroke-width="1" stroke-linejoin="round" aria-hidden="true"><path d="{{p.icon}}"></path></svg>
+<span style="position: absolute; left: 8px; top: 8px; background: #B91C1C; color: #fff; font-size: 11px; font-weight: 700; padding: 3px 6px; border-radius: 6px">-{{p.off}}%</span>
+</div>
+<div style="padding: 10px; display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 13px; line-height: 1.35; height: 36px; overflow: hidden">{{p.name}}</div>
+<div style="font-weight: 700; font-size: 15px; color: #B91C1C; font-variant-numeric: tabular-nums">{{p.priceLabel}}</div>
+<div class="stock" aria-hidden="true"><i style="width: {{p.soldPct}}"></i></div>
+<div style="font-size: 11px; color: #9A3412; font-weight: 600">{{p.stockText}}</div>
+</div>
+</a>
+</sc-for>
+</div>
+</section>
+
+<section class="sr-up" id="mh-best" aria-labelledby="mh-best-h" style="padding: 32px 16px 0">
+<div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px">
+<h2 id="mh-best-h" style="margin: 0; font-size: 22px; letter-spacing: -0.02em; color: #064E3B">Bán chạy</h2>
+<a href="MobileFlashSale.dc.html" style="font-size: 14px; font-weight: 600; min-height: 44px; display: flex; align-items: center">Xem tất cả</a>
+</div>
+<sc-if value="{{hasActive}}" hint-placeholder-val="{{ false }}">
+<div class="snap" style="gap: 8px; margin-bottom: 12px">
+<sc-for list="{{activeChips}}" as="a" hint-placeholder-count="2">
+<button class="chip on" type="button" onClick="{{a.remove}}" aria-label="Bỏ lọc {{a.label}}">{{a.label}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</sc-for>
+</div>
+</sc-if>
+<div class="{{gridClass}}" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{best}}" as="p" hint-placeholder-count="6">
+<div class="card">
+<a class="plink" href="MobileProduct.dc.html">
+<div style="position: relative; aspect-ratio: 4 / 5; background: {{p.tone}}; display: flex; align-items: center; justify-content: center">
+<svg width="58%" height="58%" viewBox="0 0 32 32" fill="none" stroke="#1C1917" stroke-opacity=".75" stroke-width="1" stroke-linejoin="round" aria-hidden="true"><path d="{{p.icon}}"></path></svg>
+<sc-if value="{{p.hasBadge}}" hint-placeholder-val="{{ true }}"><span style="position: absolute; left: 8px; top: 8px; background: {{p.badgeBg}}; color: #fff; font-size: 11px; font-weight: 700; padding: 3px 6px; border-radius: 6px">{{p.badge}}</span></sc-if>
+</div>
+<div style="padding: 10px 10px 12px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 13px; line-height: 1.35; height: 36px; overflow: hidden">{{p.name}}</div>
+<div style="display: flex; align-items: baseline; gap: 6px"><span style="font-weight: 700; font-size: 15px; color: {{p.priceColor}}; font-variant-numeric: tabular-nums">{{p.priceLabel}}</span></div>
+<div style="font-size: 12px; color: #57534E">★ {{p.rating}} · Đã bán {{p.sold}}</div>
+</div>
+</a>
+<button class="{{p.heartCls}}" type="button" aria-pressed="{{p.wished}}" aria-label="Yêu thích {{p.name}}" onClick="{{p.toggleWish}}">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="{{p.heartFill}}" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"></path></svg>
+</button>
+<button class="plus" type="button" aria-label="Thêm nhanh {{p.name}} vào giỏ" onClick="{{p.add}}" style="top: 170px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+</button>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{noResults}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 32px 16px; text-align: center; color: #57534E; font-size: 14px">Không có sản phẩm phù hợp bộ lọc.<br><button type="button" onClick="{{resetFilters}}" style="margin-top: 12px; height: 44px; border: 0; background: transparent; color: #047857; font-weight: 700; font-size: 15px">Xoá tất cả bộ lọc</button></div>
+</sc-if>
+</section>
+
+<div aria-hidden="true" style="height: 40px; flex-shrink: 0"></div>
+<footer aria-label="Chân trang" style="background: #1C1917; color: #D6D3D1; margin-top: auto; flex-shrink: 0; padding: 28px 16px 32px; display: flex; flex-direction: column; gap: 16px; font-size: 14px">
+<a href="MobileHome.dc.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #ffffff; font-weight: 800; font-size: 20px"><span style="width: 30px; height: 30px; border-radius: 9px; background: #047857; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px">V</span>VCK Shop</a>
+<details style="border-top: 1px solid #292524"><summary style="min-height: 48px; display: flex; align-items: center; justify-content: space-between; color: #fff; font-weight: 700; cursor: pointer; list-style: none">Hỗ trợ khách hàng<span aria-hidden="true">+</span></summary>
+<div style="display: flex; flex-direction: column; padding-bottom: 8px"><a href="MobilePolicy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Chính sách đổi trả</a><a href="MobilePolicy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Vận chuyển &amp; giao hàng</a><a href="MobilePolicy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Hướng dẫn chọn size</a><a href="MobileTrack.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Tra cứu đơn hàng</a></div></details>
+<details style="border-top: 1px solid #292524; border-bottom: 1px solid #292524"><summary style="min-height: 48px; display: flex; align-items: center; justify-content: space-between; color: #fff; font-weight: 700; cursor: pointer; list-style: none">Về chúng tôi<span aria-hidden="true">+</span></summary>
+<div style="display: flex; flex-direction: column; padding-bottom: 8px"><a href="MobileAbout.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Câu chuyện thương hiệu</a><a href="MobilePolicy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Chính sách bảo mật</a><a href="MobilePolicy.dc.html" style="color: #D6D3D1; text-decoration: none; min-height: 40px; display: flex; align-items: center">Điều khoản sử dụng</a></div></details>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><span style="border: 1px solid #44403C; border-radius: 8px; padding: 5px 9px; font-weight: 700; color: #fff; font-size: 12px">VNPay</span><span style="border: 1px solid #44403C; border-radius: 8px; padding: 5px 9px; font-weight: 700; color: #fff; font-size: 12px">VietQR</span><span style="border: 1px solid #44403C; border-radius: 8px; padding: 5px 9px; font-weight: 700; color: #fff; font-size: 12px">COD</span><span style="border: 1px solid #44403C; border-radius: 8px; padding: 5px 9px; font-weight: 700; color: #fff; font-size: 12px">GHN</span></div>
+<div style="font-size: 12px; line-height: 1.7; color: #A8A29E">[Tên doanh nghiệp] · MST [mã số thuế]<br>Hotline [số hotline]<br>© 2026 VCK Shop · Bản demo portfolio</div>
+</footer>
+
+<div aria-hidden="true" style="height: 72px; background: #1C1917; flex-shrink: 0"></div>
+</div>
+
+<button class="{{fabClass}}" type="button" onClick="{{openFilter}}" aria-haspopup="dialog">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>
+Lọc &amp; Sắp xếp<sc-if value="{{hasActive}}" hint-placeholder-val="{{ false }}"><span style="min-width: 20px; height: 20px; border-radius: 10px; background: #EA580C; color: #1C1917; font-size: 12px; display: flex; align-items: center; justify-content: center; padding: 0 6px">{{activeCount}}</span></sc-if>
+</button>
+
+<div class="{{toastClass}}" role="status" aria-live="polite">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6EE7B7" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
+<span style="flex-grow: 1">{{toastText}}</span>
+<button type="button" onClick="{{openCart}}" style="background: transparent; border: 0; color: #FDBA74; font-weight: 700; height: 36px">Xem giỏ</button>
+</div>
+
+<div class="{{scrimClass}}" onClick="{{closeAll}}"></div>
+
+<div class="{{filterClass}}" role="dialog" aria-modal="true" aria-label="Lọc và sắp xếp" style="max-height: 720px">
+<div class="grab" aria-hidden="true"></div>
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 16px 8px">
+<div style="font-weight: 700; font-size: 18px">Lọc &amp; Sắp xếp</div>
+<button class="iconbtn" type="button" aria-label="Đóng" onClick="{{closeAll}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<div class="scroller" style="overflow-y: auto; padding: 0 16px 16px; display: flex; flex-direction: column; gap: 20px">
+<fieldset style="border: 0; padding: 0; margin: 0">
+<legend style="font-weight: 600; font-size: 15px; margin-bottom: 10px; padding: 0">Sắp xếp</legend>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{sorts}}" as="o" hint-placeholder-count="4">
+<button class="{{o.cls}}" type="button" aria-pressed="{{o.sel}}" onClick="{{o.pick}}">{{o.label}}</button>
+</sc-for>
+</div>
+</fieldset>
+<fieldset style="border: 0; padding: 0; margin: 0">
+<legend style="font-weight: 600; font-size: 15px; margin-bottom: 10px; padding: 0">Danh mục</legend>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{catChips}}" as="o" hint-placeholder-count="4">
+<button class="{{o.cls}}" type="button" aria-pressed="{{o.sel}}" onClick="{{o.pick}}">{{o.label}}</button>
+</sc-for>
+</div>
+</fieldset>
+<fieldset style="border: 0; padding: 0; margin: 0">
+<legend style="font-weight: 600; font-size: 15px; margin-bottom: 10px; padding: 0">Khoảng giá</legend>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{priceChips}}" as="o" hint-placeholder-count="3">
+<button class="{{o.cls}}" type="button" aria-pressed="{{o.sel}}" onClick="{{o.pick}}">{{o.label}}</button>
+</sc-for>
+</div>
+</fieldset>
+<label style="display: flex; align-items: center; justify-content: space-between; font-weight: 600; font-size: 15px; min-height: 44px">
+Chỉ hiện hàng đang giảm giá
+<input type="checkbox" checked="{{saleOnly}}" onChange="{{toggleSale}}" style="width: 22px; height: 22px; accent-color: #047857">
+</label>
+</div>
+<div style="display: flex; gap: 10px; padding: 12px 16px 20px; border-top: 1px solid #E7E5E4">
+<button type="button" onClick="{{resetFilters}}" style="height: 48px; padding: 0 18px; border-radius: 12px; border: 1.5px solid #1C1917; background: #fff; font-weight: 700; font-size: 15px; color: #1C1917">Xoá lọc</button>
+<button class="btn-cta" type="button" onClick="{{applyFilters}}" style="flex-grow: 1">Xem {{draftCount}} sản phẩm</button>
+</div>
+</div>
+
+<div class="{{cartClass}}" role="dialog" aria-modal="true" aria-label="Giỏ hàng" style="height: 640px">
+<div class="grab" aria-hidden="true"></div>
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 16px 8px">
+<div style="font-weight: 700; font-size: 18px">Giỏ hàng ({{cartCount}})</div>
+<button class="iconbtn" type="button" aria-label="Đóng" onClick="{{closeAll}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<div class="scroller" style="flex-grow: 1; overflow-y: auto; padding: 0 16px">
+<sc-if value="{{cartEmpty}}" hint-placeholder-val="{{ false }}"><div style="padding: 40px 0; text-align: center; color: #57534E">Giỏ hàng đang trống.</div></sc-if>
+<sc-for list="{{lines}}" as="l" hint-placeholder-count="2">
+<div style="display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid #F5F5F4">
+<div style="width: 64px; height: 80px; border-radius: 10px; background: {{l.tone}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="60%" height="60%" viewBox="0 0 32 32" fill="none" stroke="#1C1917" stroke-width="1.1" stroke-linejoin="round" aria-hidden="true"><path d="{{l.icon}}"></path></svg></div>
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 14px; font-weight: 500; line-height: 1.35">{{l.name}}</div>
+<div style="font-size: 12px; color: #57534E">{{l.variant}}</div>
+<div style="display: flex; align-items: center; justify-content: space-between; margin-top: auto">
+<div style="display: flex; align-items: center; gap: 8px">
+<button class="qtybtn" type="button" aria-label="Giảm" onClick="{{l.dec}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+<span style="min-width: 18px; text-align: center; font-weight: 600">{{l.qty}}</span>
+<button class="qtybtn" type="button" aria-label="Tăng" onClick="{{l.inc}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+</div>
+<span style="font-weight: 700; font-variant-numeric: tabular-nums">{{l.totalLabel}}</span>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="padding: 14px 16px 20px; border-top: 1px solid #E7E5E4; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between"><span style="color: #57534E">Tạm tính</span><span style="font-weight: 800; font-size: 18px; font-variant-numeric: tabular-nums">{{subtotalLabel}}</span></div>
+<a class="btn-cta" href="MobileCheckout.dc.html">Thanh toán</a>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"primary":{"editor":"color","default":"#047857","options":["#047857","#1D4ED8","#7C2D12","#1C1917"],"section":"Thương hiệu"},"reduceMotion":{"editor":"boolean","default":false,"section":"Chuyển động"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { slide: 0, small: false, now: Date.now(), end: Date.now() + (2 * 3600 + 13 * 60 + 47) * 1000,
+      wish: {}, pops: {}, cart: [], toastOn: false, toastText: '', sheet: null,
+      applied: { sort: 0, cat: 'all', price: -1, sale: false }, draft: { sort: 0, cat: 'all', price: -1, sale: false }, applyN: 0 };
+  }
+  componentDidMount() { this.clock = setInterval(() => this.setState({ now: Date.now() }), 1000); }
+  componentWillUnmount() { clearInterval(this.clock); clearTimeout(this.toastT); }
+  vnd(n) { return n.toLocaleString('vi-VN') + ' ₫'; }
+  filterList(list, f) {
+    const P = [[0, 300000], [300000, 500000], [500000, 1e9]];
+    let out = list.filter((p) => (f.cat === 'all' || p.cat === f.cat) && (f.price < 0 || (p.price >= P[f.price][0] && p.price < P[f.price][1])) && (!f.sale || p.orig > 0));
+    if (f.sort === 1) out = out.slice().sort((a, b) => a.price - b.price);
+    if (f.sort === 2) out = out.slice().sort((a, b) => b.price - a.price);
+    return out;
+  }
+  addToCart(p) {
+    const cart = this.state.cart.slice();
+    const i = cart.findIndex((l) => l.id === p.id);
+    if (i >= 0) cart[i] = { ...cart[i], qty: cart[i].qty + 1 }; else cart.push({ id: p.id, name: p.name, price: p.price, tone: p.tone, icon: p.icon, variant: p.variant, qty: 1 });
+    clearTimeout(this.toastT);
+    this.setState({ cart, toastOn: true, toastText: 'Đã thêm vào giỏ' });
+    this.toastT = setTimeout(() => this.setState({ toastOn: false }), 2800);
+  }
+  renderVals() {
+    const s = this.state;
+    const P = this.props.primary ?? '#047857';
+    const reduced = !!this.props.reduceMotion;
+    const I = {
+      tee: 'M9 5l5-2h4l5 2 5 5-3.5 3.5L22 12v16H10V12l-2.5 1.5L4 10z', pants: 'M10 4h12l2 24h-5l-3-15-3 15H8z',
+      bag: 'M7 12h18l-1.6 15H8.6zM12 12V9a4 4 0 0 1 8 0v3', shoe: 'M3 22c0-3 2-6 4-6l5-4 3 3c3 2 8 2 12 3 2 .5 3 2 3 4v2H3z',
+      dress: 'M12 3h8l-1 6 5 19H8l5-19z', cap: 'M5 20c0-6 5-11 11-11s11 5 11 11zM3 20h28'
+    };
+    const slidesData = [
+      { kicker: 'Bộ sưu tập mới', title: 'Mặc nhẹ,\nsống chậm', cta: 'Khám phá ngay', bg: '#ECFDF5', fg: '#064E3B', chipBg: '#064E3B', chipFg: '#ECFDF5', blockA: '#A7F3D0', blockB: '#FDBA74', icon: I.tee },
+      { kicker: 'Flash sale 11.11', title: 'Giảm đến [X]%\nđơn đầu tiên', cta: 'Săn deal', bg: '#FFF7ED', fg: '#7C2D12', chipBg: '#C2410C', chipFg: '#FFFFFF', blockA: '#FED7AA', blockB: '#A7F3D0', icon: I.bag },
+      { kicker: 'Phụ kiện', title: 'Hoàn thiện\nmọi set đồ', cta: 'Xem phụ kiện', bg: '#1C1917', fg: '#FAFAF9', chipBg: '#EA580C', chipFg: '#1C1917', blockA: '#292524', blockB: '#047857', icon: I.shoe }
+    ];
+    const goSlide = (i) => { const el = typeof document !== 'undefined' ? document.querySelector('[data-hero]') : null; if (el) el.scrollTo({ left: i * 370, behavior: reduced ? 'auto' : 'smooth' }); this.setState({ slide: i }); };
+    const slides = slidesData.map((x, i) => ({ ...x, n: i + 1, pipCls: 'pip' + (i === s.slide ? ' on' : ''), go: () => goSlide(i) }));
+    const usps = [
+      { title: 'Freeship từ [X]k', icon: 'M3 7h11v9H3zM14 10h4l3 3v3h-7M7 19a2 2 0 1 0 0-.01M17 19a2 2 0 1 0 0-.01' },
+      { title: 'COD toàn quốc', icon: 'M3 7h18v10H3zM12 12m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0' },
+      { title: 'Đổi trả 7 ngày', icon: 'M4 12a8 8 0 0 1 14-5l2 2M20 12a8 8 0 0 1-14 5l-2-2M20 4v5h-5M4 20v-5h5' },
+      { title: 'VNPay · VietQR', icon: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM8.5 12l2.5 2.5 4.5-5' }
+    ];
+    const cats = [
+      { name: 'Áo thun & sơ mi', bg: '#ECFDF5', fg: '#064E3B', icon: I.tee, col: 'span 2', h: 150, size: 20, art: 120 },
+      { name: 'Quần', bg: '#FFF7ED', fg: '#7C2D12', icon: I.pants, col: 'span 1', h: 120, size: 16, art: 70 },
+      { name: 'Váy đầm', bg: '#F5F5F4', fg: '#1C1917', icon: I.dress, col: 'span 1', h: 120, size: 16, art: 70 },
+      { name: 'Túi xách', bg: '#1C1917', fg: '#FAFAF9', icon: I.bag, col: 'span 1', h: 120, size: 16, art: 70 },
+      { name: 'Giày & mũ', bg: '#D1FAE5', fg: '#064E3B', icon: I.shoe, col: 'span 1', h: 120, size: 16, art: 70 }
+    ];
+    const left = Math.max(0, Math.floor((s.end - s.now) / 1000));
+    const parts = [String(Math.floor(left / 3600)).padStart(2, '0'), String(Math.floor((left % 3600) / 60)).padStart(2, '0'), String(left % 60).padStart(2, '0')];
+    const digits = [];
+    parts.forEach((g, gi) => { if (gi) digits.push({ sep: true, num: false, v: ':', cls: '' }); g.split('').forEach((ch) => digits.push({ sep: false, num: true, v: ch, cls: reduced ? '' : (Number(ch) % 2 ? 'flipA' : 'flipB') })); });
+    const flash = [
+      { name: 'Áo thun cotton basic cổ tròn', price: 149000, orig: 229000, sold: 82, tone: '#E7E5E4', icon: I.tee },
+      { name: 'Túi tote canvas dày dặn', price: 179000, orig: 299000, sold: 64, tone: '#FED7AA', icon: I.bag },
+      { name: 'Quần kaki ống suông', price: 289000, orig: 429000, sold: 47, tone: '#D1FAE5', icon: I.pants },
+      { name: 'Mũ lưỡi trai thêu chữ', price: 99000, orig: 169000, sold: 91, tone: '#F5F5F4', icon: I.cap }
+    ].map((p) => ({ ...p, off: Math.round((1 - p.price / p.orig) * 100), priceLabel: this.vnd(p.price), soldPct: p.sold + '%', stockText: p.sold > 80 ? 'Sắp hết hàng' : 'Đã bán ' + p.sold + '%' }));
+    const bestData = [
+      { id: 'b1', cat: 'top', name: 'Áo thun oversize cotton 250gsm', price: 259000, orig: 0, rating: '4,8', sold: '1,2k', tone: '#E7E5E4', icon: I.tee, badge: 'Bán chạy', variant: 'Đen · L' },
+      { id: 'b2', cat: 'top', name: 'Sơ mi linen tay ngắn', price: 319000, orig: 399000, rating: '4,7', sold: '860', tone: '#ECFDF5', icon: I.tee, badge: '-20%', variant: 'Trắng kem · M' },
+      { id: 'b3', cat: 'bottom', name: 'Quần jeans ống đứng xanh nhạt', price: 459000, orig: 0, rating: '4,6', sold: '640', tone: '#E0F2FE', icon: I.pants, badge: 'Mới', variant: 'Xanh nhạt · 29' },
+      { id: 'b4', cat: 'bottom', name: 'Đầm midi cổ vuông', price: 489000, orig: 599000, rating: '4,9', sold: '510', tone: '#FFF7ED', icon: I.dress, badge: '-18%', variant: 'Be · S' },
+      { id: 'b5', cat: 'acc', name: 'Túi đeo chéo da PU mini', price: 349000, orig: 0, rating: '4,8', sold: '720', tone: '#F5F5F4', icon: I.bag, badge: '', variant: 'Nâu' },
+      { id: 'b6', cat: 'top', name: 'Áo khoác kaki dáng rộng', price: 529000, orig: 0, rating: '4,7', sold: '390', tone: '#D1FAE5', icon: I.tee, badge: 'Mới', variant: 'Rêu · L' },
+      { id: 'b7', cat: 'acc', name: 'Giày loafer da lộn', price: 689000, orig: 790000, rating: '4,5', sold: '210', tone: '#FEF3C7', icon: I.shoe, badge: '-13%', variant: 'Nâu · 41' },
+      { id: 'b8', cat: 'bottom', name: 'Quần short linen lưng thun', price: 229000, orig: 0, rating: '4,6', sold: '930', tone: '#F5F5F4', icon: I.pants, badge: '', variant: 'Be · M' }
+    ];
+    const f = s.applied, d = s.draft;
+    const best = this.filterList(bestData, f).map((p) => {
+      const wished = !!s.wish[p.id]; const pop = s.pops[p.id] || 0; const sale = p.orig > 0;
+      return { ...p, priceLabel: this.vnd(p.price), priceColor: sale ? '#B91C1C' : '#1C1917', hasBadge: !!p.badge,
+        badgeBg: sale ? '#B91C1C' : (p.badge === 'Mới' ? '#047857' : '#1C1917'),
+        wished: wished ? 'true' : 'false', heartFill: wished ? 'currentColor' : 'none',
+        heartCls: 'heart' + (wished ? ' on' : '') + (pop ? (pop % 2 ? ' popA' : ' popB') : ''),
+        toggleWish: () => this.setState({ wish: { ...s.wish, [p.id]: !wished }, pops: { ...s.pops, [p.id]: pop + 1 } }),
+        add: () => this.addToCart(p) };
+    });
+    const SORTS = ['Phổ biến', 'Giá tăng dần', 'Giá giảm dần'];
+    const CATS = [{ k: 'all', l: 'Tất cả' }, { k: 'top', l: 'Áo' }, { k: 'bottom', l: 'Quần & váy' }, { k: 'acc', l: 'Phụ kiện' }];
+    const PRICES = ['Dưới 300k', '300k – 500k', 'Trên 500k'];
+    const setDraft = (patch) => this.setState({ draft: { ...s.draft, ...patch } });
+    const activeChips = [];
+    if (f.cat !== 'all') activeChips.push({ label: CATS.find((c) => c.k === f.cat).l, remove: () => this.setState({ applied: { ...f, cat: 'all' }, draft: { ...f, cat: 'all' }, applyN: s.applyN + 1 }) });
+    if (f.price >= 0) activeChips.push({ label: PRICES[f.price], remove: () => this.setState({ applied: { ...f, price: -1 }, draft: { ...f, price: -1 }, applyN: s.applyN + 1 }) });
+    if (f.sale) activeChips.push({ label: 'Đang giảm giá', remove: () => this.setState({ applied: { ...f, sale: false }, draft: { ...f, sale: false }, applyN: s.applyN + 1 }) });
+    const count = s.cart.reduce((a, l) => a + l.qty, 0);
+    const subtotal = s.cart.reduce((a, l) => a + l.qty * l.price, 0);
+    const empty = { sort: 0, cat: 'all', price: -1, sale: false };
+    return {
+      primary: P, rootClass: reduced ? 'rm' : '',
+      onScroll: (e) => { const t = e && e.currentTarget ? e.currentTarget.scrollTop : 0; const small = t > 60; if (small !== s.small) this.setState({ small }); },
+      onHeroScroll: (e) => { const el = e && e.currentTarget; if (!el) return; const i = Math.round(el.scrollLeft / 370); if (i !== s.slide) this.setState({ slide: i }); },
+      hdrClass: 'hdr' + (s.small ? ' small' : ''), hdrH: s.small ? 52 : 60, logoSize: s.small ? 18 : 21,
+      slides, usps, cats, digits, flash, best,
+      timeLabel: parts[0] + ' giờ ' + parts[1] + ' phút ' + parts[2] + ' giây',
+      resultCount: best.length, sortLabel: SORTS[f.sort], noResults: best.length === 0,
+      gridClass: reduced ? '' : (s.applyN % 2 ? 'gridA' : 'gridB'),
+      activeChips, hasActive: activeChips.length > 0, activeCount: activeChips.length,
+      sorts: SORTS.map((l, i) => ({ label: l, sel: d.sort === i ? 'true' : 'false', cls: 'chip' + (d.sort === i ? ' on' : ''), pick: () => setDraft({ sort: i }) })),
+      catChips: CATS.map((c) => ({ label: c.l, sel: d.cat === c.k ? 'true' : 'false', cls: 'chip' + (d.cat === c.k ? ' on' : ''), pick: () => setDraft({ cat: c.k }) })),
+      priceChips: PRICES.map((l, i) => ({ label: l, sel: d.price === i ? 'true' : 'false', cls: 'chip' + (d.price === i ? ' on' : ''), pick: () => setDraft({ price: d.price === i ? -1 : i }) })),
+      saleOnly: d.sale, toggleSale: () => setDraft({ sale: !d.sale }),
+      draftCount: this.filterList(bestData, d).length,
+      applyFilters: () => this.setState({ applied: { ...d }, sheet: null, applyN: s.applyN + 1 }),
+      resetFilters: () => this.setState({ draft: empty, applied: empty, applyN: s.applyN + 1 }),
+      fabClass: 'fab' + (s.small && !s.sheet ? '' : ' hide'),
+      openFilter: () => this.setState({ sheet: 'filter', draft: { ...f } }),
+      openCart: () => this.setState({ sheet: 'cart', toastOn: false }),
+      closeAll: () => this.setState({ sheet: null }),
+      scrimClass: 'scrim' + (s.sheet ? ' on' : ''), filterClass: 'sheet' + (s.sheet === 'filter' ? ' on' : ''), cartClass: 'sheet' + (s.sheet === 'cart' ? ' on' : ''),
+      toastClass: 'toast' + (s.toastOn ? ' on' : ''), toastText: s.toastText,
+      hasCart: count > 0, cartCount: count, bumpClass: reduced ? '' : (count % 2 ? 'bumpA' : 'bumpB'),
+      cartEmpty: count === 0, subtotalLabel: this.vnd(subtotal),
+      lines: s.cart.map((l) => ({ ...l, totalLabel: this.vnd(l.qty * l.price),
+        inc: () => this.setState({ cart: s.cart.map((x) => x.id === l.id ? { ...x, qty: x.qty + 1 } : x) }),
+        dec: () => this.setState({ cart: s.cart.map((x) => x.id === l.id ? { ...x, qty: x.qty - 1 } : x).filter((x) => x.qty > 0) }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>
